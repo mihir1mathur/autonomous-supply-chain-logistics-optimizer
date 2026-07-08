@@ -1,0 +1,63 @@
+# ===========================================================================
+# Python dependencies - Supply Chain & Logistics Optimizer
+# Install with:  pip install -r requirements.txt
+# ===========================================================================
+
+# Data handling (Weeks 0-2: cleaning, joins, simulation).
+pandas>=2.0
+numpy>=1.24
+
+# Database layer (Week 3): ORM, PostgreSQL driver, and .env loading.
+SQLAlchemy>=2.0       # ORM: Python classes <-> database tables
+psycopg[binary]>=3.1  # PostgreSQL driver (the "psycopg" / psycopg 3 package)
+python-dotenv>=1.0    # reads database settings from a local .env file
+
+# NOTE: Alembic (database migrations) is intentionally NOT included yet.
+# Schema changes are simple this week (create tables once). Migrations will
+# be introduced in a later week when the schema starts evolving.
+
+# Backend API layer (Week 4): the web framework, the server, and validation.
+fastapi>=0.110         # the web framework that turns our CRUD layer into a REST API
+uvicorn[standard]>=0.27  # the ASGI server that actually runs the FastAPI app
+pydantic>=2.6          # data validation + shaping the JSON going in and out
+pydantic-settings>=2.1 # reads API settings (title, version, CORS) from .env
+httpx>=0.27            # HTTP client used by the Week 4 API test scripts
+
+# Optimization engine (Week 5): Google OR-Tools for the CP-SAT solver used by
+# the shipment-assignment and vehicle-utilization optimizers. The warehouse
+# selector and the nearest-neighbour route optimizer use only the standard
+# library, but they live in the same package.
+ortools>=9.10          # Google Operations Research tools (CP-SAT, LP/MIP, VRP)
+
+# Optimization EXECUTION layer (Week 6): runs optimizations under scenarios,
+# measures KPIs, evaluates before-vs-after, benchmarks, and stores every run in
+# a new optimization_runs table. It adds NO new dependencies - it is built
+# entirely on the packages above (SQLAlchemy for the new table, FastAPI for the
+# new /optimization endpoints, OR-Tools via the reused Week 5 solvers, and the
+# Python standard library for the metrics / evaluation / scenario logic).
+
+# AI multi-agent ORCHESTRATION layer (Week 7): five agents (Planner, Scenario,
+# Optimization, Evaluation, Reporting) that autonomously drive the Week 6
+# execution service behind the new /agents endpoints.
+#
+# IMPORTANT: crewai is OPTIONAL. The orchestration layer runs out of the box in
+# a DETERMINISTIC mode built entirely on the packages above (no LLM, no network,
+# fully offline and reproducible - this is what the demo and the validation
+# script exercise). Installing crewai and setting an LLM API key (see
+# .env.example) UNLOCKS the richer "crewai" mode, which adds natural-language
+# reasoning/narration on top of the same deterministic numbers. If you only want
+# the deterministic layer, you can skip the line below entirely.
+#
+# crewai pulls in a large dependency tree (LiteLLM, etc.); it is intentionally
+# left commented so a plain `pip install -r requirements.txt` stays lightweight.
+# Uncomment it to enable the LLM mode:
+# crewai>=0.80          # multi-agent orchestration framework (optional LLM mode)
+
+# Analytics DASHBOARD layer (Week 8): a Streamlit dashboard that makes the
+# backend visible - it charts the Week 6 optimization history / KPIs and drives
+# the Week 7 agents, entirely by CONSUMING the existing FastAPI endpoints over
+# HTTP (it never calls OR-Tools, the database, or the services directly). It adds
+# only the two packages below; the HTTP client (httpx) and pandas are already
+# dependencies above and are reused unchanged.
+streamlit>=1.30        # the dashboard framework (run: streamlit run dashboard/app.py)
+plotly>=5.18           # interactive charts (cost/distance/utilization/runtime/...)

@@ -1,0 +1,67 @@
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# Python Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python bytecode / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Build / Distribution
+build/
+dist/
+*.egg
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Streamlit cache
+.streamlit/secrets.toml
+
+# Generated data
+processed/
+simulation/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# Coverage
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Private notes
+notes/
+
+# Claude / AI prompts
+Week*.txt
+Before*.txt
+
+# Large raw dataset
+data/olist_geolocation_dataset.csv
