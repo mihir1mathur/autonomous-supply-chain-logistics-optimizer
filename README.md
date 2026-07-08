@@ -1,27 +1,41 @@
-# Supply Chain & Logistics Optimizer
+# 🚚 Autonomous Supply Chain & Logistics Optimizer
 
-A logistics optimization platform built using real e-commerce order data,
-supply chain simulation, route optimization, and autonomous planning.
+> **An end-to-end AI-powered Supply Chain Optimization Platform built with FastAPI, PostgreSQL, OR-Tools, CrewAI, Streamlit, and designed for AWS deployment.**
+
+<p align="center">
+
+**FastAPI • PostgreSQL • Google OR-Tools • CrewAI • Streamlit • SQLAlchemy • Docker • AWS**
+
+<p align="center">
+
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?logo=postgresql) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-red) ![Google OR-Tools](https://img.shields.io/badge/Google_OR--Tools-orange) ![CrewAI](https://img.shields.io/badge/CrewAI-Multi--Agent-purple) ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit) ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker) ![AWS Ready](https://img.shields.io/badge/AWS-Deployment_Ready-FF9900?logo=amazonaws)
+
+
+</p>
+
+<p align="center">
+
+Building intelligent, scalable, and autonomous supply chain systems using modern AI and optimization techniques.
+
+</p>
 
 ---
 
 ## Overview
 
-This project takes a real, large-scale e-commerce dataset and treats it as a
-**supply chain and logistics problem**: products are stored by sellers
-(fulfillment locations), customers are delivery destinations, and orders are
-shipment requests that must travel across a country efficiently and on time.
+This project transforms a real-world e-commerce dataset into an intelligent logistics optimization platform capable of:
 
-The goal is to build an end-to-end platform that can:
+- 📦 Warehouse Selection
+- 🚚 Vehicle Assignment
+- 🛣 Route Optimization
+- 📈 KPI Benchmarking
+- 🤖 Autonomous Multi-Agent Decision Making
+- 📊 Interactive Analytics Dashboard
+- ☁️ AWS Deployment 
 
-- Analyze real delivery performance (on-time vs. late deliveries).
-- Estimate distances and routes between sellers and customers.
-- Simulate real-world disruptions (inventory shortages, traffic, weather).
-- Optimize routing and logistics decisions.
-- Eventually support autonomous planning and replanning.
+The platform is developed incrementally over multiple engineering milestones, progressing from raw dataset analysis to an autonomous AI-powered logistics optimization system.
 
-The project is built incrementally, one week at a time, starting from the
-fundamentals.
+---
 
 ## Dataset
 
