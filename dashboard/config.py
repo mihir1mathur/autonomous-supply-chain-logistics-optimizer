@@ -1,6 +1,6 @@
 """
 ============================================================================
-DASHBOARD CONFIG  (Week 8)
+DASHBOARD CONFIG
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -14,15 +14,15 @@ WHAT THIS FILE DOES
 
 WHY A SEPARATE CONFIG FILE (and why not hard-code the API URL everywhere)?
 -------------------------------------------------------------------------
-  Exactly the reasoning of the Week 4 api/config.py and the Week 3 database
+  Exactly the reasoning of the API layer's api/config.py and the database
   config: values that change between environments (your laptop vs. a deployed
   server) do not belong scattered through the code. Keeping the API base URL in
   ONE place means the dashboard can be pointed at a different backend by setting
-  a single environment variable - no code change. The Week 8 rule "do not
-  hardcode API URLs across files" is enforced here: every HTTP call in
+  a single environment variable - no code change. The presentation-layer rule
+  "do not hardcode API URLs across files" is enforced here: every HTTP call in
   api_client.py reads this one base URL.
 
-HOW IT WORKS (pydantic-settings, same as Week 4)
+HOW IT WORKS (pydantic-settings, mirroring the API config pattern)
 ------------------------------------------------
   We reuse pydantic-settings' BaseSettings (already a project dependency). Each
   field is read from an environment variable with the DASHBOARD_ prefix (e.g.
@@ -31,7 +31,7 @@ HOW IT WORKS (pydantic-settings, same as Week 4)
 
 NO SECRETS HERE
   The dashboard needs no API keys and stores none. It only needs to know the
-  backend URL. (Any LLM key for the optional Week 7 crewai mode lives on the
+  backend URL. (Any LLM key for the optional agent-layer crewai mode lives on the
   BACKEND, never in the dashboard.)
 ============================================================================
 """
@@ -57,7 +57,7 @@ class DashboardSettings(BaseSettings):
     )
 
     # ---- WHERE the backend is -------------------------------------------
-    # The base URL of the FastAPI app (Weeks 4-7). Default matches the address
+    # The base URL of the FastAPI app (the backend services). Default matches the address
     # `uvicorn api.main:app --reload` serves locally. Point this elsewhere (e.g.
     # a deployed backend) with the DASHBOARD_API_BASE_URL environment variable.
     api_base_url: str = "http://127.0.0.1:8000"
@@ -88,7 +88,7 @@ class DashboardSettings(BaseSettings):
 
     # ---- Identity (shown in the sidebar / page title) -------------------
     app_title: str = "Supply Chain & Logistics Optimizer - Analytics Dashboard"
-    app_version: str = "0.8.0"  # 0.8 = Week 8.
+    app_version: str = "0.8.0"  # dashboard version
 
     def health_url(self) -> str:
         """The full /health URL (a quick convenience for the status page)."""
@@ -101,7 +101,7 @@ def get_settings() -> DashboardSettings:
     Return the ONE shared settings object.
 
     @lru_cache means the settings are read from the environment once and then
-    reused, mirroring the Week 4 api/config.get_settings pattern.
+    reused, mirroring the API config get_settings pattern.
     """
     return DashboardSettings()
 

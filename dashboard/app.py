@@ -1,18 +1,18 @@
 """
 ============================================================================
-STREAMLIT DASHBOARD ENTRY POINT  (Week 8)
+STREAMLIT DASHBOARD ENTRY POINT
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS FILE IS
 -----------------
-  The "front door" of the Week 8 dashboard - the file Streamlit runs. It sets up
+  The "front door" of the dashboard - the file Streamlit runs. It sets up
   the page, draws the sidebar (navigation + backend connection status + a small
   config/environment panel), and routes to the selected page's render(client).
 
 HOW TO RUN IT (from the project root)
 -------------------------------------
-    # 1. start the backend (Weeks 4-7):
+    # 1. start the backend services:
     uvicorn api.main:app --reload
     # 2. start this dashboard:
     streamlit run dashboard/app.py
@@ -71,7 +71,7 @@ def _render_sidebar(client) -> str:
     settings = get_settings()
 
     st.sidebar.title("Supply Chain Optimizer")
-    st.sidebar.caption("Analytics & Visualization Dashboard (Week 8)")
+    st.sidebar.caption("Operations Analytics Dashboard")
 
     # --- navigation ---
     choice = st.sidebar.radio("Go to", list(PAGES.keys()), index=0)
@@ -122,8 +122,9 @@ def main() -> None:
 
     st.title("Supply Chain & Logistics Optimizer")
     st.caption(
-        "An end-to-end operations platform: optimization (Week 5), execution & "
-        "KPIs (Week 6), and autonomous agents (Week 7) - made visible here (Week 8)."
+        "An end-to-end operations platform — an optimization engine, execution "
+        "tracking and KPI analytics, and an autonomous multi-agent decision engine "
+        "— presented in a single operations dashboard."
     )
 
     choice = _render_sidebar(client)
@@ -135,7 +136,7 @@ def main() -> None:
 
 # Streamlit runs this script with __name__ == "__main__", so this fires when
 # launched via `streamlit run dashboard/app.py`. Importing the module elsewhere
-# (e.g. the Week 8 validation script) does NOT run the app - it only checks that
+# (e.g. the validation script) does NOT run the app - it only checks that
 # everything imports cleanly.
 if __name__ == "__main__":
     main()

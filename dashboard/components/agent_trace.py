@@ -1,12 +1,12 @@
 """
 ============================================================================
-AGENT TRACE VIEWER  (Week 8, Part 10)
+AGENT TRACE VIEWER
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS FILE DOES
 -------------------
-  Visualises the Week 7 EXECUTION TRACE - the step-by-step record of what each
+  Visualises the agent EXECUTION TRACE - the step-by-step record of what each
   of the five agents did during one autonomous decision. It shows the flow
 
         PlannerAgent -> ScenarioAgent -> OptimizationAgent
@@ -17,7 +17,7 @@ WHAT THIS FILE DOES
 
 WHY THIS MATTERS
 ----------------
-  This is the single most important view for demonstrating the Week 7 autonomy:
+  This is the single most important view for demonstrating the agent autonomy:
   it proves the agent workflow is AUDITABLE. A viewer can see exactly which
   agent decided what, in what order, and whether every step succeeded - the same
   trace the /agents API returns, simply drawn for a human.
@@ -47,6 +47,26 @@ AGENT_FLOW = [
     "ReportingAgent",
 ]
 
+# Concise, business-friendly summaries shown in the trace table - so the view
+# reads like an audit log instead of exposing the backend's internal one-liners.
+_CONCISE_SUMMARY = {
+    "PlannerAgent": "Created execution plan",
+    "ScenarioAgent": "Selected operating scenario",
+    "OptimizationAgent": "Generated optimized solution",
+    "EvaluationAgent": "Compared against baseline",
+    "ReportingAgent": "Generated decision report",
+}
+
+
+def _concise_summary(step: dict, scenario_name: str | None) -> str:
+    """A short business summary for one trace step (never a raw backend string)."""
+    if not step.get("success"):
+        return "Did not complete"
+    agent = step.get("agent")
+    if agent == "ScenarioAgent" and scenario_name:
+        return f"Selected {scenario_name}"
+    return _CONCISE_SUMMARY.get(agent, "Completed step")
+
 
 def render_agent_flow(steps: list[dict] | None = None) -> None:
     """
@@ -71,10 +91,13 @@ def render_agent_flow(steps: list[dict] | None = None) -> None:
     st.markdown(" &nbsp;->&nbsp; ".join(parts))
 
 
-def render_agent_trace(trace: dict) -> None:
+def render_agent_trace(trace: dict, *, scenario_name: str | None = None) -> None:
     """
     Render the full trace: the flow line, a headline (total time + overall
     result), a per-step table, and expandable error details for any failure.
+
+    `scenario_name`, when supplied, lets the Scenario step read "Selected
+    <scenario name>" instead of a generic line.
     """
     trace = trace or {}
     steps = trace.get("steps", [])
@@ -92,17 +115,18 @@ def render_agent_trace(trace: dict) -> None:
     cols[0].metric("Total agent time", format_ms(total_ms))
     cols[1].metric("All steps succeeded", "Yes" if all_ok else "No")
 
-    # A clean per-step table.
+    # A clean per-step table. The agent name is shown without the "Agent" suffix
+    # and the summary is a concise business line (not the raw backend string).
     rows = []
     for i, step in enumerate(steps, start=1):
         rows.append(
             {
                 "#": i,
-                "Agent": step.get("agent", "?"),
-                "Action": step.get("action", ""),
+                "Agent": str(step.get("agent", "?")).replace("Agent", ""),
+                "Action": str(step.get("action", "")).replace("_", " ").title(),
                 "Status": "OK" if step.get("success") else "FAILED",
                 "Duration": format_ms(step.get("duration_ms")),
-                "Summary": step.get("summary", ""),
+                "Summary": _concise_summary(step, scenario_name),
             }
         )
     st.dataframe(

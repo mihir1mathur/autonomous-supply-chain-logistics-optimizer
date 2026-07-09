@@ -1,6 +1,6 @@
 """
 ============================================================================
-DASHBOARD API CLIENT  (Week 8)   -- the ONLY seam between the UI and FastAPI
+DASHBOARD API CLIENT   -- the ONLY seam between the UI and FastAPI
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -8,7 +8,7 @@ WHAT THIS FILE IS
 -----------------
   The single place in the dashboard that talks to the backend over HTTP. Every
   page and component goes THROUGH this client; none of them build URLs or call
-  httpx themselves. This mirrors the Week 7 idea of "one tool seam": there is
+  httpx themselves. This mirrors the agent layer's "one tool seam" idea: there is
   exactly one door to the platform, so the rule "the dashboard never bypasses
   the backend services" is easy to see and impossible to break by accident.
 
@@ -22,7 +22,7 @@ WHY A DEDICATED CLIENT (and not scattered requests)
     dashboard degrades gracefully rather than crashing.
   * NO backend logic - this client only makes requests and returns the parsed
     JSON. It never computes a KPI, never runs an optimizer, never touches the
-    database. All of that already lives behind the API (Weeks 4-7).
+    database. All of that already lives behind the backend services.
 
 THE METHODS MAP 1:1 TO THE EXISTING ENDPOINTS
 ---------------------------------------------
@@ -38,7 +38,7 @@ THE METHODS MAP 1:1 TO THE EXISTING ENDPOINTS
     GET  /agents/status             -> get_agent_status()
 
   Nothing here is Streamlit-specific, so this module imports cleanly even if
-  Streamlit is not installed (the Week 8 validation relies on that).
+  Streamlit is not installed (the validation suite relies on that).
 ============================================================================
 """
 
@@ -117,7 +117,7 @@ class APIClient:
             raise APIError(f"Network error talking to the backend: {exc}", path=path)
 
         # A non-2xx status: surface the backend's own error message if it sent
-        # one (the Week 4 error envelope), otherwise a generic line.
+        # one (the API error envelope), otherwise a generic line.
         if response.status_code >= 400:
             detail = _extract_error_detail(response)
             raise APIError(
@@ -154,7 +154,7 @@ class APIClient:
             return False
 
     # -----------------------------------------------------------------------
-    # OPTIMIZATION EXECUTION  (Week 6, /optimization/*)
+    # OPTIMIZATION EXECUTION  (the execution layer, /optimization/*)
     # -----------------------------------------------------------------------
     def get_scenarios(self) -> dict:
         """GET /optimization/scenarios - the scenario catalog."""
@@ -213,7 +213,7 @@ class APIClient:
         return self._request("POST", "/optimization/simulate", json=payload or {})
 
     # -----------------------------------------------------------------------
-    # AI ORCHESTRATION  (Week 7, /agents/*)
+    # AI ORCHESTRATION  (the agent layer, /agents/*)
     # -----------------------------------------------------------------------
     def get_agent_status(self) -> dict:
         """GET /agents/status - the orchestration mode, agents, and LLM info."""
@@ -240,7 +240,7 @@ def _extract_error_detail(response: httpx.Response) -> str:
     """
     Pull a human-readable message out of an error response.
 
-    The Week 4 error envelope uses a top-level "detail" (a string or a list of
+    The API error envelope uses a top-level "detail" (a string or a list of
     validation errors). We format whatever is there into one short line.
     """
     try:
@@ -272,7 +272,7 @@ def get_client() -> APIClient:
     Return the ONE shared API client.
 
     @lru_cache gives a single reused client (and a single `last_success_at`
-    clock) for the whole dashboard process, mirroring the Week 4/5/6 service
+    clock) for the whole dashboard process, mirroring the backend service
     singletons. Streamlit pages call this on every rerun and get the same
     client back cheaply.
     """

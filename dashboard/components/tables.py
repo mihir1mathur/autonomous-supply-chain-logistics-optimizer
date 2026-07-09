@@ -1,6 +1,6 @@
 """
 ============================================================================
-TABLES  (Week 8)
+TABLES
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -25,7 +25,7 @@ import pandas as pd
 import streamlit as st
 
 # The flat columns we lift out of each history row for the table/charts. These
-# mirror the Week 6 OptimizationRunResponse scalar fields (no nested dicts).
+# mirror the OptimizationRunResponse scalar fields (no nested dicts).
 _HISTORY_COLUMNS = [
     "run_id",
     "created_at",
@@ -46,6 +46,23 @@ _HISTORY_COLUMNS = [
     "vehicles_used",
     "num_constraints",
     "num_variables",
+]
+
+
+# The recruiter-useful subset shown by DEFAULT in the history table. This trims
+# only the visible columns for readability - the full metric set is still in the
+# DataFrame, in the CSV export (built from the raw items), and in the per-run
+# "Run details" drill-down.
+_HISTORY_DISPLAY_COLUMNS = [
+    "run_id",
+    "created_at",
+    "scenario",
+    "optimizer",
+    "solver_status",
+    "total_cost",
+    "travel_distance_km",
+    "runtime_ms",
+    "orders_fulfilled",
 ]
 
 
@@ -78,19 +95,25 @@ def render_history_table(df: pd.DataFrame) -> None:
         st.info("No stored optimization runs match the current filters.")
         return
 
+    # Show only the recruiter-useful columns by default (tolerating any that are
+    # absent from a leaner row set). The DataFrame itself is left intact.
+    visible = [c for c in _HISTORY_DISPLAY_COLUMNS if c in df.columns]
+    display_df = df[visible] if visible else df
+
     st.dataframe(
-        df,
+        display_df,
         width="stretch",
         hide_index=True,
         column_config={
-            "run_id": st.column_config.TextColumn("Run id", width="medium"),
-            "created_at": st.column_config.DatetimeColumn("Created at", format="YYYY-MM-DD HH:mm"),
-            "vehicle_utilization": st.column_config.NumberColumn("Vehicle util.", format="%.1f%%"),
-            "warehouse_utilization": st.column_config.NumberColumn("Warehouse util.", format="%.1f%%"),
-            "total_cost": st.column_config.NumberColumn("Total cost", format="%.2f"),
+            "run_id": st.column_config.TextColumn("Run ID", width="medium"),
+            "created_at": st.column_config.DatetimeColumn("Created At", format="YYYY-MM-DD HH:mm"),
+            "scenario": st.column_config.TextColumn("Scenario"),
+            "optimizer": st.column_config.TextColumn("Optimizer"),
+            "solver_status": st.column_config.TextColumn("Solver Status"),
+            "total_cost": st.column_config.NumberColumn("Total Cost", format="%.2f"),
             "travel_distance_km": st.column_config.NumberColumn("Distance (km)", format="%.1f"),
-            "inventory_holding_cost": st.column_config.NumberColumn("Holding cost", format="%.2f"),
             "runtime_ms": st.column_config.NumberColumn("Runtime (ms)", format="%.1f"),
+            "orders_fulfilled": st.column_config.NumberColumn("Orders Fulfilled", format="%d"),
         },
     )
 
@@ -113,7 +136,7 @@ def render_scenario_table(scenarios: list[dict]) -> None:
         width="stretch",
         hide_index=True,
         column_config={
-            "key": st.column_config.TextColumn("Key"),
+            "key": st.column_config.TextColumn("Scenario ID"),
             "name": st.column_config.TextColumn("Name"),
             "category": st.column_config.TextColumn("Category"),
             "description": st.column_config.TextColumn("Description", width="large"),

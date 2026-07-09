@@ -1,16 +1,16 @@
 """
 ============================================================================
-DASHBOARD PACKAGE  (Week 8)   -- the Streamlit analytics / visualization layer
+DASHBOARD PACKAGE   -- the Streamlit analytics / visualization layer
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS PACKAGE IS
 --------------------
-  The Week 8 PRESENTATION layer. A Streamlit dashboard that makes the existing
+  The PRESENTATION layer. A Streamlit dashboard that makes the existing
   backend visible and demonstrable: it charts the optimization history and KPIs
-  (Week 6), lets a user drive the autonomous crew and read its decisions
-  (Week 7), and shows whether the system is healthy - all by CONSUMING the
-  existing FastAPI endpoints over HTTP.
+  from the execution layer, lets a user drive the autonomous multi-agent
+  decision engine and read its decisions, and shows whether the system is
+  healthy - all by CONSUMING the existing FastAPI endpoints over HTTP.
 
 THE ONE RULE OF THIS PACKAGE
 ----------------------------
@@ -33,7 +33,7 @@ LAYOUT (small, modular files - never one giant dashboard)
 
 RUN IT
 ------
-    uvicorn api.main:app --reload      # start the backend (Weeks 4-7)
+    uvicorn api.main:app --reload      # start the backend services
     streamlit run dashboard/app.py     # start this dashboard
 ============================================================================
 """

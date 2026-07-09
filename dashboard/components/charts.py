@@ -1,13 +1,13 @@
 """
 ============================================================================
-CHARTS  (Week 8, Part 6)
+CHARTS
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS FILE DOES
 -------------------
-  Draws the Week 8 charts with Plotly Express over data the API already
-  produced. The charts cover the metrics the prompt asks for:
+  Draws the dashboard charts with Plotly Express over data the API already
+  produced. The charts cover the core operational metrics:
 
     1. Cost by scenario            5. Orders fulfilled by scenario
     2. Distance by scenario        6. Stockouts by scenario
@@ -15,10 +15,10 @@ WHAT THIS FILE DOES
        scenario                    8. Improvement percentages (if evaluation
     4. Runtime by optimizer           data exists)
 
-CHARTS VISUALISE - THEY DO NOT COMPUTE (Week 8 rule)
+CHARTS VISUALISE - THEY DO NOT COMPUTE (presentation-layer rule)
 ----------------------------------------------------
   Every per-run KPI (total_cost, travel_distance_km, vehicle_utilization, ...)
-  is computed ONCE by the Week 6 metrics code and stored. These charts only
+  is computed ONCE by the execution-layer metrics code and stored. These charts only
   ARRANGE those stored values for the eye - grouping runs by scenario/optimizer
   and showing the AVERAGE for readability is a display choice, not a new metric.
   The captions say so explicitly, so nothing is presented as a "backend number"
@@ -166,12 +166,12 @@ def runs_over_time(df: pd.DataFrame) -> None:
     st.plotly_chart(fig, width="stretch")
 
 
-def improvement_bar(evaluation: dict, *, title: str = "Improvement vs. naive baseline") -> None:
+def improvement_bar(evaluation: dict, *, title: str = "Comparison with Baseline") -> None:
     """
     8. The before-vs-after improvement percentages for ONE run's evaluation.
 
     `evaluation` is a run's evaluation block (already-percent values from the
-    Week 6 evaluation framework). Positive bars are improvements; the values are
+    evaluation framework). Positive bars are improvements; the values are
     displayed exactly as the backend produced them.
     """
     if not evaluation:
@@ -185,7 +185,7 @@ def improvement_bar(evaluation: dict, *, title: str = "Improvement vs. naive bas
         ("Stockouts", "stockout_reduction_percent"),
         ("Late deliveries", "late_delivery_reduction_percent"),
         ("Utilization", "utilization_improvement_percent"),
-        ("Delivery", "delivery_improvement_percent"),
+        ("Orders Fulfilled", "delivery_improvement_percent"),
     ]
     rows = [
         {"metric": label, "improvement_percent": evaluation[key]}
@@ -197,17 +197,28 @@ def improvement_bar(evaluation: dict, *, title: str = "Improvement vs. naive bas
         return
 
     frame = pd.DataFrame(rows)
+    # Discrete colours: green for an improvement, red for a regression, and a
+    # neutral grey for anything within the "unchanged" band (|x| < 0.5pp).
+    bar_colors = [_improvement_color(v) for v in frame["improvement_percent"]]
     fig = px.bar(
         frame,
         x="metric",
         y="improvement_percent",
         title=title,
-        labels={"metric": "Metric", "improvement_percent": "Improvement (%)"},
-        color="improvement_percent",
-        color_continuous_scale=["#C0392B", "#F4D03F", "#27AE60"],  # red -> green
+        labels={"metric": "Metric", "improvement_percent": "Change vs. baseline (%)"},
     )
-    fig.update_layout(margin=dict(l=10, r=10, t=50, b=10), height=360, coloraxis_showscale=False)
+    fig.update_traces(marker_color=bar_colors)
+    fig.update_layout(margin=dict(l=10, r=10, t=50, b=10), height=360)
     st.plotly_chart(fig, width="stretch")
+
+
+def _improvement_color(value: float) -> str:
+    """Green for an improvement, red for a regression, grey for ~no change."""
+    if value >= 0.5:
+        return "#27AE60"  # green - better than baseline
+    if value <= -0.5:
+        return "#C0392B"  # red - worse than baseline
+    return "#9AA0A6"      # neutral grey - unchanged
 
 
 def limit_rows(df: pd.DataFrame) -> pd.DataFrame:

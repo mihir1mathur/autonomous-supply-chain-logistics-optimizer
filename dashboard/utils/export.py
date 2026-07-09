@@ -1,6 +1,6 @@
 """
 ============================================================================
-EXPORT HELPERS  (Week 8)
+EXPORT HELPERS
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -13,14 +13,14 @@ WHAT THIS FILE DOES
     - an agent report as Markdown, and
     - an agent report as JSON.
 
-  These are the four exports the Week 8 prompt asks for (Part 12). No PDF - CSV,
+  These are the four exports the dashboard provides. No PDF - CSV,
   JSON and Markdown cover the need with zero extra dependencies.
 
 TWO LAYERS, ON PURPOSE
 ----------------------
   1. PURE BUILDERS (..._bytes functions) turn API data into a bytes payload
      using only the standard library (csv, json). They import nothing from
-     Streamlit, so the Week 8 validation can call and check them directly.
+     Streamlit, so the dashboard validation script can call and check them directly.
   2. THIN STREAMLIT WRAPPERS (download_* functions) render a Streamlit
      download button around a pure builder. Streamlit is imported LAZILY inside
      each wrapper, so this module still imports even where Streamlit is absent.
@@ -40,7 +40,7 @@ from typing import Any, Iterable
 # The scalar columns exported to CSV from a history row. We deliberately export
 # the flat KPI columns (not the nested metrics/evaluation/details dicts), which
 # keeps the CSV clean and spreadsheet-friendly. The list mirrors the columns of
-# the Week 6 optimization_runs table exposed by OptimizationRunResponse.
+# the optimization_runs table exposed by OptimizationRunResponse.
 HISTORY_CSV_COLUMNS = [
     "run_id",
     "created_at",
@@ -90,7 +90,7 @@ def run_to_json_bytes(run: dict) -> bytes:
 
 def report_to_markdown_bytes(report: dict) -> bytes:
     """
-    Pull the Markdown text out of a Week 7 agent report and return it as bytes.
+    Pull the Markdown text out of an agent report and return it as bytes.
 
     The report dict is the reporting agent's output ({markdown, text, json,
     recommendations, future_improvements}). We export the ALREADY-RENDERED

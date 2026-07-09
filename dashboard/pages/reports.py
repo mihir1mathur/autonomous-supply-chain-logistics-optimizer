@@ -1,23 +1,29 @@
 """
 ============================================================================
-REPORTS PAGE  (Week 8, Part 11)
+REPORTS PAGE
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS PAGE SHOWS
 --------------------
-  The Week 7 Reporting Agent's output, rendered as Markdown | Text | JSON tabs,
-  with its recommendations and future improvements - plus Markdown/JSON exports.
+  An executive decision report produced by the autonomous multi-agent crew,
+  laid out as a business document rather than raw markdown:
+
+      Execution badge -> Executive Summary -> Key Performance Indicators ->
+      Evaluation -> Business Risks -> Recommendations -> Future Roadmap
+
+  The Markdown | Text | JSON renderings and their downloads are preserved (they
+  power the exports) inside a collapsible "full report" panel.
 
 WHERE THE REPORT COMES FROM
 ---------------------------
-  * If you have already run a decision on the Agent Decisions page, its report is
+  * If a decision has been run on the Agent Decisions page, its report is
     remembered (st.session_state) and shown here immediately - no re-run needed.
-  * Otherwise, a small inline form lets you generate one via POST /agents/simulate
-    (a what-if that is NOT stored), purely so this page has a report to display.
+  * Otherwise, a small inline form generates one via POST /agents/simulate (a
+    what-if that is NOT stored), purely so this page has a report to display.
 
-  Either way, the dashboard RENDERS an existing report; it never composes a new
-  report itself (the reporting agent does that on the backend).
+  Either way the dashboard RENDERS an existing report and re-presents the values
+  the reporting agent already produced; it never composes a report itself.
 ============================================================================
 """
 
@@ -26,7 +32,16 @@ from __future__ import annotations
 import streamlit as st
 
 from dashboard.api_client import APIClient, APIError
-from dashboard.components.report_viewer import render_report
+from dashboard.components.report_viewer import (
+    render_business_risks,
+    render_evaluation_report,
+    render_execution_badge,
+    render_executive_summary,
+    render_future_roadmap,
+    render_kpi_report_cards,
+    render_recommendations,
+    render_report,
+)
 from dashboard.pages.agent_decisions import LAST_DECISION_KEY
 from dashboard.utils.export import download_report_json, download_report_markdown
 
@@ -35,9 +50,9 @@ def render(client: APIClient) -> None:
     """Render the Reports page."""
     st.header("Reports")
     st.caption(
-        "The human-readable report the Reporting Agent produced for the latest "
-        "decision, in three formats. Generate one below if you have not run a "
-        "decision yet."
+        "Executive decision report from the autonomous multi-agent crew — KPI "
+        "analytics, baseline evaluation, business risks, and actionable "
+        "recommendations for the latest decision."
     )
 
     decision = st.session_state.get(LAST_DECISION_KEY)
@@ -50,23 +65,60 @@ def render(client: APIClient) -> None:
         st.info("No report yet. Generate one above, or run a decision on the Agent Decisions page.")
         return
 
-    # Small context line about which decision this report belongs to.
-    scenario = decision.get("scenario", {}) or {}
-    plan = decision.get("plan", {}) or {}
-    st.caption(
-        f"Report for: optimizer **{plan.get('optimizer', '?')}**, scenario "
-        f"**{scenario.get('key', '?')}**, mode **{decision.get('mode', '?')}**."
-    )
+    report = decision.get("report") or {}
+    if not report:
+        st.warning("This decision did not include a report.")
+        return
 
-    report = decision.get("report", {})
-    render_report(report, crew_narrative=decision.get("crew_narrative"))
+    evaluation = decision.get("evaluation") or {}
+    kpis = evaluation.get("kpis") or {}
 
-    if report:
-        cols = st.columns(2)
-        with cols[0]:
-            download_report_markdown(report, key="reports_page_md")
-        with cols[1]:
-            download_report_json(report, key="reports_page_json")
+    # ---- Execution mode badge (stored vs. simulated) ---------------------
+    render_execution_badge(decision.get("optimization") or {})
+
+    # ---- Executive summary -----------------------------------------------
+    st.subheader("Executive Summary")
+    render_executive_summary(decision)
+
+    # ---- Key performance indicators --------------------------------------
+    st.divider()
+    st.subheader("Key Performance Indicators")
+    render_kpi_report_cards(kpis)
+
+    # ---- Evaluation (visual indicators) ----------------------------------
+    st.divider()
+    st.subheader("Evaluation")
+    render_evaluation_report(evaluation)
+
+    # ---- Business risks ---------------------------------------------------
+    st.divider()
+    st.subheader("Business Risks")
+    render_business_risks(kpis)
+
+    # ---- Recommendations (exactly one section) ---------------------------
+    st.divider()
+    st.subheader("Recommendations")
+    render_recommendations(report)
+
+    # ---- Future engineering roadmap --------------------------------------
+    st.divider()
+    st.subheader("Future Engineering Roadmap")
+    render_future_roadmap()
+
+    # ---- Exports + raw formats (preserved) -------------------------------
+    st.divider()
+    export_cols = st.columns(2)
+    with export_cols[0]:
+        download_report_markdown(report, key="reports_page_md")
+    with export_cols[1]:
+        download_report_json(report, key="reports_page_json")
+
+    with st.expander("View full report (Markdown · Text · JSON)", expanded=False):
+        render_report(
+            report,
+            crew_narrative=decision.get("crew_narrative"),
+            show_recommendations=False,
+        )
 
 
 def _render_quick_generate(client: APIClient) -> dict | None:
@@ -76,7 +128,7 @@ def _render_quick_generate(client: APIClient) -> dict | None:
             "Describe a goal to generate a report",
             value="Summarize a normal-operations optimization and recommend improvements.",
         )
-        submitted = st.form_submit_button("Generate report (what-if, not stored)")
+        submitted = st.form_submit_button("Generate Report (What-If, Not Stored)")
 
     if not submitted:
         return None

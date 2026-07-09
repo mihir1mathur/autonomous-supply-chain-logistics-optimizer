@@ -1,6 +1,6 @@
 """
 ============================================================================
-DASHBOARD PAGES  (Week 8)   -- one file per page
+DASHBOARD PAGES   -- one file per page
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -16,7 +16,7 @@ it out with the reusable components. Pages never talk to the backend directly
   overview.py             the at-a-glance summary + architecture
   optimization_history.py  browse/filter stored runs + drill into one
   scenario_analysis.py     scenario catalog + comparisons + optional simulate
-  agent_decisions.py       run the Week 7 crew from plain English
+  agent_decisions.py       run the agent crew from plain English
   reports.py               view the agent report (markdown/text/json)
   system_health.py         backend + API availability
 ============================================================================

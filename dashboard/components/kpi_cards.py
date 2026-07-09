@@ -1,6 +1,6 @@
 """
 ============================================================================
-KPI CARDS  (Week 8, Part 5)
+KPI CARDS
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -16,12 +16,13 @@ WHERE THE NUMBERS COME FROM (no computation here)
     * GET /optimization/metrics  -> the aggregate KPIs (run count, total /
       average cost, total distance, average vehicle utilization, total orders,
       total stockouts, average runtime).
-    * a single run's `metrics`   -> the twelve Week 6 RunMetrics of one run.
+    * a single run's `metrics`   -> the twelve RunMetrics of one run.
   This component does NOT add, average, or derive anything - it only FORMATS and
-  DISPLAYS. That keeps the Week 8 rule intact: KPIs are computed once, in the
-  Week 6 metrics/evaluation code, and merely shown here.
+  DISPLAYS. That keeps the presentation-layer rule (visualize/format, never
+  compute) intact: KPIs are computed once, in the execution-layer
+  metrics/evaluation code, and merely shown here.
 
-FORMATTING RULE (Part 5)
+FORMATTING RULE
   Utilization is a 0..1 fraction in the API, so it is shown with
   fraction_to_percent() as a real percentage (76.7%), never as "0.77".
 ============================================================================
@@ -110,7 +111,7 @@ def aggregate_kpi_cards(metrics: dict) -> None:
 
 def run_kpi_cards(metrics: dict) -> None:
     """
-    Render the KPI cards for ONE run, from its `metrics` block (the twelve Week 6
+    Render the KPI cards for ONE run, from its `metrics` block (the twelve
     RunMetrics). Used on the history drill-down and the agent decision page.
     """
     metrics = metrics or {}
@@ -144,7 +145,7 @@ def run_kpi_cards(metrics: dict) -> None:
 def evaluation_kpi_cards(evaluation: dict) -> None:
     """
     Render the before-vs-after improvement cards from a run's `evaluation` block
-    (the Week 6 evaluation percentages). These are ALREADY percentages, so they
+    (the evaluation percentages). These are ALREADY percentages, so they
     use format_percent_value(signed=True) to show a clear "+/-".
     """
     evaluation = evaluation or {}

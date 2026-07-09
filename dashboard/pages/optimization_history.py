@@ -1,6 +1,6 @@
 """
 ============================================================================
-OPTIMIZATION HISTORY PAGE  (Week 8, Part 7)
+OPTIMIZATION HISTORY PAGE
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -17,7 +17,7 @@ WHAT THIS PAGE SHOWS
 
 BACKEND DOES THE WORK
 ---------------------
-  All filtering/sorting/paging is done by the Week 6 history endpoint; this page
+  All filtering/sorting/paging is done by the execution layer's history endpoint; this page
   only collects the controls (components/filters.py) and displays the rows
   (components/tables.py). The drill-down re-reads the single run through
   GET /optimization/{run_id} so it always shows the stored record of truth.
@@ -34,7 +34,7 @@ from dashboard.components.filters import history_filters
 from dashboard.components.kpi_cards import run_kpi_cards
 from dashboard.components.tables import history_to_dataframe, render_history_table
 from dashboard.utils.export import download_history_csv, download_run_json
-from dashboard.utils.formatting import format_datetime
+from dashboard.utils.formatting import format_datetime, humanize_scenario_change
 
 
 def render(client: APIClient) -> None:
@@ -115,14 +115,14 @@ def _render_run_details(client: APIClient, run_id: str) -> None:
         summary = evaluation.get("summary")
         if summary:
             st.info(summary)
-        improvement_bar(evaluation)
+        improvement_bar(evaluation, title="Optimization Impact")
 
     # Scenario changes applied to the inputs (if recorded in details).
     changes = _scenario_changes(run)
     if changes:
         st.markdown("**Scenario changes applied**")
         for change in changes:
-            st.markdown(f"- {change}")
+            st.markdown(f"- {humanize_scenario_change(change)}")
 
     # JSON export of the whole stored run.
     download_run_json(run, filename=f"run_{run_id}.json", key=f"run_json_{run_id}")

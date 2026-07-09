@@ -1,0 +1,12 @@
+# ============================================================================
+# STREAMLIT THEME
+# Project: Supply Chain & Logistics Optimizer
+# ----------------------------------------------------------------------------
+# Presentation only. Uses Streamlit's dark base with a positive (green) primary
+# colour so the main execution buttons read as "go" instead of Streamlit's
+# default red. Picked up automatically because the dashboard is launched from
+# the project root (`streamlit run dashboard/app.py`).
+# ============================================================================
+[theme]
+base = "dark"
+primaryColor = "#16A34A"

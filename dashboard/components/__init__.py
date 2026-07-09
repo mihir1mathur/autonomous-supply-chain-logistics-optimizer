@@ -1,6 +1,6 @@
 """
 ============================================================================
-DASHBOARD COMPONENTS  (Week 8)   -- reusable UI pieces
+DASHBOARD COMPONENTS   -- reusable UI pieces
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -15,6 +15,6 @@ one giant dashboard file.
   tables.py       clean dataframes for history and catalogs
   filters.py      sidebar/inline filter + sort controls
   agent_trace.py  the five-agent execution trace (timeline / table)
-  report_viewer.py  the Week 7 report shown as Markdown | Text | JSON tabs
+  report_viewer.py  the agent report shown as Markdown | Text | JSON tabs
 ============================================================================
 """

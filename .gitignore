@@ -65,3 +65,8 @@ Before*.txt
 
 # Large raw dataset
 data/olist_geolocation_dataset.csv
+
+# Resume Project Metrics
+Resume Project Metrics/
+
+*.pem

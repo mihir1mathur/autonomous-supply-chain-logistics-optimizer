@@ -3,7 +3,7 @@
   "max_shipments": 50,
   "runs": [
     {
-      "run_id": "RUN-85d5064a39cc",
+      "run_id": "RUN-ac48f241d7e6",
       "persisted": true,
       "optimizer": "assignment",
       "scenario": "normal",
@@ -11,7 +11,7 @@
       "warehouse_id": "WH-0006",
       "success": true,
       "solver_status": "OPTIMAL",
-      "created_at": "2026-07-04T18:19:11.970362+00:00",
+      "created_at": "2026-07-09T18:04:18.488835+00:00",
       "scenario_changes": [
         "No changes - baseline 'normal' conditions."
       ],
@@ -24,7 +24,7 @@
         "stockouts": 0,
         "late_deliveries": 24,
         "orders_fulfilled": 50,
-        "optimization_runtime_ms": 53.351,
+        "optimization_runtime_ms": 104.804,
         "solver_status": "OPTIMAL",
         "num_constraints": 254,
         "num_variables": 204,
@@ -67,7 +67,7 @@
           "stockouts": 0,
           "late_deliveries": 24,
           "orders_fulfilled": 50,
-          "optimization_runtime_ms": 53.351,
+          "optimization_runtime_ms": 104.804,
           "solver_status": "OPTIMAL",
           "num_constraints": 254,
           "num_variables": 204,
@@ -75,12 +75,12 @@
           "vehicles_used": 2,
           "model_size_is_estimated": true
         },
-        "summary": "cost --12.7%, distance -0.0%, utilization +8.1% (now 75.1%), orders +0.0%."
+        "summary": "cost reduction -12.7%, distance reduction +0%, utilization +8.1% (now 75.1%), orders +0%."
       },
       "message": "Assigned 50 of 50 shipments across 2 vehicle(s); average utilization 75.1%."
     },
     {
-      "run_id": "RUN-9cbfec82b1ec",
+      "run_id": "RUN-8ff38d4fa552",
       "persisted": true,
       "optimizer": "assignment",
       "scenario": "holiday",
@@ -88,7 +88,7 @@
       "warehouse_id": "WH-0006",
       "success": true,
       "solver_status": "OPTIMAL",
-      "created_at": "2026-07-04T18:19:12.047872+00:00",
+      "created_at": "2026-07-09T18:04:18.570056+00:00",
       "scenario_changes": [
         "Demand x1.6: package counts scaled (up).",
         "Fleet reduced: kept 3 of 4 vehicles (fraction 0.8), 1 out of action.",
@@ -103,7 +103,7 @@
         "stockouts": 12,
         "late_deliveries": 38,
         "orders_fulfilled": 38,
-        "optimization_runtime_ms": 52.48,
+        "optimization_runtime_ms": 46.463,
         "solver_status": "OPTIMAL",
         "num_constraints": 203,
         "num_variables": 153,
@@ -146,7 +146,7 @@
           "stockouts": 12,
           "late_deliveries": 38,
           "orders_fulfilled": 38,
-          "optimization_runtime_ms": 52.48,
+          "optimization_runtime_ms": 46.463,
           "solver_status": "OPTIMAL",
           "num_constraints": 203,
           "num_variables": 153,
@@ -154,12 +154,12 @@
           "vehicles_used": 3,
           "model_size_is_estimated": true
         },
-        "summary": "cost -14.3%, distance -12.6%, utilization +0.5% (now 100.0%), orders +5.6%."
+        "summary": "cost reduction +14.3%, distance reduction +12.6%, utilization +0.5% (now 100.0%), orders +5.6%."
       },
       "message": "Assigned 38 of 50 shipments across 3 vehicle(s); average utilization 100.0%."
     },
     {
-      "run_id": "RUN-c4307b54cce4",
+      "run_id": "RUN-b53e60d10452",
       "persisted": true,
       "optimizer": "assignment",
       "scenario": "demand_spike",
@@ -167,20 +167,20 @@
       "warehouse_id": "WH-0006",
       "success": true,
       "solver_status": "OPTIMAL",
-      "created_at": "2026-07-04T18:19:12.259453+00:00",
+      "created_at": "2026-07-09T18:04:18.668172+00:00",
       "scenario_changes": [
         "Demand x2.5: package counts scaled (up)."
       ],
       "metrics": {
-        "total_cost": 51901.91,
-        "travel_distance_km": 42621.6,
+        "total_cost": 43759.68,
+        "travel_distance_km": 36711.61,
         "vehicle_utilization": 1.0,
         "warehouse_utilization": 0.58,
         "inventory_holding_cost": 339.9,
-        "stockouts": 12,
-        "late_deliveries": 38,
-        "orders_fulfilled": 38,
-        "optimization_runtime_ms": 67.801,
+        "stockouts": 9,
+        "late_deliveries": 41,
+        "orders_fulfilled": 41,
+        "optimization_runtime_ms": 81.414,
         "solver_status": "OPTIMAL",
         "num_constraints": 254,
         "num_variables": 204,
@@ -189,13 +189,13 @@
         "model_size_is_estimated": true
       },
       "evaluation": {
-        "cost_reduction_percent": -13.6,
-        "distance_reduction_percent": -15.8,
+        "cost_reduction_percent": 4.2,
+        "distance_reduction_percent": 0.2,
         "inventory_reduction_percent": 0.0,
-        "stockout_reduction_percent": 14.3,
-        "late_delivery_reduction_percent": -5.6,
+        "stockout_reduction_percent": 35.7,
+        "late_delivery_reduction_percent": -13.9,
         "utilization_improvement_percent": 0.0,
-        "delivery_improvement_percent": 5.6,
+        "delivery_improvement_percent": 13.9,
         "resource_utilization_percent": 100.0,
         "before": {
           "total_cost": 45695.94,
@@ -215,15 +215,15 @@
           "model_size_is_estimated": true
         },
         "after": {
-          "total_cost": 51901.91,
-          "travel_distance_km": 42621.6,
+          "total_cost": 43759.68,
+          "travel_distance_km": 36711.61,
           "vehicle_utilization": 1.0,
           "warehouse_utilization": 0.58,
           "inventory_holding_cost": 339.9,
-          "stockouts": 12,
-          "late_deliveries": 38,
-          "orders_fulfilled": 38,
-          "optimization_runtime_ms": 67.801,
+          "stockouts": 9,
+          "late_deliveries": 41,
+          "orders_fulfilled": 41,
+          "optimization_runtime_ms": 81.414,
           "solver_status": "OPTIMAL",
           "num_constraints": 254,
           "num_variables": 204,
@@ -231,12 +231,12 @@
           "vehicles_used": 4,
           "model_size_is_estimated": true
         },
-        "summary": "cost --13.6%, distance --15.8%, utilization +0.0% (now 100.0%), orders +5.6%."
+        "summary": "cost reduction +4.2%, distance reduction +0.2%, utilization +0% (now 100.0%), orders +13.9%."
       },
-      "message": "Assigned 38 of 50 shipments across 4 vehicle(s); average utilization 100.0%."
+      "message": "Assigned 41 of 50 shipments across 4 vehicle(s); average utilization 100.0%."
     },
     {
-      "run_id": "RUN-55a6ab3461d6",
+      "run_id": "RUN-0ba2bc54b2e6",
       "persisted": true,
       "optimizer": "assignment",
       "scenario": "vehicle_failure",
@@ -244,20 +244,20 @@
       "warehouse_id": "WH-0006",
       "success": true,
       "solver_status": "OPTIMAL",
-      "created_at": "2026-07-04T18:19:12.327085+00:00",
+      "created_at": "2026-07-09T18:04:18.720161+00:00",
       "scenario_changes": [
         "Fleet reduced: kept 2 of 4 vehicles (fraction 0.5), 2 out of action."
       ],
       "metrics": {
-        "total_cost": 54433.8,
-        "travel_distance_km": 44316.7,
+        "total_cost": 53259.14,
+        "travel_distance_km": 43905.58,
         "vehicle_utilization": 1.0,
         "warehouse_utilization": 0.58,
         "inventory_holding_cost": 339.9,
-        "stockouts": 4,
-        "late_deliveries": 46,
-        "orders_fulfilled": 46,
-        "optimization_runtime_ms": 38.239,
+        "stockouts": 2,
+        "late_deliveries": 48,
+        "orders_fulfilled": 48,
+        "optimization_runtime_ms": 34.595,
         "solver_status": "OPTIMAL",
         "num_constraints": 152,
         "num_variables": 102,
@@ -266,13 +266,13 @@
         "model_size_is_estimated": true
       },
       "evaluation": {
-        "cost_reduction_percent": -4.9,
-        "distance_reduction_percent": 2.4,
+        "cost_reduction_percent": -2.6,
+        "distance_reduction_percent": 3.3,
         "inventory_reduction_percent": 0.0,
-        "stockout_reduction_percent": -100.0,
-        "late_delivery_reduction_percent": 4.2,
+        "stockout_reduction_percent": 0.0,
+        "late_delivery_reduction_percent": 0.0,
         "utilization_improvement_percent": 0.5,
-        "delivery_improvement_percent": -4.2,
+        "delivery_improvement_percent": 0.0,
         "resource_utilization_percent": 100.0,
         "before": {
           "total_cost": 51911.44,
@@ -292,15 +292,15 @@
           "model_size_is_estimated": true
         },
         "after": {
-          "total_cost": 54433.8,
-          "travel_distance_km": 44316.7,
+          "total_cost": 53259.14,
+          "travel_distance_km": 43905.58,
           "vehicle_utilization": 1.0,
           "warehouse_utilization": 0.58,
           "inventory_holding_cost": 339.9,
-          "stockouts": 4,
-          "late_deliveries": 46,
-          "orders_fulfilled": 46,
-          "optimization_runtime_ms": 38.239,
+          "stockouts": 2,
+          "late_deliveries": 48,
+          "orders_fulfilled": 48,
+          "optimization_runtime_ms": 34.595,
           "solver_status": "OPTIMAL",
           "num_constraints": 152,
           "num_variables": 102,
@@ -308,12 +308,12 @@
           "vehicles_used": 2,
           "model_size_is_estimated": true
         },
-        "summary": "cost --4.9%, distance -2.4%, utilization +0.5% (now 100.0%), orders +-4.2%."
+        "summary": "cost reduction -2.6%, distance reduction +3.3%, utilization +0.5% (now 100.0%), orders +0%."
       },
-      "message": "Assigned 46 of 50 shipments across 2 vehicle(s); average utilization 100.0%."
+      "message": "Assigned 48 of 50 shipments across 2 vehicle(s); average utilization 100.0%."
     },
     {
-      "run_id": "RUN-771f09fbd757",
+      "run_id": "RUN-b03a13a67888",
       "persisted": true,
       "optimizer": "assignment",
       "scenario": "supplier_delay",
@@ -321,21 +321,21 @@
       "warehouse_id": "WH-0006",
       "success": true,
       "solver_status": "OPTIMAL",
-      "created_at": "2026-07-04T18:19:12.425137+00:00",
+      "created_at": "2026-07-09T18:04:18.802642+00:00",
       "scenario_changes": [
         "Demand x1.2: package counts scaled (up).",
         "Stock x0.4: tracked inventory scaled down."
       ],
       "metrics": {
-        "total_cost": 61114.08,
+        "total_cost": 61244.75,
         "travel_distance_km": 46521.98,
-        "vehicle_utilization": 0.8908,
+        "vehicle_utilization": 0.892,
         "warehouse_utilization": 0.58,
         "inventory_holding_cost": 339.9,
         "stockouts": 0,
-        "late_deliveries": 26,
+        "late_deliveries": 20,
         "orders_fulfilled": 50,
-        "optimization_runtime_ms": 79.585,
+        "optimization_runtime_ms": 65.633,
         "solver_status": "OPTIMAL",
         "num_constraints": 254,
         "num_variables": 204,
@@ -344,14 +344,14 @@
         "model_size_is_estimated": true
       },
       "evaluation": {
-        "cost_reduction_percent": -9.5,
+        "cost_reduction_percent": -9.7,
         "distance_reduction_percent": 0.0,
         "inventory_reduction_percent": 0.0,
         "stockout_reduction_percent": 0.0,
-        "late_delivery_reduction_percent": -36.8,
-        "utilization_improvement_percent": 16.0,
+        "late_delivery_reduction_percent": -5.3,
+        "utilization_improvement_percent": 16.1,
         "delivery_improvement_percent": 0.0,
-        "resource_utilization_percent": 89.1,
+        "resource_utilization_percent": 89.2,
         "before": {
           "total_cost": 55824.77,
           "travel_distance_km": 46521.98,
@@ -370,15 +370,15 @@
           "model_size_is_estimated": true
         },
         "after": {
-          "total_cost": 61114.08,
+          "total_cost": 61244.75,
           "travel_distance_km": 46521.98,
-          "vehicle_utilization": 0.8908,
+          "vehicle_utilization": 0.892,
           "warehouse_utilization": 0.58,
           "inventory_holding_cost": 339.9,
           "stockouts": 0,
-          "late_deliveries": 26,
+          "late_deliveries": 20,
           "orders_fulfilled": 50,
-          "optimization_runtime_ms": 79.585,
+          "optimization_runtime_ms": 65.633,
           "solver_status": "OPTIMAL",
           "num_constraints": 254,
           "num_variables": 204,
@@ -386,9 +386,9 @@
           "vehicles_used": 2,
           "model_size_is_estimated": true
         },
-        "summary": "cost --9.5%, distance -0.0%, utilization +16.0% (now 89.1%), orders +0.0%."
+        "summary": "cost reduction -9.7%, distance reduction +0%, utilization +16.1% (now 89.2%), orders +0%."
       },
-      "message": "Assigned 50 of 50 shipments across 2 vehicle(s); average utilization 89.1%."
+      "message": "Assigned 50 of 50 shipments across 2 vehicle(s); average utilization 89.2%."
     }
   ]
 }

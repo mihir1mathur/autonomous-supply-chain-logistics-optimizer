@@ -1,6 +1,6 @@
 """
 ============================================================================
-FILTERS  (Week 8)
+FILTERS
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -9,14 +9,14 @@ WHAT THIS FILE DOES
   Renders the filter + sort + paging controls for the Optimization History page
   and returns the user's choices as a plain dict of QUERY PARAMETERS. The page
   hands that dict straight to api_client.get_history(...), so ALL filtering,
-  sorting and paging happens on the BACKEND (the Week 6 history endpoint) - the
+  sorting and paging happens on the BACKEND (the history endpoint) - the
   dashboard only collects the inputs.
 
 WHY THE BACKEND DOES THE WORK
 -----------------------------
-  The Week 6 OptimizationRunService already supports filter/search/sort/paginate
+  The OptimizationRunService already supports filter/search/sort/paginate
   over the optimization_runs table. Re-doing any of that in the dashboard would
-  duplicate backend logic (a Week 8 no-no) and would only ever see one page of
+  duplicate backend logic (not allowed in the presentation layer) and would only ever see one page of
   data. So these controls are pure INPUT widgets.
 ============================================================================
 """
@@ -30,7 +30,7 @@ from dashboard.config import get_settings
 # The optimizers the platform supports (matches VALID_OPTIMIZERS on the backend).
 OPTIMIZERS = ["assignment", "fleet", "routes", "warehouse"]
 
-# The columns the Week 6 history endpoint can sort by (a subset of its
+# The columns the history endpoint can sort by (a subset of its
 # sortable_fields), shown with friendly labels. The value is the API field name.
 SORT_OPTIONS = {
     "Created at (newest)": ("created_at", "desc"),
@@ -75,7 +75,7 @@ def history_filters(
         with row2[0]:
             sort_label = st.selectbox("Sort by", list(SORT_OPTIONS.keys()), index=0)
         with row2[1]:
-            search = st.text_input("Search", value="", placeholder="run id / scenario / optimizer")
+            search = st.text_input("Search", value="", placeholder="Run ID, Scenario, or Optimizer")
         with row2[2]:
             page_size = st.number_input(
                 "Rows per page",

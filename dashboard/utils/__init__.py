@@ -1,6 +1,6 @@
 """
 ============================================================================
-DASHBOARD UTILS  (Week 8)   -- formatting + export helpers
+DASHBOARD UTILS   -- formatting + export helpers
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -14,7 +14,7 @@ Small, dependency-light helpers shared across the pages and components:
 
 Keeping these here (not inside the pages) means every page formats numbers the
 SAME way and no page re-implements a download. Nothing in formatting.py imports
-Streamlit or the backend, so it is trivially unit-testable (the Week 8
-validation calls it directly).
+Streamlit or the backend, so it is trivially unit-testable (the dashboard
+validation script calls it directly).
 ============================================================================
 """

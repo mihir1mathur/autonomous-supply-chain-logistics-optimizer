@@ -1,6 +1,6 @@
 """
 ============================================================================
-OVERVIEW PAGE  (Week 8, Part 4)
+OVERVIEW PAGE
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -26,6 +26,8 @@ WHERE THE NUMBERS COME FROM (no computation here)
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import streamlit as st
 
 from dashboard.api_client import APIClient, APIError
@@ -34,20 +36,50 @@ from dashboard.components.charts import limit_rows, runs_over_time, runtime_by_o
 from dashboard.components.kpi_cards import aggregate_kpi_cards
 from dashboard.components.tables import history_to_dataframe
 
+# The generated architecture diagram. It is rendered as an image because
+# Streamlit does not natively render Mermaid; the README uses the same diagram
+# (as GitHub-native Mermaid plus this PNG).
+_ARCH_IMAGE = Path(__file__).resolve().parents[2] / "docs" / "images" / "system_architecture.png"
 
-DIRECT_FLOW = """User
- -> Dashboard (Streamlit)
- -> FastAPI
- -> Execution Service (Week 6)
- -> Optimization Engine (Week 5, OR-Tools)
- -> PostgreSQL (Week 3)"""
+# Concise request flows for the two execution modes (presentation text only).
+DIRECT_FLOW = "User\n→ Streamlit\n→ FastAPI\n→ Execution Service\n→ OR-Tools\n→ PostgreSQL"
+AGENT_FLOW = (
+    "User\n→ Streamlit\n→ Coordinator\n→ Planner\n→ Scenario\n→ Optimization\n"
+    "→ Evaluation\n→ Reporting\n→ Execution Service\n→ OR-Tools\n→ PostgreSQL"
+)
 
-AGENT_FLOW = """User
- -> Dashboard (Streamlit)
- -> /agents/decide (Week 7)
- -> Coordinator
- -> Planner -> Scenario -> Optimization -> Evaluation -> Reporting
- -> Execution Service (Week 6) -> Optimization Engine (Week 5) -> PostgreSQL"""
+# System design highlights: (title, one-line explanation).
+_DESIGN_HIGHLIGHTS = [
+    ("Layered Architecture", "Five independent layers, each with a single clear role."),
+    ("Separation of Concerns", "Every module owns one responsibility and nothing more."),
+    ("Multi-Agent Orchestration", "Five specialized agents collaborate on each decision."),
+    ("REST API Communication", "All traffic flows over well-defined FastAPI endpoints."),
+    ("Deterministic Optimization", "Google OR-Tools produces reproducible optimization plans."),
+    ("Persistent History", "Every optimization run can be stored, retrieved, and audited."),
+    ("Modular Components", "Layers, agents, and optimizers are independently replaceable."),
+    ("UI Independent of Logic", "The dashboard only calls APIs — never the solver or database."),
+]
+
+# Technology stack: (area, technology).
+_TECH_STACK = [
+    ("Presentation", "Streamlit"),
+    ("Backend", "FastAPI"),
+    ("Optimization", "Google OR-Tools"),
+    ("Database", "PostgreSQL"),
+    ("Language", "Python"),
+    ("Visualization", "Plotly"),
+    ("AI Orchestration", "Custom Multi-Agent Coordinator"),
+]
+
+# Architecture principles: (title, one-line explanation).
+_ARCH_PRINCIPLES = [
+    ("Presentation Layer", "The UI never calls OR-Tools directly."),
+    ("Backend APIs", "All requests flow through FastAPI."),
+    ("Agent Independence", "Each agent has one clearly defined responsibility."),
+    ("Execution Service", "A single entry point into optimization."),
+    ("Persistence", "Every optimization run can be stored independently."),
+    ("Scalability", "New agents and optimizers can be added without touching existing ones."),
+]
 
 
 def render(client: APIClient) -> None:
@@ -114,24 +146,77 @@ def render(client: APIClient) -> None:
     st.subheader("Autonomous agent workflow")
     render_agent_flow()
     st.caption(
-        "The Week 7 crew turns a plain-English request into a recorded decision. "
+        "The autonomous multi-agent engine turns a plain-English request into a recorded decision. "
         "See the Agent Decisions page to run one, and the trace it produces."
     )
 
-    # ---- Architecture summary + text diagrams ----------------------------
-    st.subheader("System architecture")
+    # ---- Architecture (diagram, modes, highlights, stack, principles) ----
+    st.divider()
+    _render_architecture()
+
+
+def _render_architecture() -> None:
+    """The recruiter-facing architecture overview: diagram, modes, highlights, stack, principles."""
+    st.subheader("System Architecture")
     st.markdown(
-        "The dashboard is a **presentation layer only**. It reads and writes "
-        "through the existing FastAPI endpoints and never calls OR-Tools or the "
-        "database directly. Two request flows sit behind it:"
+        "The platform is built as **five clean layers**. The Streamlit dashboard is a "
+        "**presentation layer only** — every request is routed through FastAPI, where the "
+        "business logic lives. From there, the autonomous multi-agent system coordinates "
+        "planning, scenario selection, optimization, evaluation, and reporting, before the "
+        "Execution Service runs Google OR-Tools and persists results in PostgreSQL."
     )
-    diagram_cols = st.columns(2)
-    with diagram_cols[0]:
-        st.markdown("**Direct optimization flow**")
-        st.code(DIRECT_FLOW, language="text")
-    with diagram_cols[1]:
-        st.markdown("**Autonomous agent flow**")
-        st.code(AGENT_FLOW, language="text")
+
+    if _ARCH_IMAGE.exists():
+        st.image(
+            str(_ARCH_IMAGE),
+            width="stretch",
+            caption="Five-layer architecture — presentation, application, autonomous agents, "
+            "optimization, and persistence.",
+        )
+
+    # ---- The two execution modes -----------------------------------------
+    st.markdown("#### Execution Modes")
+    mode_cols = st.columns(2)
+    with mode_cols[0]:
+        with st.container(border=True):
+            st.markdown("**⚡ Direct Optimization Flow**")
+            st.caption("Used when the user directly selects an optimizer and scenario.")
+            st.code(DIRECT_FLOW, language="text")
+            st.caption("**Purpose:** fast, deterministic optimization.")
+    with mode_cols[1]:
+        with st.container(border=True):
+            st.markdown("**🤖 Autonomous Agent Flow**")
+            st.caption("Used when the user submits a natural-language business request.")
+            st.code(AGENT_FLOW, language="text")
+            st.caption(
+                "**Purpose:** turn a business request into an optimized plan, evaluate it "
+                "against a baseline, and produce an executive decision report."
+            )
+
+    # ---- System design highlights ----------------------------------------
+    st.divider()
+    st.subheader("System Design Highlights")
+    _render_point_columns(_DESIGN_HIGHLIGHTS, marker="✓ ")
+
+    # ---- Technology stack ------------------------------------------------
+    st.divider()
+    st.subheader("Technology Stack")
+    _render_point_columns([(area, tech) for area, tech in _TECH_STACK], separator=" · ")
+
+    # ---- Architecture principles -----------------------------------------
+    st.divider()
+    st.subheader("Architecture Principles")
+    _render_point_columns(_ARCH_PRINCIPLES)
+
+
+def _render_point_columns(points: list, *, marker: str = "", separator: str = " — ") -> None:
+    """Lay out (title, detail) pairs as bold-titled lines across two balanced columns."""
+    columns = st.columns(2)
+    half = (len(points) + 1) // 2
+    for column, chunk in zip(columns, (points[:half], points[half:])):
+        with column:
+            for title, detail in chunk:
+                st.markdown(f"{marker}**{title}**{separator}{detail}")
 
 
 def _count_runs_per_optimizer(df) -> dict:
