@@ -108,6 +108,19 @@ class OptimizationExecutionService:
         return _catalog_scenarios()
 
     # =======================================================================
+    # PUBLIC: deterministic default-warehouse resolution
+    # =======================================================================
+    def resolve_dispatch_warehouse(self, db: Session, warehouse_id: str | None = None) -> str:
+        """
+        Public, side-effect-free wrapper over the default dispatch-warehouse
+        rule. The Week 6 benchmark runner calls this ONCE to pin a single
+        warehouse for every scenario in a sweep (rather than letting each
+        scenario re-resolve independently), which keeps a whole benchmark
+        anchored to the same, deterministically-chosen warehouse.
+        """
+        return self._resolve_dispatch_warehouse(db, warehouse_id)
+
+    # =======================================================================
     # PUBLIC: run / simulate one optimization
     # =======================================================================
     def run(
@@ -500,7 +513,15 @@ class OptimizationExecutionService:
     # HELPERS: resolving a default warehouse (same rules as Week 5)
     # =======================================================================
     def _resolve_dispatch_warehouse(self, db: Session, warehouse_id: str | None) -> str:
-        """Validate a given id, or pick the warehouse with the most available vehicles + routes."""
+        """Validate a given id, or pick the warehouse with the most available vehicles + routes.
+
+        Ties on available-vehicle count are broken DETERMINISTICALLY by the
+        smallest warehouse_id (ascending), so the default warehouse is the same
+        on every machine. Without the secondary ordering the database is free to
+        return equally-ranked warehouses in any physical row order, which made
+        the benchmark pick a different warehouse locally versus on EC2 and
+        produced materially different business metrics.
+        """
         if warehouse_id is not None:
             if db.get(Warehouse, warehouse_id) is None:
                 raise NotFoundError(f"Warehouse '{warehouse_id}' was not found.")
@@ -510,7 +531,7 @@ class OptimizationExecutionService:
             select(Vehicle.warehouse_id, func.count())
             .where(Vehicle.availability_status == _DISPATCHABLE_STATUS)
             .group_by(Vehicle.warehouse_id)
-            .order_by(func.count().desc())
+            .order_by(func.count().desc(), Vehicle.warehouse_id.asc())
         ).all()
         for wid, _count in rows:
             if wid is None:
@@ -526,7 +547,12 @@ class OptimizationExecutionService:
         )
 
     def _resolve_route_warehouse(self, db: Session, warehouse_id: str | None) -> str:
-        """Validate a given id, or pick the warehouse with the most delivery routes."""
+        """Validate a given id, or pick the warehouse with the most delivery routes.
+
+        Ties on route count are broken deterministically by the smallest
+        warehouse_id (ascending), for the same reproducibility reason as
+        _resolve_dispatch_warehouse.
+        """
         if warehouse_id is not None:
             if db.get(Warehouse, warehouse_id) is None:
                 raise NotFoundError(f"Warehouse '{warehouse_id}' was not found.")
@@ -535,7 +561,7 @@ class OptimizationExecutionService:
             select(DeliveryRoute.warehouse_id, func.count())
             .where(DeliveryRoute.warehouse_id.is_not(None))
             .group_by(DeliveryRoute.warehouse_id)
-            .order_by(func.count().desc())
+            .order_by(func.count().desc(), DeliveryRoute.warehouse_id.asc())
             .limit(1)
         ).first()
         if row is None:
@@ -598,7 +624,14 @@ class OptimizationExecutionService:
         ]
 
     def _load_all_warehouses(self, db: Session) -> list[WarehouseInput]:
-        rows = db.execute(select(Warehouse)).scalars().all()
+        # Ordered by warehouse_id so the list is identical on every machine.
+        # Order matters: scenarios that close "the first operating warehouse(s)"
+        # and the warehouse selector's list-order tie-breaks both depend on it.
+        rows = (
+            db.execute(select(Warehouse).order_by(Warehouse.warehouse_id))
+            .scalars()
+            .all()
+        )
         return [self._to_warehouse_input(w) for w in rows]
 
     @staticmethod
@@ -631,7 +664,10 @@ class OptimizationExecutionService:
                 func.count(func.distinct(Inventory.warehouse_id)).label("n"),
             )
             .group_by(Inventory.product_id)
-            .order_by(func.count(func.distinct(Inventory.warehouse_id)).desc())
+            .order_by(
+                func.count(func.distinct(Inventory.warehouse_id)).desc(),
+                Inventory.product_id.asc(),
+            )
             .limit(max(1, size))
         ).all()
         products = [pid for pid, _n in product_rows]

@@ -63,7 +63,15 @@ from optimization.solution_models import (
     VehicleInput,
     VehicleLoad,
 )
-from optimization.utils import Timer, as_percent, safe_divide
+from optimization.utils import (
+    BENCHMARK_MAX_DETERMINISTIC_TIME,
+    BENCHMARK_RANDOM_SEED,
+    BENCHMARK_WALL_BACKSTOP_SECONDS,
+    Timer,
+    as_percent,
+    benchmark_deterministic_enabled,
+    safe_divide,
+)
 
 _PER_MILLE = 1000  # utilization scaled to integers: 1000 = 100%.
 
@@ -210,10 +218,28 @@ class VehicleOptimizer:
         return status, assignments, loads, unassigned_ids
 
     def _make_solver(self) -> cp_model.CpSolver:
+        """A CP-SAT solver configured from the optimization settings.
+
+        Mirrors the assignment solver: a fixed random seed is always set, and
+        reproducible-benchmark mode (BENCHMARK_DETERMINISTIC) forces a single
+        search worker and stops on DETERMINISTIC time (not wall-clock) so
+        repeated runs and different machines agree. Production requests keep
+        their many workers and the existing wall-clock time limit.
+        """
         solver = cp_model.CpSolver()
-        solver.parameters.max_time_in_seconds = self.settings.solver_time_limit_seconds
-        if self.settings.solver_workers > 0:
-            solver.parameters.num_search_workers = self.settings.solver_workers
+        solver.parameters.random_seed = BENCHMARK_RANDOM_SEED
+        if benchmark_deterministic_enabled():
+            solver.parameters.num_search_workers = 1
+            solver.parameters.max_deterministic_time = BENCHMARK_MAX_DETERMINISTIC_TIME
+            # Non-binding wall-clock backstop; the deterministic limit stops the
+            # search first, so the result does not depend on machine speed.
+            solver.parameters.max_time_in_seconds = max(
+                self.settings.solver_time_limit_seconds, BENCHMARK_WALL_BACKSTOP_SECONDS
+            )
+        else:
+            solver.parameters.max_time_in_seconds = self.settings.solver_time_limit_seconds
+            if self.settings.solver_workers > 0:
+                solver.parameters.num_search_workers = self.settings.solver_workers
         return solver
 
     def _make_load(

@@ -1,32 +1,58 @@
 # Week 6 Benchmark Report
 
-Optimizer: **assignment**  |  Shipments per run: **50**  |  Scenarios: **5**
+Optimizer: **assignment**  |  Shipments per run: **50**  |  Scenarios: **5**  |  Warehouse: **WH-0003**
+
+## Reproducibility
+
+Stable business metrics are reproducible when the source data/input fingerprint, selected warehouse, code, configuration, Python version and OR-Tools version are identical. Runtime, run_id and created_at remain environment-dependent. For the FEASIBLE scenario, reproducibility has been verified under the recorded deterministic configuration and dependency versions, rather than universally guaranteed across every solver version.
+
+| Field | Value |
+|---|---|
+| Benchmark version | 1.0 |
+| Selected warehouse | WH-0003 (auto-resolved (deterministic)) |
+| Max shipments | 50 |
+| Scenarios | normal, holiday, demand_spike, vehicle_failure, supplier_delay |
+| Deterministic mode | True |
+| Deterministic seed | 42 |
+| Python version | 3.11.9 |
+| OR-Tools version | 9.15.6755 |
+| Input fingerprint (SHA-256) | `32d26c594dc9b1330549a0b53649177a10b34a3068020721ca657732f35994f0` |
 
 Each row runs the same optimizer on the same warehouse's shipments, but with the scenario's changes applied to the inputs first. Lower cost / distance / stockouts / late deliveries is better; higher utilization and orders fulfilled is better.
 
 | Scenario | Cost | Distance (km) | Veh. Util | Orders | Stockouts | Late | Runtime (ms) | Status |
 |---|---|---|---|---|---|---|---|---|
-| normal | 61206.94 | 46521.98 | 75.1% | 50 | 0 | 24 | 104.804 | OPTIMAL |
-| holiday | 38246.43 | 32165.78 | 100.0% | 38 | 12 | 38 | 46.463 | OPTIMAL |
-| demand_spike | 43759.68 | 36711.61 | 100.0% | 41 | 9 | 41 | 81.414 | OPTIMAL |
-| vehicle_failure | 53259.14 | 43905.58 | 100.0% | 48 | 2 | 48 | 34.595 | OPTIMAL |
-| supplier_delay | 61244.75 | 46521.98 | 89.2% | 50 | 0 | 20 | 65.633 | OPTIMAL |
+| normal | 109551.39 | 54233.36 | 59.8% | 50 | 0 | 0 | 39.568 | OPTIMAL |
+| holiday | 120506.53 | 54233.36 | 95.3% | 50 | 0 | 50 | 30.865 | OPTIMAL |
+| demand_spike | 90402.69 | 54233.36 | 94.9% | 50 | 0 | 50 | 57.692 | OPTIMAL |
+| vehicle_failure | 109551.39 | 54233.36 | 59.8% | 50 | 0 | 0 | 15653.897 | FEASIBLE |
+| supplier_delay | 109551.39 | 54233.36 | 71.3% | 50 | 0 | 0 | 33.089 | OPTIMAL |
 
-## Improvement over the un-optimized baseline
+**Solver status:** 4/5 scenarios returned OPTIMAL. The constrained vehicle_failure scenario returned a reproducible FEASIBLE solution within the configured solver time limit.
 
-| Scenario | Cost reduction | Distance reduction | Utilization gain |
+> Runtime (ms) is environment-dependent and is excluded from reproducibility comparison. Every other column above is a stable business metric. Runtime is environment-dependent; use repeated-run median/p95 measurements for performance comparisons.
+
+## Change relative to the unoptimized baseline
+
+Not every metric improves, so these are signed CHANGES, not guaranteed gains. For cost, a positive percentage means the optimized plan costs MORE than the naive baseline; a negative percentage means it costs less. The assignment optimizer's objective maximizes packages carried (fulfillment) and then minimizes the number of vehicles used (consolidation), subject to hard vehicle-capacity constraints; it does not minimize monetary cost. Consolidating onto fewer vehicles can raise the modeled cost when those vehicles have higher per-km rates. A positive cost change reflects an explicit trade-off in favor of capacity-feasible consolidation and fulfillment rather than direct monetary-cost minimization.
+
+| Scenario | Cost change vs baseline | Distance change | Utilization gain (relative %) |
 |---|---|---|---|
-| normal | -12.7% | 0.0% | +8.1% |
-| holiday | 14.3% | 12.6% | +0.5% |
-| demand_spike | 4.2% | 0.2% | +0.0% |
-| vehicle_failure | -2.6% | 3.3% | +0.5% |
-| supplier_delay | -9.7% | 0.0% | +16.1% |
+| normal | +46.8% (cost increase) | 0.0% | +34.7% |
+| holiday | +29.8% (cost increase) | 0.0% | +46.7% |
+| demand_spike | +10.2% (cost increase) | 0.0% | +19.8% |
+| vehicle_failure | +22.3% (cost increase) | 0.0% | +17.0% |
+| supplier_delay | +45.6% (cost increase) | 0.0% | +46.4% |
+
+> Utilization gain is a relative percentage increase over the baseline: (optimized_utilization - baseline_utilization) / baseline_utilization x 100. It is reported in percent (%), not in percentage points (pp).
+
+> This benchmark evaluates the **assignment** optimizer, which assigns shipments to vehicles; it does not reorder stops, so it does not demonstrate route-distance reduction. Route optimization is evaluated separately by the `routes` optimizer. Every scenario shows a 0.0% distance change: total driven distance is the sum of each assigned shipment's fixed leg and does not depend on which vehicle carries it, so no distance savings are claimed here.
 
 ## Observations
 
-- **Baseline (`normal`)** cost is 61206.94, utilization 75.1%.
-- **Most stockouts:** `holiday` with 12 (demand outran capacity/stock).
-- **Most at-risk-of-late deliveries:** `vehicle_failure` with 48 (vehicles pushed near capacity).
-- **Costliest scenario:** `supplier_delay` at 61244.75 (+37.81 vs normal).
+- Normal optimized scenario: cost is 109551.39 and vehicle utilization is 59.8%.
+- **Stockouts:** No stockouts occurred in any tested scenario.
+- **Late deliveries:** Highest late-delivery count: holiday and demand_spike, tied at 50.
+- **Cost:** Highest modeled cost: holiday with 120506.53.
 
 > Generated by `notebooks/week6_benchmark_runner.py`. Every run above is also stored in the `optimization_runs` table and visible via `GET /optimization/history` and `GET /optimization/metrics`.

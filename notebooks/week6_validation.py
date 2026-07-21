@@ -258,6 +258,299 @@ def validate_errors(client, results):
         results.append(check(description, resp.status_code == expected, f"got {resp.status_code}"))
 
 
+def validate_reproducibility(client, results):
+    """
+    Prove the Week 6 benchmark is REPRODUCIBLE: deterministic warehouse choice
+    and loading, one pinned warehouse reused across a whole sweep, a stable input
+    fingerprint, and identical stable business fields across two runs (with
+    runtime explicitly excluded from the comparison).
+    """
+    banner("REPRODUCIBILITY  (deterministic warehouse + solver; stable metrics)")
+
+    # Reproducibility requires deterministic solver mode; turn it on here so the
+    # earlier checks are unaffected. The solvers read this fresh on every solve.
+    os.environ["BENCHMARK_DETERMINISTIC"] = "true"
+
+    from sqlalchemy import func, select
+
+    from api.services.execution_service import execution_service
+    from database.connection import get_session
+    from models import DeliveryRoute, Vehicle
+    from notebooks.week6_benchmark_runner import (
+        IGNORED_FIELDS,
+        MAX_SHIPMENTS,
+        BENCHMARK_SCENARIOS,
+        compute_input_fingerprint,
+        extract_stable_fields,
+        resolve_benchmark_warehouse,
+        run_benchmark,
+    )
+
+    # --- 1) deterministic warehouse tie-breaking -------------------------
+    with get_session() as db:
+        w1 = execution_service.resolve_dispatch_warehouse(db, None)
+        w2 = execution_service.resolve_dispatch_warehouse(db, None)
+        rows = db.execute(
+            select(Vehicle.warehouse_id, func.count())
+            .where(Vehicle.availability_status == "available")
+            .group_by(Vehicle.warehouse_id)
+        ).all()
+        counts = {wid: c for wid, c in rows if wid is not None}
+        max_count = max(counts.values()) if counts else 0
+        tied_top = sorted(w for w, c in counts.items() if c == max_count)
+        expected = None
+        for w in tied_top:
+            has_route = db.execute(
+                select(DeliveryRoute.route_id).where(DeliveryRoute.warehouse_id == w).limit(1)
+            ).first()
+            if has_route is not None:
+                expected = w
+                break
+        # --- 2) ordered warehouse loading -------------------------------
+        wh_inputs = execution_service._load_all_warehouses(db)
+        loaded_ids = [w.warehouse_id for w in wh_inputs]
+
+    results.append(
+        check(
+            "default dispatch warehouse resolves deterministically (smallest id wins ties)",
+            w1 == w2 == expected,
+            f"resolved={w1}/{w2} expected={expected} tied_top={tied_top}",
+        )
+    )
+    results.append(
+        check(
+            "warehouses are loaded in a deterministic (sorted) order",
+            loaded_ids == sorted(loaded_ids),
+            f"{loaded_ids[:3]}... (n={len(loaded_ids)})",
+        )
+    )
+
+    # --- 3) one warehouse reused across every scenario -------------------
+    runs1 = run_benchmark(client, w1)
+    runs2 = run_benchmark(client, w1)
+    reused = (
+        len(runs1) == len(BENCHMARK_SCENARIOS)
+        and all(r["warehouse_id"] == w1 for r in runs1)
+    )
+    results.append(
+        check(
+            "the pinned benchmark warehouse is reused across all scenarios",
+            reused,
+            f"warehouses seen={sorted({r['warehouse_id'] for r in runs1})} count={len(runs1)}",
+        )
+    )
+
+    # --- 4) stable input fingerprint present -----------------------------
+    fp1 = compute_input_fingerprint(w1, MAX_SHIPMENTS)["sha256"]
+    fp2 = compute_input_fingerprint(w1, MAX_SHIPMENTS)["sha256"]
+    results.append(
+        check(
+            "input fingerprint is present and stable (64-char SHA-256)",
+            fp1 == fp2 and len(fp1) == 64,
+            f"{fp1}",
+        )
+    )
+
+    # --- 5) two-run stable-field equality --------------------------------
+    stable1 = [extract_stable_fields(r) for r in runs1]
+    stable2 = [extract_stable_fields(r) for r in runs2]
+    results.append(
+        check(
+            "stable business fields are identical across two benchmark runs",
+            stable1 == stable2,
+            "" if stable1 == stable2 else "stable fields differed between runs",
+        )
+    )
+
+    # --- 6) runtime is excluded from the equality comparison -------------
+    stable_keys = set(stable1[0]["metrics"]) | set(stable1[0]["evaluation"]) | set(stable1[0])
+    runtime_excluded = all(f not in stable_keys for f in IGNORED_FIELDS)
+    # And the ignored fields really can differ while the stable comparison holds.
+    runtimes_seen = {r["metrics"]["optimization_runtime_ms"] for r in runs1 + runs2}
+    results.append(
+        check(
+            "runtime / run_id / created_at are excluded from the reproducibility comparison",
+            runtime_excluded and stable1 == stable2,
+            f"ignored={IGNORED_FIELDS}; distinct runtimes observed={len(runtimes_seen)}",
+        )
+    )
+
+
+def validate_report_semantics(client, results):
+    """
+    Unit-check the benchmark REPORTING helpers so the report's wording can never
+    misrepresent the (unchanged) numbers: zero/tie observation handling, an
+    honest OPTIMAL/FEASIBLE summary, cost-increase phrasing for a negative
+    reduction, no false distance-reduction claim, and dependency-qualified
+    reproducibility wording.
+    """
+    banner("REPORT SEMANTICS  (honest wording over the unchanged numbers)")
+
+    from notebooks.week6_benchmark_runner import (
+        OBJECTIVE_NOTE,
+        UTILIZATION_FORMULA_NOTE,
+        _signed_pct,
+        cost_change_label,
+        cost_change_percent,
+        describe_max_observation,
+        distance_note,
+        normal_scenario_observation,
+        reproducibility_note,
+        status_summary_text,
+    )
+
+    def _run(scenario, **metrics):
+        base = {
+            "stockouts": 0,
+            "late_deliveries": 0,
+            "total_cost": 0.0,
+            "vehicle_utilization": 0.0,
+            "solver_status": "OPTIMAL",
+        }
+        base.update(metrics)
+        return {"scenario": scenario, "metrics": base, "evaluation": {}}
+
+    # --- 1) all-zero observation handling --------------------------------
+    all_zero = [_run("normal"), _run("holiday"), _run("demand_spike")]
+    zero_obs = describe_max_observation(
+        all_zero, "stockouts", "stockout count",
+        "No stockouts occurred in any tested scenario.",
+    )
+    results.append(
+        check(
+            "all-zero observation reports that none occurred",
+            zero_obs == "No stockouts occurred in any tested scenario.",
+            zero_obs,
+        )
+    )
+
+    # --- 2) ties in the maximum observation ------------------------------
+    tied = [
+        _run("normal", late_deliveries=0),
+        _run("holiday", late_deliveries=50),
+        _run("demand_spike", late_deliveries=50),
+        _run("supplier_delay", late_deliveries=30),
+    ]
+    tie_obs = describe_max_observation(
+        tied, "late_deliveries", "late-delivery count",
+        "No late deliveries occurred in any tested scenario.",
+    )
+    results.append(
+        check(
+            "tied maximum observation lists all tied scenarios",
+            tie_obs == "Highest late-delivery count: holiday and demand_spike, tied at 50.",
+            tie_obs,
+        )
+    )
+
+    # --- 3) correct OPTIMAL/FEASIBLE summary -----------------------------
+    status_runs = [
+        _run("normal", solver_status="OPTIMAL"),
+        _run("holiday", solver_status="OPTIMAL"),
+        _run("demand_spike", solver_status="OPTIMAL"),
+        _run("vehicle_failure", solver_status="FEASIBLE"),
+        _run("supplier_delay", solver_status="OPTIMAL"),
+    ]
+    summary = status_summary_text(status_runs)
+    expected_summary = (
+        "4/5 scenarios returned OPTIMAL. The constrained vehicle_failure scenario "
+        "returned a reproducible FEASIBLE solution within the configured solver time limit."
+    )
+    results.append(
+        check(
+            "solver-status summary is truthful (4/5 OPTIMAL, names the FEASIBLE case)",
+            summary == expected_summary and "5/5" not in summary,
+            summary,
+        )
+    )
+
+    # --- 4) negative cost reduction -> explicit cost increase ------------
+    inc = cost_change_label(-46.8)
+    dec = cost_change_label(3.2)
+    none = cost_change_label(0.0)
+    results.append(
+        check(
+            "negative cost reduction is reported as an explicit cost increase",
+            cost_change_percent(-46.8) == 46.8
+            and inc == "+46.8% (cost increase)"
+            and dec == "-3.2% (cost decrease)"
+            and none == "0.0% (no change)",
+            f"{inc} | {dec} | {none}",
+        )
+    )
+
+    # --- 5) no false distance-improvement claim when change is zero ------
+    zero_dist = [
+        {"scenario": "normal", "metrics": {}, "evaluation": {"distance_reduction_percent": 0.0}},
+        {"scenario": "holiday", "metrics": {}, "evaluation": {"distance_reduction_percent": 0.0}},
+    ]
+    dnote = distance_note(zero_dist)
+    results.append(
+        check(
+            "distance note claims no route-distance reduction when change is zero",
+            "does not demonstrate route-distance reduction" in dnote
+            and "no distance savings are claimed" in dnote,
+            dnote,
+        )
+    )
+
+    # --- 6) dependency-version-qualified reproducibility wording ---------
+    rnote = reproducibility_note()
+    results.append(
+        check(
+            "reproducibility wording is dependency-version-qualified (not 'every machine')",
+            "Python version" in rnote
+            and "OR-Tools version" in rnote
+            and "every machine" not in rnote
+            and "run_id" in rnote,
+            "",
+        )
+    )
+
+    # --- 7) optimized 'normal' is NOT called the unoptimized baseline ----
+    norm_obs = normal_scenario_observation(
+        [_run("normal", total_cost=109551.39, vehicle_utilization=0.598)]
+    )
+    results.append(
+        check(
+            "optimized normal scenario is not labelled the unoptimized baseline",
+            norm_obs.startswith("Normal optimized scenario:")
+            and "vehicle utilization is" in norm_obs
+            and "109551.39" in norm_obs
+            and "59.8%" in norm_obs
+            and "baseline" not in norm_obs.lower(),
+            norm_obs,
+        )
+    )
+
+    # --- 8) utilization change uses relative percent, not percentage points
+    #       The field is (after-before)/before*100 (a relative % increase), so it
+    #       is documented and displayed in percent - never mislabelled as "pp".
+    util_display = _signed_pct(34.7)
+    results.append(
+        check(
+            "utilization change is documented as a relative percent (not percentage points)",
+            "relative percentage increase" in UTILIZATION_FORMULA_NOTE
+            and "/ baseline_utilization" in UTILIZATION_FORMULA_NOTE
+            and "not in percentage points" in UTILIZATION_FORMULA_NOTE
+            and util_display == "+34.7%"
+            and "pp" not in util_display,
+            f"{util_display}; note={UTILIZATION_FORMULA_NOTE[:60]}...",
+        )
+    )
+
+    # --- 9) revised cost trade-off wording is present -------------------
+    results.append(
+        check(
+            "cost note uses the explicit trade-off wording (no 'not a regression')",
+            "explicit trade-off in favor of capacity-feasible consolidation and "
+            "fulfillment rather than direct monetary-cost minimization" in OBJECTIVE_NOTE
+            and "not a regression" not in OBJECTIVE_NOTE,
+            "",
+        )
+    )
+
+
 def main():
     banner("WEEK 6 - OPTIMIZATION EXECUTION VALIDATION")
     client = get_client()
@@ -270,6 +563,8 @@ def main():
     validate_database(client, results)
     validate_apis_and_regressions(client, results)
     validate_errors(client, results)
+    validate_reproducibility(client, results)
+    validate_report_semantics(client, results)
 
     banner("SUMMARY")
     passed = sum(results)
@@ -277,7 +572,7 @@ def main():
     print(f"  {passed}/{total} checks passed.")
     if passed == total:
         print("  Week 6 execution layer is correct: runs, scenarios, metrics,")
-        print("  evaluation, storage, APIs and error handling all hold.")
+        print("  evaluation, storage, APIs, error handling and reproducibility all hold.")
     else:
         print("  Some checks failed - review the output above.")
         sys.exit(1)

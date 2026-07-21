@@ -62,7 +62,15 @@ from optimization.solution_models import (
     VehicleInput,
     VehicleLoad,
 )
-from optimization.utils import Timer, as_percent, safe_divide
+from optimization.utils import (
+    BENCHMARK_MAX_DETERMINISTIC_TIME,
+    BENCHMARK_RANDOM_SEED,
+    BENCHMARK_WALL_BACKSTOP_SECONDS,
+    Timer,
+    as_percent,
+    benchmark_deterministic_enabled,
+    safe_divide,
+)
 
 # Human-readable names for the numeric status CP-SAT returns.
 _CP_STATUS_NAMES = {
@@ -237,11 +245,31 @@ class AssignmentSolver:
 
     # -- helpers --------------------------------------------------------------
     def _make_solver(self) -> cp_model.CpSolver:
-        """A CP-SAT solver configured from the optimization settings."""
+        """A CP-SAT solver configured from the optimization settings.
+
+        A fixed random seed is always set (harmless, and it removes one source
+        of run-to-run drift). In reproducible-benchmark mode
+        (BENCHMARK_DETERMINISTIC) we force a SINGLE search worker and stop on
+        DETERMINISTIC time (not wall-clock), which is what makes the chosen plan
+        - and therefore every business KPI - identical across repeated runs and
+        across machines, even for a hard instance that cannot be proven optimal.
+        Production requests are untouched: they keep their many workers and the
+        existing wall-clock time limit.
+        """
         solver = cp_model.CpSolver()
-        solver.parameters.max_time_in_seconds = self.settings.solver_time_limit_seconds
-        if self.settings.solver_workers > 0:
-            solver.parameters.num_search_workers = self.settings.solver_workers
+        solver.parameters.random_seed = BENCHMARK_RANDOM_SEED
+        if benchmark_deterministic_enabled():
+            solver.parameters.num_search_workers = 1
+            solver.parameters.max_deterministic_time = BENCHMARK_MAX_DETERMINISTIC_TIME
+            # Non-binding wall-clock backstop; the deterministic limit stops the
+            # search first, so the result does not depend on machine speed.
+            solver.parameters.max_time_in_seconds = max(
+                self.settings.solver_time_limit_seconds, BENCHMARK_WALL_BACKSTOP_SECONDS
+            )
+        else:
+            solver.parameters.max_time_in_seconds = self.settings.solver_time_limit_seconds
+            if self.settings.solver_workers > 0:
+                solver.parameters.num_search_workers = self.settings.solver_workers
         return solver
 
     def _make_load(

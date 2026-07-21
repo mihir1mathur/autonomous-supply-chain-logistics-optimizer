@@ -31,11 +31,49 @@ THE HAVERSINE DISTANCE (reused from Week 2)
 from __future__ import annotations
 
 import math
+import os
 import time
 from dataclasses import dataclass
 
 # Mean radius of the Earth in kilometres. Used by the haversine formula.
 EARTH_RADIUS_KM = 6371.0088
+
+# ---------------------------------------------------------------------------
+# REPRODUCIBLE-BENCHMARK MODE (Week 6 reproducibility fix)
+# ---------------------------------------------------------------------------
+# CP-SAT is only fully deterministic when it searches with a SINGLE worker and a
+# FIXED random seed. With several parallel workers (the production default) the
+# workers race, so among equally-optimal plans the *specific* shipment->vehicle
+# mapping chosen can differ from run to run and from machine to machine - and
+# because vehicles have different per-km costs and shipments different
+# distances, that makes total_cost / distance / utilization / late-deliveries
+# wobble even for identical inputs. For a REPRODUCIBLE benchmark we pin the seed
+# and force one worker; normal production requests keep their many workers.
+#
+# The switch is the environment variable BENCHMARK_DETERMINISTIC (truthy values:
+# 1/true/yes/on). It is read fresh on every solve, so a runner can enable it in
+# process before solving without re-importing the solvers.
+BENCHMARK_RANDOM_SEED = 42
+
+# In benchmark mode the solve is bounded by DETERMINISTIC time (a machine-
+# independent measure of the work CP-SAT has done), not wall-clock seconds. Two
+# machines that run at different speeds still stop at the SAME point in the
+# search, so a hard instance that cannot be proven optimal still returns the
+# identical incumbent plan everywhere. The wall-clock limit is kept only as a
+# generous safety backstop so a pathological instance can never hang; it is set
+# high enough that it does not bind before the deterministic limit is reached.
+BENCHMARK_MAX_DETERMINISTIC_TIME = 8.0
+BENCHMARK_WALL_BACKSTOP_SECONDS = 300.0
+
+
+def benchmark_deterministic_enabled() -> bool:
+    """True when BENCHMARK_DETERMINISTIC is set to a truthy value (1/true/yes/on)."""
+    return os.getenv("BENCHMARK_DETERMINISTIC", "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    )
 
 # Default "winding factor": real roads are longer than a straight line, so we
 # scale the great-circle distance up. 1.30 is the SAME value Week 2 used when
