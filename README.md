@@ -1,22 +1,22 @@
 # 🚚 Autonomous Supply Chain & Logistics Optimizer
 
-> **An end-to-end, AI-powered supply chain optimization platform built with FastAPI, PostgreSQL, Google OR-Tools, CrewAI, and Streamlit — and designed for AWS deployment.**
+> **An end-to-end supply-chain optimization platform combining a FastAPI backend, PostgreSQL persistence, Google OR-Tools solvers, deterministic five-agent orchestration (with optional CrewAI mode), a Streamlit dashboard, and an AWS EC2 deployment instrumented with CloudWatch.**
 
 <p align="center">
 
-**FastAPI • PostgreSQL • Google OR-Tools • CrewAI • Streamlit • SQLAlchemy • AWS EC2**
+**FastAPI • PostgreSQL • Google OR-Tools • Multi-Agent Orchestration • Streamlit • SQLAlchemy • AWS EC2**
 
 </p>
 
 <p align="center">
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?logo=postgresql) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-red) ![Google OR-Tools](https://img.shields.io/badge/Google_OR--Tools-orange) ![CrewAI](https://img.shields.io/badge/CrewAI-Multi--Agent-purple) ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit) ![AWS EC2](https://img.shields.io/badge/AWS_EC2-Deployment_Planned-FF9900?logo=amazonaws)
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?logo=postgresql) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-red) ![Google OR-Tools](https://img.shields.io/badge/Google_OR--Tools-orange) ![Multi-Agent](https://img.shields.io/badge/Multi--Agent-5--agent_orchestration-purple) ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit) ![AWS EC2](https://img.shields.io/badge/AWS_EC2-Deployed-FF9900?logo=amazonaws)
 
 </p>
 
 <p align="center">
 
-Turning a real-world e-commerce dataset into an intelligent, autonomous, and scalable logistics decision platform.
+Turning a real-world e-commerce dataset into a modular, deployable logistics decision platform.
 
 </p>
 
@@ -28,11 +28,13 @@ Turning a real-world e-commerce dataset into an intelligent, autonomous, and sca
 |  |  |
 |---|---|
 | ✅ **FastAPI** REST backend (layered & documented) | ✅ **PostgreSQL** persistence via SQLAlchemy |
-| ✅ **Google OR-Tools** optimization engine | ✅ **Autonomous multi-agent** decision making |
+| ✅ **Google OR-Tools** optimization engine | ✅ **Deterministic five-agent** decision orchestration |
 | ✅ **CrewAI** integration (optional LLM mode) | ✅ **Streamlit** analytics dashboard |
 | ✅ **12-KPI evaluation** vs. a naive baseline | ✅ **Scenario simulation** (11 what-if scenarios) |
 | ✅ **Persistent optimization history** | ✅ **Executive decision reporting** |
-| ✅ **AWS-ready architecture** *(deployment is future work)* | ✅ **Fully additive, modular design** |
+| ✅ **Deployed on AWS EC2** (systemd, Nginx, CloudWatch, SNS) | ✅ **Fully additive, modular design** |
+
+**Verified at a glance** — `182/182` validation checks passed (weeks 5–8) · `360/360` live API requests succeeded (100% HTTP 200) · server-side CP-SAT solve `~17–79 ms` for a 50-shipment assignment (live) · reproducible deterministic benchmark with a byte-identical two-run SHA-256 fingerprint · AWS EC2 deployment with CloudWatch monitoring. All five benchmark scenarios returned successful solver outcomes under the configured limits — full detail and caveats in [Verified Engineering Results](#verified-results).
 
 ---
 
@@ -48,7 +50,7 @@ Turning a real-world e-commerce dataset into an intelligent, autonomous, and sca
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Dataset](#dataset)
-- [Verified Results](#verified-results)
+- [Verified Engineering Results](#verified-results)
 - [Engineering Milestones](#engineering-milestones)
 - [Future Roadmap](#future-roadmap)
 - [Documentation](#documentation)
@@ -61,8 +63,8 @@ Turning a real-world e-commerce dataset into an intelligent, autonomous, and sca
 
 **What it is.** A production-style platform that transforms a real Brazilian e-commerce
 dataset into an intelligent logistics optimizer — covering warehouse selection, vehicle
-assignment, route optimization, KPI benchmarking, autonomous multi-agent decision making,
-and an interactive analytics dashboard.
+assignment, route optimization, KPI benchmarking, deterministic five-agent decision
+orchestration, and an interactive analytics dashboard.
 
 **Why it exists.** Real logistics teams don't just need a solver — they need a *system*
 that can run an optimization under real-world conditions, measure the outcome, compare it
@@ -75,7 +77,8 @@ drive an **autonomous five-agent crew**; both paths execute **Google OR-Tools** 
 persist every run in **PostgreSQL**.
 
 The platform was built incrementally across nine structured engineering phases (0–8),
-progressing from raw dataset analysis to an autonomous, AI-powered optimization system.
+progressing from raw dataset analysis to an autonomous multi-agent optimization platform
+(deterministic by default, with an optional CrewAI LLM mode).
 
 ---
 
@@ -306,7 +309,7 @@ How a request flows through the implemented system:
 - 🗄 PostgreSQL integration for persistent storage
 - 📈 12-KPI benchmarking and before-vs-after evaluation
 - 🔄 Scenario analysis, what-if simulation, and optimization comparison
-- ☁ Cloud-ready architecture designed for AWS deployment *(future work)*
+- ☁ Deployed on AWS EC2 with Nginx, systemd services, CloudWatch monitoring, and SNS alerts
 
 ---
 
@@ -323,10 +326,13 @@ How a request flows through the implemented system:
 | AI Orchestration | Custom multi-agent coordinator + optional CrewAI |
 | Visualization | Plotly |
 | ORM | SQLAlchemy |
-| Deployment | AWS EC2 *(planned)* |
+| Deployment | AWS EC2 (systemd, Nginx, CloudWatch, SNS) |
 
-> The system is **designed to be cloud-deployable**, with **direct AWS EC2 deployment
-> planned as the next milestone (not yet implemented)**.
+> The system is **deployed on AWS EC2** (Amazon Linux 2023): the FastAPI backend and
+> Streamlit dashboard run as **systemd services** behind an **Nginx** reverse proxy,
+> with **PostgreSQL** on the instance and an attached **IAM role**. Operational health
+> is instrumented via the **CloudWatch Agent** (EC2/OS metrics + centralized logs) and
+> **CloudWatch Alarms** wired to an **SNS** topic with email alerting.
 
 ---
 
@@ -361,7 +367,7 @@ Point the dashboard at a different backend with one environment variable
 ```bash
 python notebooks/week4_api_demo.py          # REST endpoints        + week4_api_validation.py
 python notebooks/week5_optimization_demo.py # four optimizers       + week5_validation.py
-python notebooks/week6_execution_demo.py    # run/simulate/history  + week6_validation.py   (31/31)
+python notebooks/week6_execution_demo.py    # run/simulate/history  + week6_validation.py   (46/46)
 python notebooks/week7_agents_demo.py       # autonomous decisions  + week7_validation.py   (42/42)
 python notebooks/week8_dashboard_demo.py    # dashboard walkthrough + week8_validation.py
 ```
@@ -417,32 +423,149 @@ delivery timestamps, and geographic coordinates.
 ---
 
 <a id="verified-results" name="verified-results"></a>
-## ✅ Verified Results
+## ✅ Verified Engineering Results
 
-Final validation and benchmark results were generated from project scripts, not manually estimated.
+All figures below trace to a project script, a benchmark artifact, a database
+query, or a live HTTP measurement against the deployed instance — not to manual
+estimates. Modeled logistics KPIs (cost, distance, utilization) are **simulated
+model outputs, not real money, real fleets, or real customer impact.**
 
-| Area | Verified Result |
+### A. System scale
+
+| Layer | Verified count |
 |---|---|
-| Week 6 execution validation | 31/31 checks passed |
-| Week 7 agent validation | 42/42 checks passed |
-| Benchmark scenarios | 5 scenarios |
-| Shipments per benchmark run | 50 |
-| Optimization status | All benchmark runs returned OPTIMAL |
-| Best cost reduction | 14.3% under holiday scenario |
-| Best distance reduction | 12.6% under holiday scenario |
-| Best utilization gain | 16.1% under supplier_delay scenario |
+| Ingested orders / customers | ~99,441 each |
+| Products / sellers | 32,951 / 3,095 |
+| Modeled warehouses | 150 |
+| Modeled vehicles | 209 |
+| Delivery routes | 10,000 |
+| Inventory rows / disruptions | 12,362 / 80 |
+| Scenarios · optimizers · KPIs · agents | 11 · 4 · 12 · 5 |
 
-Generated by:
+> `~99.4k orders` is the **ingested source-dataset scale**. Each optimization run
+> operates on a **bounded shipment sample** (commonly `max_shipments=50`) — a single
+> solve does **not** optimize all 99k orders at once.
+> *Evidence: `SELECT count(*)` per table on the local PostgreSQL database; live
+> `GET /optimization/scenarios`.*
 
-- `notebooks/week6_validation.py`
-- `notebooks/week7_validation.py`
-- `notebooks/week6_benchmark_runner.py`
+### B. Optimization quality and reproducibility
 
-Benchmark report:
+Flagship deterministic benchmark — `assignment` optimizer, warehouse **WH-0003**
+(deterministically selected), **50 shipments/run**, **seed 42**, 5 scenarios,
+Python 3.11.9, OR-Tools 9.15.6755. Two independent full sweeps produced
+**byte-identical stable business metrics**, keyed to the same SHA-256 input
+fingerprint `32d26c59…f35994f0`.
 
-- `benchmarks/week6_benchmark_report.md`
+Across five deterministic benchmark scenarios, the assignment optimizer produced
+reproducible, capacity-feasible solutions and improved vehicle utilization and
+delivery-service KPIs under the tested conditions. Outcomes varied by scenario and
+objective, reflecting explicit trade-offs among utilization, consolidation, modeled
+cost, distance, and late deliveries. All five scenarios returned successful solver
+outcomes under the configured limits; detailed solver statuses are documented in the
+[benchmark report](benchmarks/week6_benchmark_report.md).
 
-> These are benchmark results across the tested scenarios, not universal guarantees.
+Normal scenario, optimized vs. naive baseline:
+
+| Metric | Baseline | Optimized | Change |
+|---|---|---|---|
+| Vehicle utilization | 44.35% | 59.76% | **+34.7%** (relative) |
+| Vehicles used | 4 | 1 | consolidation 4 → 1 |
+| Late deliveries | 10 | 0 | eliminated |
+| Orders fulfilled | 50 | 50 | 50/50 |
+
+The engine evaluated cost, distance, utilization, fulfillment, stockouts, and
+late-delivery trade-offs across all 12 KPIs; the full per-scenario results are in the
+benchmark artifacts linked below.
+
+<details>
+<summary>Benchmark scope and trade-offs</summary>
+
+- Outcomes vary by optimizer objective and scenario. The assignment benchmark
+  prioritizes order fulfillment and vehicle consolidation under hard vehicle-capacity
+  constraints; it is **not** designed to directly minimize monetary cost, and it does
+  **not** reorder route stops (route-distance optimization is a separate `routes`
+  optimizer and is not claimed here).
+- Full solver status per scenario and the complete cost / distance / utilization /
+  fulfillment / stockout / late-delivery results are documented in the benchmark
+  report: [`week6_benchmark_report.md`](benchmarks/week6_benchmark_report.md) ·
+  [`week6_benchmark_report.json`](benchmarks/week6_benchmark_report.json).
+- These are simulated logistics KPIs (model outputs), **not** real-world savings,
+  real money, or customer impact.
+
+</details>
+
+<details>
+<summary>Reproducibility scope &amp; formulas</summary>
+
+- **Reproducible** = the stable business metrics (utilization, orders, stockouts,
+  late deliveries, solver status, evaluation %) are identical when the input
+  fingerprint, selected warehouse, code, configuration, Python version and OR-Tools
+  version match. `runtime`, `run_id` and `created_at` are environment-dependent and
+  excluded from the comparison.
+- `utilization_gain% = (0.5976 − 0.4435) / 0.4435 × 100 = +34.7%` (relative %, not pp).
+- `late_delivery_reduction% = (10 − 0) / 10 × 100 = 100%`.
+- *Evidence: `benchmarks/week6_benchmark_report.{md,json}`;
+  `notebooks/week6_benchmark_runner.py`; `notebooks/week6_reproducibility_check.py` (exit 0).*
+
+</details>
+
+### C. Validation and live AWS performance
+
+- **182/182** automated validation checks pass across weeks 5–8 (20 / 46 / 42 / 74).
+- **360/360** sequential live API requests succeeded — **0 failures, 100% HTTP 200**.
+- Lightweight API latency: **median ~68–76 ms**, **p95 ~87–113 ms** (end-to-end).
+- DB-backed optimization-history read: **median ~110 ms**, **p95 ~146 ms**.
+- Live server-side CP-SAT assignment solve: **~17–79 ms** for 50 shipments.
+- Deterministic five-agent workflow: **mean ~520 ms** end-to-end (3/3 successful runs).
+- Live persistence proof: a labeled `POST` moved the AWS stored-run count **22 → 23**,
+  confirmed via a separate `GET /optimization/metrics` read.
+
+<details>
+<summary>Required measurement caveats</summary>
+
+- All latency figures were measured **sequentially (concurrency = 1)** — this was a
+  correctness/reliability probe, **not** a sustained-load or scalability test.
+- Public-API latency **includes the home → us-east-1 network round trip** (a ~50 ms
+  floor); these are not server-only numbers.
+- The **~520 ms** agent latency was **deterministic mode with no LLM calls** — it is
+  not an LLM/CrewAI latency figure.
+- The **17–79 ms** solve time applies to the tested live 50-shipment cases; it is
+  not a universal solve-time guarantee. Runtime varies with scenario, warehouse, and
+  constraint hardness; per-scenario runtimes are documented in the
+  [benchmark report](benchmarks/week6_benchmark_report.md).
+- *Evidence: validation via `notebooks/week{5,6,7,8}_validation.py` (in-process
+  `TestClient`); live latency, solve-time and persistence from a controlled
+  sequential probe of the deployed endpoint (raw measurement JSON retained locally).*
+
+</details>
+
+### D. AWS deployment and observability
+
+- **AWS EC2** (Amazon Linux 2023), single instance.
+- **Nginx** reverse proxy on port 80.
+- **FastAPI** and **Streamlit** as persistent **systemd** services.
+- **PostgreSQL** persistence on the instance; attached **IAM role**.
+- **CloudWatch Agent** collecting EC2 and OS-level dimensions (CPU, network,
+  EBS read/write, memory, disk, disk-I/O and process health) with **centralized
+  log groups** for Nginx, FastAPI, Streamlit, PostgreSQL and the CloudWatch Agent.
+- **CloudWatch alarms** wired to an **SNS** topic with **email alerting**.
+- **Port isolation verified live:** only port **80** (Nginx) is publicly reachable;
+  **8000** (FastAPI), **8501** (Streamlit) and **5432** (PostgreSQL) are **not**
+  publicly reachable.
+
+<details>
+<summary>Scope of the deployment claims</summary>
+
+CloudWatch/OS dimensions are reported as **monitored**, not with specific
+average/peak values — no exported console statistic is published here, so no exact
+figure is claimed. Not implemented / not claimed: HTTPS, custom domain, load
+balancer, Auto Scaling, multi-AZ, high availability, CI/CD, Docker, Kubernetes,
+Terraform, Secrets Manager, and any real AWS-dollar cost figure.
+
+</details>
+
+> These are results across the tested scenarios and a single-instance deployment,
+> not universal guarantees. See the caveats above.
 
 ---
 
@@ -503,7 +626,7 @@ Added a self-contained, **database-free** `optimization/` package on **Google OR
 
 ### Phase 6 — Optimization Execution Layer ✅
 
-Turned the solver into a complete backend **service**: run under a **scenario**, measure **12 KPIs**, **evaluate** against a naive baseline, and **store** every run (`/optimization/*`, new additive `optimization_runs` table). **Eleven scenarios**, six endpoints, and a benchmark runner. **Validation: 31/31 checks pass.** 
+Turned the solver into a complete backend **service**: run under a **scenario**, measure **12 KPIs**, **evaluate** against a naive baseline, and **store** every run (`/optimization/*`, new additive `optimization_runs` table). **Eleven scenarios**, six endpoints, and a reproducible benchmark runner. **Validation: 46/46 checks pass.** 
 
 📖 [`optimization_execution.md`](docs/optimization_execution.md) · [`optimization_metrics.md`](docs/optimization_metrics.md) · [`evaluation_framework.md`](docs/evaluation_framework.md) · [`scenario_execution.md`](docs/scenario_execution.md)
 
@@ -526,12 +649,12 @@ Added a **Streamlit** dashboard (a **presentation layer only** — it consumes t
 
 Planned milestones that extend the current Phase 0–8 implementation:
 
-- **AWS EC2 deployment** — deploy the API and dashboard directly on an AWS EC2 instance (with RDS PostgreSQL), configured via environment variables.
+- **HTTPS & custom domain** — add TLS termination and a domain name in front of the existing Nginx reverse proxy.
 - **Secrets & configuration management** — move credentials into AWS Secrets Manager / SSM Parameter Store.
 - **Caching layer** — add Redis (ElastiCache) in front of hot reads and repeated solves.
 - **Authentication & authorization** — enable the reserved `401/403` paths with API auth and RBAC.
 - **Schema migrations** — initialize the already-installed Alembic for versioned schema changes.
-- **Monitoring & observability** — surface stored `optimization_runs` KPIs and `/optimization/metrics` via CloudWatch dashboards and alerts.
+- **Deeper observability** — add a custom CloudWatch dashboard and extend the existing CloudWatch metrics/alarms with application-level KPIs from stored `optimization_runs` and `/optimization/metrics`.
 - **CI/CD pipeline** — automate the existing validation scripts on every change.
 - **Advanced route optimization** — implement a full VRP solver behind the reserved `RoutingStrategy` interface.
 
@@ -566,4 +689,4 @@ Full technical documentation lives in [`docs/`](docs/):
 - REST API design, validation, error handling, and automatic documentation
 - Modular Python project organization and separation of concerns
 - Testing/validation workflows and reproducible, additive engineering
-- Cloud-deployable architecture designed for AWS *(deployment planned)*
+- AWS EC2 deployment with systemd services, an Nginx reverse proxy, CloudWatch monitoring, and SNS alerting
