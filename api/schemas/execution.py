@@ -1,14 +1,14 @@
 """
 ============================================================================
-EXECUTION SCHEMAS  (Week 6)   endpoints: /optimization/*
+EXECUTION SCHEMAS  (Stage 6)   endpoints: /optimization/*
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS FILE HOLDS
 --------------------
-  The Pydantic REQUEST and RESPONSE schemas for the Week 6 optimization
+  The Pydantic REQUEST and RESPONSE schemas for the Stage 6 optimization
   EXECUTION endpoints (run, simulate, history, get-by-id, metrics, scenarios).
-  Same idea as the Week 4 entity schemas and the Week 5 optimization schemas:
+  Same idea as the Stage 4 entity schemas and the Stage 5 optimization schemas:
   the request schemas validate/shape the JSON coming in, and the response
   schemas control exactly what goes out.
 
@@ -19,12 +19,12 @@ TWO KINDS OF RESPONSE HERE
      evaluation, and the scenario changes applied.
   2. A STORED RUN (OptimizationRunResponse) mirrors a row of the
      optimization_runs table, read back by the history endpoints. It inherits
-     ORMModel (from_attributes=True), the Week 4 ORM bridge, so FastAPI builds
+     ORMModel (from_attributes=True), the Stage 4 ORM bridge, so FastAPI builds
      the JSON straight off the SQLAlchemy row.
 
 EVERY REQUEST IS HAPPY WITH AN EMPTY BODY
 -----------------------------------------
-  As in Week 5, every field defaults sensibly, so `POST /optimization/run` with
+  As in Stage 5, every field defaults sensibly, so `POST /optimization/run` with
   `{}` runs the default optimizer under the "normal" scenario on an
   auto-selected warehouse. Callers narrow it down as they learn.
 ============================================================================
@@ -83,7 +83,7 @@ class OptimizationRunRequest(BaseModel):
 # SHARED RESPONSE PIECES
 # ===========================================================================
 class RunMetricsSchema(BaseModel):
-    """The twelve KPIs of a run (Week 6, Part 5), plus a couple of extras."""
+    """The twelve KPIs of a run (Stage 6, Part 5), plus a couple of extras."""
 
     total_cost: float
     travel_distance_km: float
@@ -103,7 +103,7 @@ class RunMetricsSchema(BaseModel):
 
 
 class EvaluationSchema(BaseModel):
-    """The before-vs-after improvement percentages (Week 6, Part 6)."""
+    """The before-vs-after improvement percentages (Stage 6, Part 6)."""
 
     cost_reduction_percent: float
     distance_reduction_percent: float

@@ -1,6 +1,6 @@
 """
 ============================================================================
-DISRUPTION SERVICE  (Week 4)   entity: disruptions
+DISRUPTION SERVICE  (Stage 4)   entity: disruptions
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -8,10 +8,10 @@ Business logic for disruptions (events that delay deliveries). Subclasses
 BaseService for generic CRUD + pagination and declares disruption-specific
 safelists.
 
-The Week 3 CRUD layer already has crud.get_active_disruptions() and
+The Stage 3 CRUD layer already has crud.get_active_disruptions() and
 crud.insert_disruption(); this service adds a convenience list_active() helper
 that reuses that exact query, so the "active disruptions" logic lives in one
-place across Week 3 and Week 4 (and the future agents in Week 7).
+place across Stage 3 and Stage 4 (and the future agents in Stage 7).
 ============================================================================
 """
 
@@ -52,7 +52,7 @@ class DisruptionService(BaseService):
 
     def list_active(self, db: Session):
         """
-        Return all currently-active disruptions, reusing the Week 3 helper so
+        Return all currently-active disruptions, reusing the Stage 3 helper so
         the definition of "active" stays in exactly one place.
         """
         return crud.get_active_disruptions(db)

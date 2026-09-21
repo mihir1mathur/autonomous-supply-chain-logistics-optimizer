@@ -1,6 +1,6 @@
 """
 ============================================================================
-AGENT UTILITIES  (Week 7)   -- shared plumbing for the orchestration layer
+AGENT UTILITIES  (Stage 7)   -- shared plumbing for the orchestration layer
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -25,14 +25,14 @@ WHAT LIVES HERE
       user request
           -> Planner   produces  ExecutionPlan
           -> Scenario  produces  ScenarioDecision
-          -> Optimization produces OptimizationOutcome   (drives Week 6)
+          -> Optimization produces OptimizationOutcome   (drives Stage 6)
           -> Evaluation   produces EvaluationSummary
           -> Reporting    produces AgentReport
       all gathered into one OrchestrationResult.
 
 WHY DATACLASSES (and not dicts everywhere)
 ------------------------------------------
-  Exactly like the Week 5 solution_models and the Week 6 RunMetrics/
+  Exactly like the Stage 5 solution_models and the Stage 6 RunMetrics/
   EvaluationResult: a typed dataclass documents the shape once, is trivial to
   build and test, and turns into clean JSON with as_dict(). Passing typed
   objects between agents (rather than loose dicts) is what keeps the pipeline
@@ -93,7 +93,7 @@ class Timer:
 
     Uses time.perf_counter (a monotonic, high-resolution clock) so it measures
     real elapsed time accurately and is never thrown off by the wall clock
-    changing. Mirrors the Timer the Week 5 engine already uses.
+    changing. Mirrors the Timer the Stage 5 engine already uses.
     """
 
     def __init__(self) -> None:
@@ -152,7 +152,7 @@ class AgentStep:
     how long it took, and a short human-readable summary of what it decided.
 
     Collecting these is what turns "the agents did something" into an auditable
-    story a human (or a Week 8 dashboard) can follow after the fact.
+    story a human (or a Stage 8 dashboard) can follow after the fact.
     """
 
     agent: str                       # e.g. "PlannerAgent"
@@ -213,7 +213,7 @@ class ExecutionPlan:
     warehouse_id: str | None = None          # None => execution service auto-selects
     priority: str = "normal"                 # normal / high  (how urgent the request is)
     objective: str = "minimize_cost"         # a short label for the goal
-    # Constraints/limits handed straight to the Week 6 execution service.
+    # Constraints/limits handed straight to the Stage 6 execution service.
     constraints: dict = field(default_factory=dict)
     rationale: str = ""                      # why the Planner chose the above
     steps: list[str] = field(default_factory=list)  # the ordered plan of action
@@ -225,11 +225,11 @@ class ExecutionPlan:
 @dataclass
 class ScenarioDecision:
     """
-    The Scenario Agent's output: which Week 6 scenario to run the plan under.
+    The Scenario Agent's output: which Stage 6 scenario to run the plan under.
 
-    It carries the scenario's KEY (validated against the existing Week 6 catalog,
+    It carries the scenario's KEY (validated against the existing Stage 6 catalog,
     never invented here) plus the catalog's name/category/description and a short
-    rationale for the choice. The effects themselves stay in Week 6's
+    rationale for the choice. The effects themselves stay in Stage 6's
     scenarios.py - this is only the DECISION of which one to use.
     """
 
@@ -246,7 +246,7 @@ class ScenarioDecision:
 @dataclass
 class OptimizationOutcome:
     """
-    The Optimization Agent's output: the result of driving the Week 6 execution
+    The Optimization Agent's output: the result of driving the Stage 6 execution
     service, plus a note of exactly which service call was made.
 
     `result` is the full dict the execution service returns (run_id, metrics,
@@ -271,7 +271,7 @@ class EvaluationSummary:
     """
     The Evaluation Agent's output: a structured read of the run's KPIs and its
     before-vs-after evaluation, an overall verdict, and (optionally) a benchmark
-    comparison against a reference run. All numbers come from the Week 6 metrics
+    comparison against a reference run. All numbers come from the Stage 6 metrics
     and evaluation framework, reused unchanged.
     """
 

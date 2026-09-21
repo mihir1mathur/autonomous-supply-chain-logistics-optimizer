@@ -1,6 +1,6 @@
 # Logistics Simulation
 
-This document explains the **simulated logistics layer** built in Week 2 of the
+This document explains the **simulated logistics layer** built in Stage 2 of the
 Supply Chain & Logistics Optimizer.
 
 It builds directly on:
@@ -30,10 +30,10 @@ system depends on are simply **not in the data**:
 - no **live disruptions** (traffic, weather, road closures);
 - no **route plans** (just origin and destination points).
 
-To build optimization (Week 3), agents (Week 5), and disruption-driven
-re-planning (Week 7) later, we need these operational pieces now. Week 2
+To build optimization (Stage 3), agents (Stage 5), and disruption-driven
+re-planning (Stage 7) later, we need these operational pieces now. Stage 2
 **generates them as realistic simulated datasets layered on top of the cleaned,
-real Week 1 data** — keeping the real foundation untouched and clearly labelling
+real Stage 1 data** — keeping the real foundation untouched and clearly labelling
 what is invented.
 
 ---
@@ -58,11 +58,11 @@ what is invented.
 
 ```
    data/ (raw Olist, READ-ONLY)
-        │  Week 1 cleaning + joins
+        │  Stage 1 cleaning + joins
         ▼
    processed/ (cleaned CSVs + orders_master_table.csv)
         │
-        │  Week 2 generation scripts (notebooks/week2_*.py)
+        │  Stage 2 generation scripts (notebooks/{disruption,warehouse,inventory,route,vehicle}_generation.py)
         ▼
    simulation/
      warehouses.csv      ← sellers_clean + geolocation_zip_lookup + real volume
@@ -73,14 +73,14 @@ what is invented.
         └── delivery_routes.csv ← warehouses + orders_master_table (coordinates)
 ```
 
-`warehouses.csv` is generated **first** because every other Week 2 file
+`warehouses.csv` is generated **first** because every other Stage 2 file
 references `warehouse_id`.
 
 ---
 
 ## How each dataset is generated
 
-### Warehouses — `notebooks/week2_generate_warehouses.py`
+### Warehouses — `notebooks/warehouse_generation.py`
 
 Olist **sellers** are treated as **warehouses / fulfillment origins** (the core
 assumption from the logistics data model). Not every seller becomes a warehouse:
@@ -89,7 +89,7 @@ we keep the **top 150 sellers by real shipped volume**, which together cover
 3,000 tiny ones.
 
 - **Real fields:** `seller_id`, `warehouse_city`, `warehouse_state`,
-  `warehouse_zip_code_prefix`, `latitude`, `longitude` (from the Week 1 zip →
+  `warehouse_zip_code_prefix`, `latitude`, `longitude` (from the Stage 1 zip →
   coordinate lookup).
 - **Generated fields:**
   - `capacity` — package-slot capacity, sized from the warehouse's real shipped
@@ -98,7 +98,7 @@ we keep the **top 150 sellers by real shipped volume**, which together cover
   - `operating_status` — `active` (normal), `overloaded` (≥90% full), or
     `inactive` (a small random set temporarily offline).
 
-### Inventory — `notebooks/week2_inventory_simulation.py`
+### Inventory — `notebooks/inventory_simulation.py`
 
 Inventory is the **stock each warehouse holds for each product** — the link that
 connects a product to a warehouse with a quantity. A warehouse stocks the
@@ -113,7 +113,7 @@ products its seller actually shipped, and **best-sellers get deeper stock**.
   - `low_stock` — `stock_level <= reorder_threshold` (time to reorder);
   - `healthy` — above the threshold.
 
-### Vehicles — `notebooks/week2_vehicle_generation.py`
+### Vehicles — `notebooks/vehicle_generation.py`
 
 Olist has **no vehicle data whatsoever**, so the entire fleet is generated. Each
 warehouse gets a small fleet (1–5 vehicles) sized by its capacity. Vehicle types
@@ -124,7 +124,7 @@ Capacity matters because later route planning must not overload a vehicle;
 availability (`available` / `on_delivery` / `maintenance`) is a hard constraint
 on what can be scheduled right now.
 
-### Disruptions — `notebooks/week2_disruption_generation.py`
+### Disruptions — `notebooks/disruption_generation.py`
 
 Because Olist is historical, it has no live traffic or weather. We generate ~80
 disruption events of types `heavy_traffic`, `severe_weather`,
@@ -134,7 +134,7 @@ warehouse where relevant), a start/end time, an estimated delay in minutes, and
 a `status` (active/resolved/scheduled). These become the scenarios the later
 optimization and agent layers must re-plan around.
 
-### Delivery routes — `notebooks/week2_route_generation.py`
+### Delivery routes — `notebooks/route_generation.py`
 
 A route is the journey **warehouse → customer**. We collapse the master table to
 one row per **(order, warehouse) shipment leg** and compute, from the real
@@ -150,19 +150,19 @@ coordinates:
 is kept so the file stays light.
 
 > This is a **simple estimate only**. There is **no OR-Tools optimization** in
-> Week 2 — no best-vehicle selection, no multi-stop combining, no disruption
+> Stage 2 — no best-vehicle selection, no multi-stop combining, no disruption
 > avoidance. This dataset is the input the optimizer will improve later.
 
 ---
 
 ## How geolocation is used
 
-Every warehouse and every customer is placed on the map using the Week 1
+Every warehouse and every customer is placed on the map using the Stage 1
 **zip-prefix → (latitude, longitude)** lookup (one representative median point
 per zip prefix). The distance between two such points is the haversine distance.
 Both the point (an area centroid) and the straight-line distance are
 **approximations**, suitable for city-scale estimation and intentionally
-improved by real road-network routing in a later week.
+improved by real road-network routing in a later stage.
 
 ---
 
@@ -171,7 +171,7 @@ improved by real road-network routing in a later week.
 - **Real, from Olist:** warehouse locations, which products each warehouse ships
   and how much, order/customer identities, source & destination coordinates,
   order status.
-- **Generated / computed in Week 2:** warehouse capacity & utilization & status,
+- **Generated / computed in Stage 2:** warehouse capacity & utilization & status,
   all inventory numbers, the entire vehicle fleet, all disruptions, and the
   distance/time/cost estimates on routes.
 
@@ -188,9 +188,9 @@ script produces the **identical** output. Scripts only **read** from `data/` and
 
 ## Where this leads
 
-- **Week 3** — use `warehouses`, `vehicles`, and route coordinates to run real
+- **Stage 3** — use `warehouses`, `vehicles`, and route coordinates to run real
   route optimization (OR-Tools), replacing the simple distance estimates.
-- **Week 4** — load these simulation files into the planned PostgreSQL tables.
-- **Week 5** — agents reason over inventory, vehicles, and disruptions.
-- **Week 7** — disruptions trigger re-routing and re-stocking decisions.
-- **Week 8** — visualize warehouses, routes, and disruptions on a dashboard.
+- **Stage 4** — load these simulation files into the planned PostgreSQL tables.
+- **Stage 5** — agents reason over inventory, vehicles, and disruptions.
+- **Stage 7** — disruptions trigger re-routing and re-stocking decisions.
+- **Stage 8** — visualize warehouses, routes, and disruptions on a dashboard.

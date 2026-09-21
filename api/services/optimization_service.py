@@ -1,6 +1,6 @@
 """
 ============================================================================
-OPTIMIZATION SERVICE  (Week 5)   -- the bridge: database <-> engine
+OPTIMIZATION SERVICE  (Stage 5)   -- the bridge: database <-> engine
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -9,19 +9,19 @@ WHAT THIS SERVICE DOES (and why it is the ONLY layer that touches both)
   The optimization engine (optimization/) is deliberately database-free: it
   speaks only in plain input dataclasses. The FastAPI routers are deliberately
   thin: they only speak HTTP. THIS service is the bridge between them, exactly
-  like the seven Week 4 entity services:
+  like the seven Stage 4 entity services:
 
-      1. READ the Week 3 database with SQLAlchemy (warehouses, vehicles,
+      1. READ the Stage 3 database with SQLAlchemy (warehouses, vehicles,
          inventory, delivery_routes).
       2. MAP those rows into the engine's input dataclasses (ShipmentInput,
          VehicleInput, WarehouseInput, DemandInput).
       3. CALL the right solver and return its solution dataclass.
 
   Routers never import the solvers or the models directly; they call this
-  service. That keeps the layering identical to Week 4 (Router -> Service ->
-  data), and means Week 7's agents can reuse these same methods.
+  service. That keeps the layering identical to Stage 4 (Router -> Service ->
+  data), and means Stage 7's agents can reuse these same methods.
 
-SIMULATED SHIPMENT SIZE (documented honesty, like Week 2)
+SIMULATED SHIPMENT SIZE (documented honesty, like Stage 2)
 ---------------------------------------------------------
   The Olist data has no per-shipment package count, so each delivery route's
   size is filled in with optimization.utils.simulated_package_demand() - a
@@ -69,7 +69,7 @@ _DISPATCHABLE_STATUS = "available"
 
 class OptimizationService:
     """
-    Orchestrates the Week 5 optimization engine over the Week 3 database.
+    Orchestrates the Stage 5 optimization engine over the Stage 3 database.
 
     Holds no per-request state; it just carries the optimization settings and
     exposes one method per optimization problem plus a status report.
@@ -447,5 +447,5 @@ class OptimizationService:
         return max(1, min(int(requested), maximum))
 
 
-# A ready-to-use singleton, mirroring the Week 4 entity services.
+# A ready-to-use singleton, mirroring the Stage 4 entity services.
 optimization_service = OptimizationService()

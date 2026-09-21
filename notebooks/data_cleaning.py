@@ -1,41 +1,41 @@
 """
 ============================================================================
-WEEK 1 - DATA CLEANING SCRIPT
+STAGE 1 - DATA CLEANING SCRIPT
 Project: Supply Chain & Logistics Optimizer
 Dataset: Brazilian E-Commerce Public Dataset by Olist
 ============================================================================
 
-WHERE WE ARE (continuity from Week 0)
+CONTINUITY FROM STAGE 0
 -------------------------------------
-In Week 0 we OPENED every box (notebooks/week0_dataset_analysis.py) and
+Stage 0 opened every box (notebooks/dataset_analysis.py) and
 described what was inside each of the 9 CSV files - their shape, columns,
-missing values, and duplicates. We did NOT change anything.
+missing values, and duplicates. Nothing was changed.
 
-WHY WE ARE HERE NOW (Week 1)
+WHY THIS STAGE EXISTS (Stage 1)
 ----------------------------
-Raw data is almost never ready to use. Before we can join the files,
-analyze delays, or (in later weeks) optimize routes, we must CLEAN the data:
-fix obvious problems so later steps don't silently break.
+Raw data is almost never ready to use. Before the files can be joined,
+delays analyzed, or (in later stages) routes optimized, the data must be
+CLEANED: fix obvious problems so later steps don't silently break.
 
 This script:
   1. Loads every raw CSV from data/ (the originals are NEVER changed).
-  2. Reports the data-quality problems we found in Week 0 + a few new ones.
+  2. Reports the data-quality problems found in Stage 0 plus a few new ones.
   3. Produces CLEANED copies inside a new folder: processed/
   4. Explains, in plain English, every cleaning decision and WHY it matters.
 
-GOLDEN RULE: we only WRITE to processed/. We only READ from data/.
+GOLDEN RULE: only WRITE to processed/. Only READ from data/.
 
 HOW TO RUN
 ----------
     pip install pandas
-    python notebooks/week1_data_cleaning.py
+    python notebooks/data_cleaning.py
 
-WHERE THIS LEADS (future weeks)
+WHERE THIS LEADS (later stages)
 -------------------------------
-  - Week 1 (next script): join these cleaned files together.
-  - Week 2: simulate inventory on the cleaned products/sellers.
-  - Week 3: use cleaned geolocation to compute distances and routes.
-  - Week 4: load these cleaned tables into a real database (PostgreSQL).
+  - Stage 1 (next script): join these cleaned files together.
+  - Stage 2: simulate inventory on the cleaned products/sellers.
+  - Stage 3: use cleaned geolocation to compute distances and routes.
+  - Stage 4: load these cleaned tables into a real database (PostgreSQL).
 ============================================================================
 """
 
@@ -57,7 +57,7 @@ os.makedirs(PROCESSED_DIR, exist_ok=True)
 
 # Brazil's rough geographic bounding box. Any coordinate outside this box
 # is almost certainly a data-entry error, because Olist is a Brazilian
-# company. (lat = north/south, lng = east/west - see Week 0 note 06.)
+# company. (lat = north/south, lng = east/west - see Stage 0 note 06.)
 BRAZIL_LAT_MIN, BRAZIL_LAT_MAX = -34.0, 6.0
 BRAZIL_LNG_MIN, BRAZIL_LNG_MAX = -74.0, -34.0
 
@@ -97,7 +97,7 @@ def clean_customers():
     df = load_raw("olist_customers_dataset.csv")
     print(f"  Loaded {len(df):,} rows.")
 
-    # IMPORTANT CONCEPT (from Week 0 note 04 & 05):
+    # IMPORTANT CONCEPT (from Stage 0 note 04 & 05):
     #   customer_id        = one code PER ORDER record.
     #   customer_unique_id = one code PER REAL PERSON.
     # So 'duplicate' customer_unique_id values are NOT errors - they are
@@ -128,7 +128,7 @@ def clean_geolocation():
     df = load_raw("olist_geolocation_dataset.csv")
     print(f"  Loaded {len(df):,} rows.")
 
-    # PROBLEM 1: huge number of EXACT duplicate rows (Week 0 found 261,831).
+    # PROBLEM 1: huge number of EXACT duplicate rows (Stage 0 found 261,831).
     # Duplicates waste space and slow down joins, so we drop exact copies.
     before = len(df)
     df = df.drop_duplicates()
@@ -152,9 +152,9 @@ def clean_geolocation():
     save_clean(df, "geolocation_clean.csv")
 
     # PROBLEM 3 (the key one for routing): one zip prefix still has MANY
-    # coordinate rows. For distance/routing we want ONE representative point
-    # per zip prefix. We take the MEDIAN lat/lng (median resists outliers
-    # better than the average). This small lookup table is what later weeks
+    # coordinate rows. For distance/routing, ONE representative point is needed
+    # per zip prefix. The MEDIAN lat/lng is used (median resists outliers
+    # better than the average). This small lookup table is what later stages
     # will actually use to place a seller or customer on the map.
     zip_lookup = (
         df.groupby("geolocation_zip_code_prefix")
@@ -204,7 +204,7 @@ def clean_payments():
     df = load_raw("olist_order_payments_dataset.csv")
     print(f"  Loaded {len(df):,} rows.")
 
-    # This file was clean in Week 0. We just standardize the text category
+    # This file was clean in Stage 0. We just standardize the text category
     # and confirm there are no negative payment values.
     df["payment_type"] = df["payment_type"].str.strip().str.lower()
     bad_value = (df["payment_value"] < 0).sum()
@@ -222,7 +222,7 @@ def clean_reviews():
     df = load_raw("olist_order_reviews_dataset.csv")
     print(f"  Loaded {len(df):,} rows.")
 
-    # The comment columns are mostly EMPTY (Week 0: title 88.3%, message
+    # The comment columns are mostly EMPTY (Stage 0: title 88.3%, message
     # 58.7% missing). That is NORMAL - most people rate but don't write text.
     # We do NOT delete these rows. We fill the empty text with "" so the
     # column is consistent (all text), while keeping the numeric score.
@@ -265,13 +265,13 @@ def clean_orders():
 
     # MISSING dates are EXPECTED here: an order that was never delivered has
     # no delivery date. We do NOT drop these - whether an order was delivered
-    # is itself useful information. We just report the counts (matches Week 0).
+    # is itself useful information. We just report the counts (matches Stage 0).
     for col in date_cols:
         miss = df[col].isna().sum()
         if miss:
             step(f"{col}: {miss:,} missing (usually = not delivered / not approved).")
 
-    # LOGICAL CHECK (a new Week-1 idea): a delivery cannot happen BEFORE the
+    # LOGICAL CHECK (a new Stage-1 idea): a delivery cannot happen BEFORE the
     # purchase. If delivered_customer_date < purchase_timestamp, the row is
     # logically impossible. We flag (count) these rather than silently trust.
     delivered = df["order_delivered_customer_date"]
@@ -305,15 +305,15 @@ def clean_products():
     )
     step("Fixed misspelled columns: 'lenght' -> 'length'.")
 
-    # PROBLEM 2: 610 products have no category (Week 0). A missing category
+    # PROBLEM 2: 610 products have no category (Stage 0). A missing category
     # would break grouping later. We fill it with a clear label instead of
     # deleting the products (they still exist and were ordered).
     df["product_category_name"] = df["product_category_name"].fillna("unknown")
     step("Filled 610 missing product categories with 'unknown'.")
 
     # PROBLEM 3: 2 products miss weight/dimensions. Weight/size matter for
-    # logistics (packing, freight). We report them; we keep the rows but note
-    # the gap for later (a later week can estimate from the category average).
+    # logistics (packing, freight). They are reported and kept, noting
+    # the gap for later (a later stage can estimate from the category average).
     dim_cols = ["product_weight_g", "product_length_cm",
                 "product_height_cm", "product_width_cm"]
     miss_dims = df[dim_cols].isna().any(axis=1).sum()
@@ -341,7 +341,7 @@ def clean_sellers():
     df = load_raw("olist_sellers_dataset.csv")
     print(f"  Loaded {len(df):,} rows.")
 
-    # Clean in Week 0. Standardize the text columns for consistent joins.
+    # Clean in Stage 0. Standardize the text columns for consistent joins.
     df["seller_city"] = df["seller_city"].str.strip().str.lower()
     df["seller_state"] = df["seller_state"].str.strip().str.upper()
     step("Standardized seller_city (lowercase) and seller_state (uppercase).")
@@ -354,7 +354,7 @@ def clean_sellers():
 # MAIN: run every cleaning step in order and print a final summary.
 # ===========================================================================
 def main():
-    banner("WEEK 1 DATA CLEANING - Supply Chain & Logistics Optimizer")
+    banner("STAGE 1 DATA CLEANING - Supply Chain & Logistics Optimizer")
     print("Reading raw CSVs from data/ (never modified).")
     print(f"Writing cleaned CSVs to: {PROCESSED_DIR}")
 
@@ -369,7 +369,7 @@ def main():
 
     banner("DONE - cleaning complete")
     print("  Cleaned files now live in the processed/ folder.")
-    print("  Next: run notebooks/week1_dataset_joins.py to connect them all.")
+    print("  Next: run notebooks/dataset_joins.py to connect them all.")
     print("  Remember: the original data/ files were NOT changed.")
 
 

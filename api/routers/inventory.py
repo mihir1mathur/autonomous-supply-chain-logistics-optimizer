@@ -1,6 +1,6 @@
 """
 ============================================================================
-INVENTORY ROUTER  (Week 4)   URL prefix: /inventory
+INVENTORY ROUTER  (Stage 4)   URL prefix: /inventory
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 

@@ -1,6 +1,6 @@
 """
 ============================================================================
-WEEK 5 - OPTIMIZATION VALIDATION
+STAGE 5 - OPTIMIZATION VALIDATION
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -27,7 +27,7 @@ WHAT THIS SCRIPT DOES
 
 HOW THE REQUESTS ARE MADE
 -------------------------
-  Same as the Week 4/5 demo: the in-process TestClient by default, or a real
+  Same as the Stage 4/5 demo: the in-process TestClient by default, or a real
   running server if API_BASE_URL is set. It reads the database (to look up true
   capacities and stock) exactly the way the service does, so the checks compare
   the engine's output against the source data.
@@ -36,8 +36,8 @@ PREREQUISITES
 -------------
         pip install -r requirements.txt
         python database/init_db.py
-        python notebooks/week3_load_database.py
-        python notebooks/week5_validation.py
+        python notebooks/load_database.py
+        python notebooks/optimization_validation.py
 ============================================================================
 """
 
@@ -294,7 +294,7 @@ def validate_errors(client, results):
 
 
 def main():
-    banner("WEEK 5 - OPTIMIZATION VALIDATION")
+    banner("STAGE 5 - OPTIMIZATION VALIDATION")
     client = get_client()
     results = []
 

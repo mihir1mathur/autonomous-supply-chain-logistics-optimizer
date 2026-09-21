@@ -58,6 +58,8 @@ htmlcov/
 
 # Private notes
 notes/
+Interview Preparation/
+ETL Evidence/
 
 # Claude / AI prompts
 Week*.txt

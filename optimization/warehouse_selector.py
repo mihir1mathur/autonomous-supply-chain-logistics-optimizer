@@ -1,13 +1,13 @@
 """
 ============================================================================
-WAREHOUSE SELECTOR  (Week 5)
+WAREHOUSE SELECTOR  (Stage 5)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 THE PROBLEM (in plain words)
 ----------------------------
   A demand arrives: "deliver `quantity` units of `product` to this place."
-  Which warehouse should fulfil it? The rule for Week 5 is simple and sensible:
+  Which warehouse should fulfil it? The rule for Stage 5 is simple and sensible:
     - the warehouse must be operating ("active"),
     - it must actually hold enough stock of that product,
     - and among the warehouses that qualify, pick the NEAREST to the customer
@@ -20,7 +20,7 @@ WHY THIS IS A "GREEDY" SELECTOR, NOT A CP-SAT SOLVE
   Each demand is decided on its own by a clear ranking rule (nearest feasible
   warehouse). That is a GREEDY heuristic: make the locally-best choice for each
   demand in turn. It is fast, easy to explain, and exactly right for "serve
-  from the closest place that has stock". (A future week could upgrade this to
+  from the closest place that has stock". (A later stage could upgrade this to
   a global facility-assignment optimization; the interface would not change.)
 
 INVENTORY RESERVATION
@@ -31,7 +31,7 @@ INVENTORY RESERVATION
   through to the next-nearest warehouse or to pending. Turn it off to score
   every demand against the original stock independently.
 
-HOW IT CONNECTS TO WEEK 3
+HOW IT CONNECTS TO STAGE 3
 -------------------------
   `stock_by_warehouse_product` is built by the service from the inventory table
   (inventory.stock_level per (warehouse_id, product_id)); warehouse locations

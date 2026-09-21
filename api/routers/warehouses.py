@@ -1,6 +1,6 @@
 """
 ============================================================================
-WAREHOUSES ROUTER  (Week 4)   URL prefix: /warehouses
+WAREHOUSES ROUTER  (Stage 4)   URL prefix: /warehouses
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 

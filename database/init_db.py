@@ -1,6 +1,6 @@
 """
 ============================================================================
-DATABASE INITIALIZATION  (Week 3)
+DATABASE INITIALIZATION  (Stage 3)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -71,7 +71,7 @@ def main():
     reset = "--reset" in sys.argv[1:]
 
     print("=" * 70)
-    print("WEEK 3 - DATABASE INITIALIZATION")
+    print("STAGE 3 - DATABASE INITIALIZATION")
     print("=" * 70)
 
     # STEP 1: never touch the schema if we cannot even connect.
@@ -92,7 +92,7 @@ def main():
     for name in tables:
         print(f"  - {name}")
 
-    print("\nDone. Next: python notebooks/week3_load_database.py")
+    print("\nDone. Next: python notebooks/load_database.py")
 
 
 if __name__ == "__main__":

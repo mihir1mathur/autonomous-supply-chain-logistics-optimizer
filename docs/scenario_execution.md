@@ -1,14 +1,14 @@
-# Scenario Execution (Week 6)
+# Scenario Execution (Stage 6)
 
 The optimizer normally runs on the data as it is today. But planning teams must
 also ask **"what if?"** — a holiday demand spike, half the vans breaking down, a
 fuel-price jump, a supplier shipping late. A **scenario** is one such condition,
 expressed as a small set of **changes applied to the optimizer's inputs** before
 it solves. Nothing about the solver changes — only the numbers it is fed — so
-**every scenario reuses the same Week 5 solvers unchanged**.
+**every scenario reuses the same Stage 5 solvers unchanged**.
 
 The code lives in `optimization/scenarios.py` (the catalog + the pure input
-transforms) and is driven by the Week 6 execution service.
+transforms) and is driven by the Stage 6 execution service.
 
 ---
 
@@ -28,7 +28,7 @@ transforms) and is driven by the Week 6 execution service.
 | `demand_spike` | demand | package counts × 2.5 |
 | `vehicle_failure` | resource | keep 50% of the fleet |
 
-The first eight are the Week 6 core scenarios (Part 4). The last three are extra
+The first eight are the Stage 6 core scenarios (Part 4). The last three are extra
 scenarios the **benchmark runner** (Part 7) sweeps by default, alongside `normal`
 and `supplier_delay`:
 
@@ -43,7 +43,7 @@ BENCHMARK_SCENARIOS = [normal, holiday, demand_spike, vehicle_failure, supplier_
 ## How a scenario is applied (pure transforms)
 
 Each scenario is just a set of numeric **effects** (`ScenarioEffects`). The
-functions in `scenarios.py` take the plain Week 5 input dataclasses and the stock
+functions in `scenarios.py` take the plain Stage 5 input dataclasses and the stock
 dictionary and return **modified copies** plus a human-readable list of what
 changed — they never mutate the originals (`dataclasses.replace` makes copies)
 and never touch the database.
@@ -60,7 +60,7 @@ ScenarioEffects
 
 The transforms are **deterministic** (no randomness): the same scenario on the
 same data always produces the same modified inputs, so runs are reproducible —
-the same discipline as the Week 2 simulation (fixed seed) and the Week 5
+the same discipline as the Stage 2 simulation (fixed seed) and the Stage 5
 deterministic package-size hash.
 
 ---
@@ -73,7 +73,7 @@ ExecutionService.run(optimizer, scenario, ...)
   2. applied = apply_scenario(scenario, shipments, vehicles, warehouses, stock)
        -> applied.shipments / .vehicles / .warehouses / .stock  (modified copies)
        -> applied.changes                                       (what changed)
-  3. SOLVE with the reused Week 5 solver on the modified inputs
+  3. SOLVE with the reused Stage 5 solver on the modified inputs
   4. MEASURE + EVALUATE + (optionally) STORE
 ```
 
@@ -102,9 +102,9 @@ A scenario that leaves a warehouse with **no** vehicles returns a clean `400`
 
 ## Benchmarking (Part 7)
 
-`notebooks/week6_benchmark_runner.py` runs the **same** optimizer under every
+`notebooks/benchmark_runner.py` runs the **same** optimizer under every
 `BENCHMARK_SCENARIOS` entry through `POST /optimization/run`, collects the KPIs,
-and writes **one** report to `benchmarks/week6_benchmark_report.md` (and `.json`).
+and writes **one** report to `benchmarks/benchmark_report.md` (and `.json`).
 Because each run is persisted, the sweep also populates
 `GET /optimization/history` and `GET /optimization/metrics`.
 

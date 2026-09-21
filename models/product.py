@@ -20,7 +20,7 @@ class Product(Base):
     # PRIMARY KEY.
     product_id = Column(String, primary_key=True)
 
-    # Category in Portuguese (original) and English (added during Week 1).
+    # Category in Portuguese (original) and English (added during Stage 1).
     # Indexed because we group/filter by category a lot.
     product_category_name = Column(String, index=True)
     product_category_name_english = Column(String, index=True)
@@ -31,7 +31,7 @@ class Product(Base):
     product_photos_qty = Column(Integer, nullable=True)
 
     # Physical attributes (used later for freight / vehicle capacity). Nullable
-    # because 2 products lack weight/dimensions (flagged back in Week 1).
+    # because 2 products lack weight/dimensions (flagged back in Stage 1).
     product_weight_g = Column(Float, nullable=True)
     product_length_cm = Column(Float, nullable=True)
     product_height_cm = Column(Float, nullable=True)

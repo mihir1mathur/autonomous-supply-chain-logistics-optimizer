@@ -1,4 +1,4 @@
-# Evaluation Framework (Week 6)
+# Evaluation Framework (Stage 6)
 
 Running an optimizer and printing its numbers does not, by itself, prove the
 optimizer **helped**. To show that, we need something to compare against: what
@@ -7,7 +7,7 @@ framework builds that "before" picture, compares it to the optimizer's "after"
 plan, and reports the improvement as clear percentages.
 
 The code lives in `optimization/evaluation.py`. Like `metrics.py`, it is **pure**
-— plain functions over the Week 5 dataclasses, no database and no web — so "did
+— plain functions over the Stage 5 dataclasses, no database and no web — so "did
 it improve, and by how much?" is reusable and unit-testable.
 
 ---
@@ -72,13 +72,13 @@ something"), so an empty result never divides by zero.
 **`naive_assignment`** — the "before" for the *assignment* and *fleet*
 optimizers. It hands shipments to vehicles per warehouse in a round-robin,
 first-that-fits way, respecting capacity but with **no** global objective. This
-is roughly what assigning by hand looks like ("next parcel, next van"). The Week
+is roughly what assigning by hand looks like ("next parcel, next van"). The Stage
 5 assignment solver should use **fewer, fuller** vehicles than this; the fleet
 solver should keep the loads **more even**.
 
 **`naive_warehouse_selection`** — the "before" for the *warehouse* optimizer. It
 serves each demand from the **first** operating, in-stock warehouse found in list
-order, **ignoring distance**. The Week 5 selector picks the **nearest** feasible
+order, **ignoring distance**. The Stage 5 selector picks the **nearest** feasible
 one instead, so its total distance is shorter — that gap is the improvement.
 
 **Routing** needs no separate baseline: `RouteSolution.naive_distance_km` already

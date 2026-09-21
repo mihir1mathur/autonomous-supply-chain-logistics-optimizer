@@ -1,6 +1,6 @@
-# Future Scaling (Week 5)
+# Future Scaling (Stage 5)
 
-This document looks **forward**: how the Week 5 optimization engine is designed
+This document looks **forward**: how the Stage 5 optimization engine is designed
 to grow — into a full Vehicle Routing Problem (VRP) solver, into autonomous
 agents that call it, into caching, and onto cloud infrastructure — and what to
 watch as the data and load grow.
@@ -12,18 +12,18 @@ For the current design see
 
 ## Designed-for extension points
 
-The engine deliberately leaves clean seams for later work, so future weeks add
+The engine deliberately leaves clean seams for later work, so later stages add
 capability without rewrites:
 
 - **A real VRP solver.** Routing is written behind a `RoutingStrategy`
   interface. `NearestNeighbourStrategy` is implemented now; a
   `VehicleRoutingProblem` strategy is reserved (it currently raises
-  `NotImplementedError`). A later week drops OR-Tools' routing library
+  `NotImplementedError`). A later stage drops OR-Tools' routing library
   (`RoutingModel`, with capacities and time windows) behind that interface, and
   every caller — service, router, scripts — is unchanged.
-- **Writing plans back to the database.** Week 3 reserved
+- **Writing plans back to the database.** Stage 3 reserved
   `delivery_routes.vehicle_id` as a nullable column. An assignment result can be
-  persisted there through the existing Week 4 route service — no schema change
+  persisted there through the existing Stage 4 route service — no schema change
   and no migration needed.
 - **Swappable objectives.** Cost and balance live in `cost_functions.py`; the
   rules live in `constraints.py`. New objectives (minimise cost, minimise
@@ -36,9 +36,9 @@ capability without rewrites:
 
 ---
 
-## How later weeks build on this
+## How later stages build on this
 
-| Week / feature | How it uses the Week 5 engine |
+| Week / feature | How it uses the Stage 5 engine |
 |----------------|-------------------------------|
 | **Redis caching** | Wrap the read-heavy `status` and repeated warehouse-selection lookups in a cache dependency inside the service. The engine is deterministic, so identical inputs can safely return a cached plan. |
 | **CrewAI agents** | Autonomous planning agents call the **same** `optimization_service` methods (or the solvers directly) — no HTTP required — to decide assignments and routes, then act on the results. The database-free engine is exactly what makes this reuse safe. |
@@ -63,7 +63,7 @@ design:
 
 A typical autonomous loop: *observe* (read current shipments, fleet, and any
 active disruptions) → *decide* (call the relevant optimizer) → *act* (write the
-chosen `vehicle_id`/route back through the Week 4 services) → *repeat* when the
+chosen `vehicle_id`/route back through the Stage 4 services) → *repeat* when the
 situation changes.
 
 ---
@@ -93,7 +93,7 @@ situation changes.
 
 ## Summary
 
-Week 5 turns the stored, served data into **decisions**, behind a modular engine
+Stage 5 turns the stored, served data into **decisions**, behind a modular engine
 that is independent of the web and the database. The strategy interface, the
 reserved database column, the environment-driven settings, and the reusable
 service methods are all in place so the next steps — a full VRP solver, caching,

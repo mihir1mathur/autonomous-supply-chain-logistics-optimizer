@@ -1,6 +1,6 @@
 """
 ============================================================================
-SCENARIO AGENT  (Week 7)   -- picks which Week 6 scenario to run under
+SCENARIO AGENT  (Stage 7)   -- picks which Stage 6 scenario to run under
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -11,7 +11,7 @@ THE SCENARIO AGENT'S ONE JOB
   demand is 1.6x while some vans are down?", "what if a supplier ships late?",
   or simply "normal" for ordinary conditions.
 
-  Crucially, it REUSES the scenarios that already exist in Week 6
+  Crucially, it REUSES the scenarios that already exist in Stage 6
   (optimization/scenarios.py, surfaced through the execution service). It does
   NOT define or recreate scenarios - it only CHOOSES one from the existing
   catalog and returns that choice as a structured ScenarioDecision. The scenario
@@ -54,7 +54,7 @@ _SCENARIO_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
 
 
 class ScenarioAgent(BaseAgent):
-    """Chooses one scenario from the existing Week 6 catalog. Chooses only."""
+    """Chooses one scenario from the existing Stage 6 catalog. Chooses only."""
 
     name = "ScenarioAgent"
     action = "select_scenario"
@@ -123,5 +123,5 @@ class ScenarioAgent(BaseAgent):
         return " ".join(p for p in parts if p)
 
 
-# A ready-to-use singleton, mirroring the Week 4/5/6 service singletons.
+# A ready-to-use singleton, mirroring the Stage 4/5/6 service singletons.
 scenario_agent = ScenarioAgent()

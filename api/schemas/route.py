@@ -1,11 +1,11 @@
 """
 ============================================================================
-DELIVERY ROUTE SCHEMAS  (Week 4)   entity: delivery_routes  (model: models/route.py)
+DELIVERY ROUTE SCHEMAS  (Stage 4)   entity: delivery_routes  (model: models/route.py)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 A delivery route ties an order to the warehouse it ships from and the customer
-it goes to (Week 2). vehicle_id is reserved for the OR-Tools optimizer (Week 5)
+it goes to (Stage 2). vehicle_id is reserved for the OR-Tools optimizer (Stage 5)
 and may be null. route_status is restricted via the RouteStatus enum.
 
 Four schemas: Base (validation) -> Create / Update -> Response.

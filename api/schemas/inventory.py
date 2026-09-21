@@ -1,12 +1,12 @@
 """
 ============================================================================
-INVENTORY SCHEMAS  (Week 4)   entity: inventory  (model: models/inventory.py)
+INVENTORY SCHEMAS  (Stage 4)   entity: inventory  (model: models/inventory.py)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 Inventory is the BRIDGE linking a product to a warehouse with a quantity
-(Week 3). inventory_status is DERIVED from stock_level vs. reorder_threshold by
-the Week 2 rule; the service recomputes it, so a caller does not have to send it
+(Stage 3). inventory_status is DERIVED from stock_level vs. reorder_threshold by
+the Stage 2 rule; the service recomputes it, so a caller does not have to send it
 (and it is kept consistent even if they do).
 
 Four schemas: Base (validation) -> Create / Update -> Response.

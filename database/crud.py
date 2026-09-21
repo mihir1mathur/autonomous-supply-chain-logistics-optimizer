@@ -1,6 +1,6 @@
 """
 ============================================================================
-CRUD / QUERY FUNCTIONS  (Week 3)
+CRUD / QUERY FUNCTIONS  (Stage 3)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -12,7 +12,7 @@ WHAT IS CRUD?
 
 WHY KEEP THEM IN ONE PLACE?
 ---------------------------
-  The FastAPI backend (Week 4) will call these SAME functions instead of
+  The FastAPI backend (Stage 4) will call these SAME functions instead of
   writing SQL inside the web layer. Centralizing them means one place to read,
   test, and reuse - the web app just exposes them over HTTP later.
 
@@ -26,7 +26,7 @@ HOW TO USE
       with get_session() as db:
           c = crud.get_customer_by_id(db, "abc123")
 
-INVENTORY STATUS RULE (reused from Week 2)
+INVENTORY STATUS RULE (reused from Stage 2)
 ------------------------------------------
   out_of_stock  if stock_level == 0
   low_stock     if stock_level <= reorder_threshold
@@ -51,7 +51,7 @@ from models import (
 
 
 def _recompute_inventory_status(stock_level: int, reorder_threshold: int) -> str:
-    """Apply the Week 2 stock rule. Used after we change a stock level."""
+    """Apply the Stage 2 stock rule. Used after we change a stock level."""
     if stock_level <= 0:
         return "out_of_stock"
     if stock_level <= reorder_threshold:

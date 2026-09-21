@@ -1,13 +1,13 @@
 """
 ============================================================================
-WEEK 6 - OPTIMIZATION EXECUTION DEMO  (happy paths)
+STAGE 6 - OPTIMIZATION EXECUTION DEMO  (happy paths)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  Exercises the Week 6 optimization EXECUTION layer end to end through the REST
-  API and prints clean, explained output. Where Week 5 could RUN a solver, Week
+  Exercises the Stage 6 optimization EXECUTION layer end to end through the REST
+  API and prints clean, explained output. Where Stage 5 could RUN a solver, Stage
   6 runs it under a SCENARIO, MEASURES the run's KPIs, EVALUATES it against an
   un-optimized baseline, and STORES it - then reads the history back.
 
@@ -18,25 +18,25 @@ WHAT THIS SCRIPT DOES
     5. GET  /optimization/{id}        one stored run in full
     6. GET  /optimization/metrics     aggregate KPIs across the stored runs
 
-  For each run it reports the numbers the Week 6 goals ask for: total cost,
+  For each run it reports the numbers the Stage 6 goals ask for: total cost,
   travel distance, vehicle + warehouse utilization, inventory holding cost,
   stockouts, late deliveries, orders fulfilled, runtime, solver status, and the
   model size (variables / constraints) - plus the before-vs-after improvement.
 
 HOW THE REQUESTS ARE MADE (no separate server needed)
 -----------------------------------------------------
-  Same pattern as the Week 4/5 scripts: FastAPI's in-process TestClient by
+  Same pattern as the Stage 4/5 scripts: FastAPI's in-process TestClient by
   default (one command, no running server), or a real running server if the
   environment variable API_BASE_URL is set.
 
 PREREQUISITES
 -------------
-  The Week 3 database must exist and be loaded, and the Week 6 table created:
+  The Stage 3 database must exist and be loaded, and the Stage 6 table created:
         pip install -r requirements.txt
         python database/init_db.py                 # creates optimization_runs
-        python notebooks/week3_load_database.py
+        python notebooks/load_database.py
   Then run:
-        python notebooks/week6_execution_demo.py
+        python notebooks/execution_demo.py
 ============================================================================
 """
 
@@ -99,7 +99,7 @@ def show_metrics(m):
 
 
 def main():
-    banner("WEEK 6 - OPTIMIZATION EXECUTION DEMO (happy paths)")
+    banner("STAGE 6 - OPTIMIZATION EXECUTION DEMO (happy paths)")
     client = get_client()
 
     # ---- 1) SCENARIOS -----------------------------------------------------
@@ -123,9 +123,9 @@ def main():
     print("  scenario changes applied:")
     for change in run["scenario_changes"]:
         print(f"    - {change}")
-    print("  KPIs (Week 6, Part 5):")
+    print("  KPIs (Stage 6, Part 5):")
     show_metrics(run["metrics"])
-    print("  BEFORE vs AFTER (Week 6, Part 6):")
+    print("  BEFORE vs AFTER (Stage 6, Part 6):")
     print(f"    {run['evaluation']['summary']}")
 
     stored_run_id = run["run_id"]

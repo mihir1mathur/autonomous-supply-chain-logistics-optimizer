@@ -1,7 +1,7 @@
-# OR-Tools Design (Week 5)
+# OR-Tools Design (Stage 5)
 
 This document explains **why** the project uses Google OR-Tools and the
-optimization ideas behind the Week 5 solvers: linear programming (LP), integer
+optimization ideas behind the Stage 5 solvers: linear programming (LP), integer
 programming (IP), constraint programming (CP), and the Vehicle Routing Problem
 (VRP) at a high level. It then shows how the two CP-SAT solvers in this project
 are actually modelled.
@@ -27,7 +27,7 @@ of possibilities, subject to rules. It is a strong fit here for several reasons:
   searching. We never write the search algorithm ourselves.
 - **One toolkit, many techniques.** OR-Tools includes a CP-SAT solver
   (constraint programming), LP/MIP solvers (linear and mixed-integer
-  programming), and a dedicated routing library for the VRP. Week 5 uses CP-SAT;
+  programming), and a dedicated routing library for the VRP. Stage 5 uses CP-SAT;
   the same toolkit covers the future routing work.
 - **Production-grade and free.** It is fast, well-documented, battle-tested at
   Google scale, and carries no licensing cost.
@@ -76,7 +76,7 @@ no/yes). This captures indivisible, all-or-nothing decisions exactly.
 - *Why it is harder:* forcing whole numbers makes the problem much harder to
   solve than LP (you cannot simply round an LP answer and stay optimal). Solvers
   use clever search ("branch and bound") to handle it.
-- **Both Week 5 CP-SAT models are integer programs**: the shipment-assignment
+- **Both Stage 5 CP-SAT models are integer programs**: the shipment-assignment
   and vehicle-utilization solvers use binary assignment variables.
 
 ---
@@ -90,7 +90,7 @@ programming with SAT ("boolean satisfiability") techniques. It is excellent at
 problems built from **integer and boolean variables with linear constraints** —
 exactly the shape of our assignment and balancing problems.
 
-Week 5 uses CP-SAT because our decisions are naturally boolean ("on this
+Stage 5 uses CP-SAT because our decisions are naturally boolean ("on this
 vehicle or not") and our rules are linear ("total load ≤ capacity"). CP-SAT
 models these directly, works purely in integers (so we scale fractions like
 utilization into whole numbers), and returns a status — `OPTIMAL` (proven best)
@@ -161,7 +161,7 @@ extra rules like vehicle capacities and delivery time windows. It generalises
 the classic Travelling Salesman Problem (one vehicle, visit everyone once) to
 many vehicles with constraints.
 
-Week 5 does **not** solve the full VRP. It implements the **nearest-neighbour
+Stage 5 does **not** solve the full VRP. It implements the **nearest-neighbour
 heuristic** — start at the warehouse, always drive to the closest unvisited
 stop — which is fast, easy to explain, and typically far shorter than a random
 order. It is a strong baseline and a natural first optimizer.
@@ -169,7 +169,7 @@ order. It is a strong baseline and a natural first optimizer.
 To stay ready for the real thing, routing is written behind a
 `RoutingStrategy` interface with the nearest-neighbour strategy implemented and
 a `VehicleRoutingProblem` strategy reserved (it raises `NotImplementedError`
-today). A later week can drop in OR-Tools' dedicated routing library
+today). A later stage can drop in OR-Tools' dedicated routing library
 (`RoutingModel`, which handles multiple vehicles, capacities, and time windows)
 behind that same interface, with no change to the service or the API.
 

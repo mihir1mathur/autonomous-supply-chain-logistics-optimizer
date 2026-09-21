@@ -1,10 +1,10 @@
 """
 ============================================================================
-WAREHOUSE SCHEMAS  (Week 4)   entity: warehouses  (model: models/warehouse.py)
+WAREHOUSE SCHEMAS  (Stage 4)   entity: warehouses  (model: models/warehouse.py)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-A warehouse is a fulfillment ORIGIN (Week 2). Location is REAL (from the seller
+A warehouse is a fulfillment ORIGIN (Stage 2). Location is REAL (from the seller
 it was mapped from); capacity / utilization / operating_status are SIMULATED.
 
 Four schemas: Base (validation) -> Create / Update (requests) -> Response.

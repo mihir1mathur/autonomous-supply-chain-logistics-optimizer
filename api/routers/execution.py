@@ -1,11 +1,11 @@
 """
 ============================================================================
-OPTIMIZATION EXECUTION ROUTER  (Week 6)   URL prefix: /optimization
+OPTIMIZATION EXECUTION ROUTER  (Stage 6)   URL prefix: /optimization
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-REST endpoints for the Week 6 optimization EXECUTION layer. THIN, exactly like
-the seven Week 4 entity routers and the Week 5 optimization router: each
+REST endpoints for the Stage 6 optimization EXECUTION layer. THIN, exactly like
+the seven Stage 4 entity routers and the Stage 5 optimization router: each
 endpoint reads the request, calls one method on a service, and returns the
 result. No business logic and no database access live here.
 
@@ -17,10 +17,10 @@ result. No business logic and no database access live here.
   GET  /optimization/{run_id}   one stored run by id
 
 WHY A NEW /optimization PREFIX (and not more /optimize routes)?
-  Week 5 owns /optimize/* (the raw, stateless solvers). Week 6 adds a DISTINCT
+  Stage 5 owns /optimize/* (the raw, stateless solvers). Stage 6 adds a DISTINCT
   /optimization/* namespace for the execution layer that wraps them - running,
   measuring, evaluating, and STORING runs. Keeping the two prefixes separate
-  means Week 5 is untouched and the two concerns never collide. The Week 6
+  means Stage 5 is untouched and the two concerns never collide. The Stage 6
   goals' "POST /optimize" and "POST /simulate" map to /optimization/run and
   /optimization/simulate here.
 

@@ -1,10 +1,10 @@
 """
 ============================================================================
-DISRUPTION SCHEMAS  (Week 4)   entity: disruptions  (model: models/disruption.py)
+DISRUPTION SCHEMAS  (Stage 4)   entity: disruptions  (model: models/disruption.py)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-A disruption is an event that delays deliveries (Week 2, simulated). It sits in
+A disruption is an event that delays deliveries (Stage 2, simulated). It sits in
 a real city/state and MAY point at a warehouse (affected_warehouse_id) or, for
 future replanning, a route (affected_route_id) - both optional. disruption_type,
 severity, and status are restricted via enums.
@@ -36,7 +36,7 @@ class DisruptionBase(BaseModel):
         None, description="Optional FK to the affected warehouse (null for area-wide)."
     )
     affected_route_id: str | None = Field(
-        None, description="Optional FK to a specific route (reserved for Week 7)."
+        None, description="Optional FK to a specific route (reserved for Stage 7)."
     )
     start_time: datetime | None = Field(None, description="When the event starts.")
     end_time: datetime | None = Field(None, description="When the event ends.")

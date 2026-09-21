@@ -1,6 +1,6 @@
 """
 ============================================================================
-SHIPMENT ASSIGNMENT SOLVER  (Week 5)
+SHIPMENT ASSIGNMENT SOLVER  (Stage 5)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -43,7 +43,7 @@ READY FOR THE FUTURE
 --------------------
   All writes in the API go through the route service, so once a plan is chosen
   the assigned vehicle_id can be written into delivery_routes.vehicle_id (the
-  nullable column Week 3 reserved) with no schema change.
+  nullable column Stage 3 reserved) with no schema change.
 ============================================================================
 """
 

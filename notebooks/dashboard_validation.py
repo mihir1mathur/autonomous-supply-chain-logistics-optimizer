@@ -1,15 +1,15 @@
 """
 ============================================================================
-WEEK 8 - ANALYTICS DASHBOARD VALIDATION
+STAGE 8 - ANALYTICS DASHBOARD VALIDATION
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  Proves the Week 8 dashboard is CORRECT and RESILIENT, not just that the files
+  Proves the Stage 8 dashboard is CORRECT and RESILIENT, not just that the files
   exist. It imports every dashboard module, exercises the pure helpers, and
   confirms the dashboard degrades gracefully when the backend is offline -
-  marking each check PASS/FAIL so the output doubles as a Week 8 CHECKLIST:
+  marking each check PASS/FAIL so the output doubles as a Stage 8 CHECKLIST:
 
     IMPORTS     the dashboard package, config, api_client and utils all import.
     CONFIG      settings load, with the expected defaults (API base URL, ...).
@@ -21,19 +21,19 @@ WHAT THIS SCRIPT DOES
     EXPORT      the CSV / JSON / Markdown export builders produce valid bytes.
     RESILIENCE  a client pointed at a dead backend does NOT crash: is_backend_up
                 returns False and calls raise a friendly APIError.
-    FILES       every required Week 8 file / folder exists (dashboard, docs,
+    FILES       every required Stage 8 file / folder exists (dashboard, docs,
                 notes/Week8).
     LIVE (opt)  if a backend is reachable, a few endpoints are sanity-checked
                 through the real api_client.
 
   It NEVER requires the backend or the database to be up (the LIVE section is
   optional and skipped cleanly if the backend is offline), so it is safe to run
-  anywhere - matching the Week 6 / Week 7 validation style.
+  anywhere - matching the Stage 6 / Stage 7 validation style.
 
 HOW TO RUN
 ----------
         pip install -r requirements.txt      # adds streamlit, plotly
-        python notebooks/week8_validation.py
+        python notebooks/dashboard_validation.py
   (Optional: start the backend first - uvicorn api.main:app --reload - to also
    exercise the LIVE section against real data.)
 ============================================================================
@@ -52,7 +52,7 @@ warnings.filterwarnings("ignore", message=".*ScriptRunContext.*")
 
 
 # ===========================================================================
-# SMALL TEST HELPERS  (same look as the Week 6 / 7 validation scripts)
+# SMALL TEST HELPERS  (same look as the Stage 6 / 7 validation scripts)
 # ===========================================================================
 def banner(title):
     print("\n" + "=" * 70)
@@ -261,7 +261,7 @@ def validate_resilience(results):
 
 
 # ===========================================================================
-# FILES  (every required Week 8 artifact exists)
+# FILES  (every required Stage 8 artifact exists)
 # ===========================================================================
 def validate_files(results):
     banner("FILES  (required dashboard files, docs, and notes exist)")
@@ -282,9 +282,9 @@ def validate_files(results):
         "dashboard/utils/export.py",
         # docs
         "docs/dashboard_architecture.md", "docs/dashboard_user_guide.md",
-        "docs/week8_dashboard_summary.md",
+        "docs/dashboard_summary.md",
         # scripts
-        "notebooks/week8_dashboard_demo.py", "notebooks/week8_validation.py",
+        "notebooks/dashboard_demo.py", "notebooks/dashboard_validation.py",
     ]
     for rel in required:
         results.append(check(f"exists: {rel}", os.path.exists(os.path.join(PROJECT_ROOT, rel))))
@@ -351,7 +351,7 @@ def main():
     total = len(results)
     print(f"  {passed}/{total} checks passed.")
     if passed == total:
-        print("  ALL WEEK 8 CHECKS PASSED - the dashboard imports, formats, exports,")
+        print("  ALL STAGE 8 CHECKS PASSED - the dashboard imports, formats, exports,")
         print("  and degrades gracefully; it is additive and consumes the backend APIs.")
     else:
         print("  SOME CHECKS FAILED - see the [FAIL] lines above.")

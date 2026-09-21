@@ -1,6 +1,6 @@
 """
 ============================================================================
-EVALUATION FRAMEWORK  (Week 6)   -- BEFORE optimization vs AFTER
+EVALUATION FRAMEWORK  (Stage 6)   -- BEFORE optimization vs AFTER
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -21,10 +21,10 @@ TWO PIECES
        * naive_assignment  - spread shipments round-robin across the fleet,
                              with no attempt to consolidate or balance. This is
                              what a dispatcher does by hand: "next parcel, next
-                             van". The Week 5 optimizers must beat it.
+                             van". The Stage 5 optimizers must beat it.
        * naive_warehouse   - serve each demand from the FIRST operating,
                              in-stock warehouse found (ignore distance). The
-                             Week 5 selector picks the NEAREST instead.
+                             Stage 5 selector picks the NEAREST instead.
        * (routing has its baseline built in: RouteSolution.naive_distance_km is
           the distance in arrival order, before nearest-neighbour reorders.)
 
@@ -33,7 +33,7 @@ TWO PIECES
 
 WHY PURE FUNCTIONS (no database, no FastAPI, no OR-Tools)
 ---------------------------------------------------------
-  Like metrics.py, everything here is a pure function of plain data. The Week 6
+  Like metrics.py, everything here is a pure function of plain data. The Stage 6
   execution service builds the "before" and "after" RunMetrics and hands them to
   evaluate(); this module never touches the database or the web. That makes the
   "did it improve, and by how much?" question reusable and unit-testable.
@@ -174,13 +174,13 @@ def naive_assignment(
     ROUND-ROBIN, first-that-fits way, per warehouse, with NO consolidation and
     NO balancing. This is roughly what assigning by hand looks like.
 
-    Returns the same (assignments, vehicle_loads, unassigned) shapes the Week 5
+    Returns the same (assignments, vehicle_loads, unassigned) shapes the Stage 5
     solvers return, so metrics_from_* can score it identically to the optimized
-    plan. The Week 5 assignment optimizer should use FEWER, fuller vehicles than
+    plan. The Stage 5 assignment optimizer should use FEWER, fuller vehicles than
     this, and the fleet optimizer should keep the loads more even.
     """
     # Group both sides by warehouse (a vehicle only serves its own site), the
-    # same way the Week 5 solvers do.
+    # same way the Stage 5 solvers do.
     ships_by_wh: dict[str | None, list[ShipmentInput]] = defaultdict(list)
     for s in shipments:
         ships_by_wh[s.warehouse_id].append(s)
@@ -240,7 +240,7 @@ def naive_warehouse_selection(
     """
     A deliberately un-clever "before" plan for warehouse selection: serve each
     demand from the FIRST operating, in-stock warehouse found in list order,
-    IGNORING distance. (The Week 5 selector picks the NEAREST feasible one, so
+    IGNORING distance. (The Stage 5 selector picks the NEAREST feasible one, so
     its total distance should be shorter - that difference is the improvement.)
 
     Returns the same WarehouseSelectionSolution shape as the real selector so
@@ -309,7 +309,7 @@ def naive_warehouse_selection(
 
 
 def _naive_load(vehicle: VehicleInput, pkgs: int, ships: int) -> VehicleLoad:
-    """Turn a naive vehicle's raw totals into a VehicleLoad (same as Week 5)."""
+    """Turn a naive vehicle's raw totals into a VehicleLoad (same as Stage 5)."""
     cap = max(0, int(vehicle.capacity_packages or 0))
     util = safe_divide(pkgs, cap, default=0.0)
     return VehicleLoad(

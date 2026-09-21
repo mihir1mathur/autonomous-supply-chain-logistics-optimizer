@@ -1,14 +1,14 @@
 """
 ============================================================================
-AGENT SCHEMAS  (Week 7)   endpoints: /agents/*
+AGENT SCHEMAS  (Stage 7)   endpoints: /agents/*
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS FILE HOLDS
 --------------------
-  The Pydantic REQUEST and RESPONSE schemas for the Week 7 AI ORCHESTRATION
-  endpoints (decide, simulate, status). Same idea as the Week 4 entity schemas,
-  the Week 5 optimization schemas and the Week 6 execution schemas: the request
+  The Pydantic REQUEST and RESPONSE schemas for the Stage 7 AI ORCHESTRATION
+  endpoints (decide, simulate, status). Same idea as the Stage 4 entity schemas,
+  the Stage 5 optimization schemas and the Stage 6 execution schemas: the request
   schema validates/shapes the JSON coming in, and the response schema controls
   exactly what goes out.
 
@@ -19,13 +19,13 @@ THE REQUEST IS INTENTIONALLY FORGIVING
   free-text description). Every other field is an OPTIONAL override that lets a
   caller pin down a specific optimizer / scenario / warehouse / constraint if
   they already know it. `POST /agents/decide` with `{"goal": "..."}` is enough;
-  `{}` runs a sensible default decision. This mirrors the Week 5/6 "empty body
+  `{}` runs a sensible default decision. This mirrors the Stage 5/6 "empty body
   works" convention.
 
 THE RESPONSE MIRRORS THE OrchestrationResult
 --------------------------------------------
   The nested pieces (plan, scenario, optimization, evaluation, report, trace)
-  are returned as flexible dicts - exactly as the Week 6 OptimizationRunResponse
+  are returned as flexible dicts - exactly as the Stage 6 OptimizationRunResponse
   returns metrics/evaluation/details as dicts - because they are already
   well-structured JSON built by the agents, and typing every nested field again
   would only duplicate the dataclasses in agents/utils.py.

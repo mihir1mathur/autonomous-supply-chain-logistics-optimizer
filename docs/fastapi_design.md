@@ -1,8 +1,8 @@
-# FastAPI Design (Week 4)
+# FastAPI Design (Stage 4)
 
-This document explains the **FastAPI-specific** design choices behind the Week 4
+This document explains the **FastAPI-specific** design choices behind the Stage 4
 backend: why FastAPI, how dependency injection is used, the request/response
-lifecycle, and how Pydantic schemas relate to the Week 3 SQLAlchemy models.
+lifecycle, and how Pydantic schemas relate to the Stage 3 SQLAlchemy models.
 
 For the overall layering and the project roadmap see
 [`api_architecture.md`](api_architecture.md); for the REST conventions see
@@ -25,7 +25,7 @@ For the overall layering and the project roadmap see
   are synchronous today for clarity, but the door is open to async I/O (useful
   when Redis and external calls arrive) with no structural change.
 - **Type-hinted Python.** Endpoints are ordinary functions, keeping the
-  project's beginner-friendly, well-commented style.
+  project's approachable, well-commented style.
 
 ---
 
@@ -62,13 +62,13 @@ no `.env` at all:
 | Setting | Env var | Default | Purpose |
 |---------|---------|---------|---------|
 | title | `API_TITLE` | Supply Chain & Logistics Optimizer API | shown in the docs |
-| version | `API_VERSION` | 0.4.0 | 0.4 = Week 4 |
+| version | `API_VERSION` | 0.4.0 | 0.4 = Stage 4 |
 | default_page_size | `API_DEFAULT_PAGE_SIZE` | 20 | list page size |
 | max_page_size | `API_MAX_PAGE_SIZE` | 100 | hard cap per page |
 | cors_origins | `API_CORS_ORIGINS` | `*` | allowed browser origins |
 
 Database connection settings are **not** duplicated here — they remain in the
-Week 3 `database/config.py`, which the API reuses.
+Stage 3 `database/config.py`, which the API reuses.
 
 ---
 
@@ -91,7 +91,7 @@ Three shared dependencies (in `api/dependencies.py`):
 
 - **`get_db`** — opens **one database session per HTTP request** and guarantees
   it is closed afterwards (with rollback on error). This is the web equivalent
-  of the Week 3 `get_session()` context manager.
+  of the Stage 3 `get_session()` context manager.
 - **`pagination_params`** — reads `?page`, `?page_size`, `?sort_by`, `?sort_dir`
   from the URL and returns a validated `PageParams` object, clamping the page
   size to `API_MAX_PAGE_SIZE`.
@@ -99,7 +99,7 @@ Three shared dependencies (in `api/dependencies.py`):
 
 Why this matters for the roadmap: because endpoints only *declare* their needs,
 a need can be satisfied differently later without touching endpoints. A Redis
-cache (Week 6) or an authentication check can be introduced as a dependency, and
+cache (Stage 6) or an authentication check can be introduced as a dependency, and
 every endpoint benefits automatically.
 
 ---
@@ -133,9 +133,9 @@ service, committed by the service on writes, and always closed at the end.
 
 This is the central distinction in the API layer:
 
-- A **SQLAlchemy model** (`models/*.py`, Week 3) describes a **database table** —
+- A **SQLAlchemy model** (`models/*.py`, Stage 3) describes a **database table** —
   what is stored on disk: columns, keys, relationships.
-- A **Pydantic schema** (`api/schemas/*.py`, Week 4) describes the **JSON at the
+- A **Pydantic schema** (`api/schemas/*.py`, Stage 4) describes the **JSON at the
   API boundary** — what a caller may send and what they receive. It validates
   incoming data and controls exactly which fields are exposed.
 
@@ -155,7 +155,7 @@ Each entity has **four** schemas:
 
 Validation rules live in `Base` (and in shared enums in
 `api/utils/validation.py`), so `Create` and `Update` share one source of truth,
-and the allowed status values mirror the Week 2/Week 3 rules exactly.
+and the allowed status values mirror the Stage 2/Stage 3 rules exactly.
 
 ---
 
@@ -183,11 +183,11 @@ server-side while the caller gets a safe, generic message.
 
 ## Testing the API
 
-Two Week 4 scripts exercise the running API over real HTTP using `httpx`:
+Two Stage 4 scripts exercise the running API over real HTTP using `httpx`:
 
-- `notebooks/week4_api_demo.py` — happy-path demo: list, get, create, update,
+- `notebooks/api_demo.py` — happy-path demo: list, get, create, update,
   patch, delete, filtering, sorting, searching, pagination.
-- `notebooks/week4_api_validation.py` — the error paths: 404, 409 duplicate,
+- `notebooks/api_validation.py` — the error paths: 404, 409 duplicate,
   422 validation, 400 bad sort column, and pagination guardrails.
 
 Both print clean, explained output and clean up any test rows they create.

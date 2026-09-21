@@ -1,4 +1,4 @@
-# Optimization Metrics (Week 6)
+# Optimization Metrics (Stage 6)
 
 After the optimizer chooses a plan, the execution layer scores it with a fixed
 set of **key performance indicators (KPIs)** — clear numbers a human can read at
@@ -6,10 +6,10 @@ a glance and a database can store and compare. This document lists the twelve
 metrics, how each is computed, and where the numbers come from.
 
 The code lives in `optimization/metrics.py`. It is **pure**: every function is a
-plain function of the Week 5 solution dataclasses plus a little context (the
+plain function of the Stage 5 solution dataclasses plus a little context (the
 source warehouse's utilization, the stock on hand) that the service supplies —
 no database, no FastAPI, no OR-Tools, exactly like `cost_functions.py` and
-`constraints.py` in Week 5.
+`constraints.py` in Stage 5.
 
 ---
 
@@ -22,14 +22,14 @@ left at its neutral default (`0` / `""`).
 | # | Metric | Field | How it is computed |
 |---|--------|-------|--------------------|
 | 1 | Total Cost | `total_cost` | Σ (leg distance × the vehicle's `cost_per_km`); a default rate is used where there is no vehicle (routes, warehouse). |
-| 2 | Travel Distance | `travel_distance_km` | Σ of the assigned legs' `estimated_distance_km` (Week 2), or the route's optimized distance. |
+| 2 | Travel Distance | `travel_distance_km` | Σ of the assigned legs' `estimated_distance_km` (Stage 2), or the route's optimized distance. |
 | 3 | Vehicle Utilization | `vehicle_utilization` | Average `assigned_packages / capacity` over the vehicles that carried something (0..1). |
-| 4 | Warehouse Utilization | `warehouse_utilization` | The source warehouse's `current_utilization` (Week 2), 0..1. |
+| 4 | Warehouse Utilization | `warehouse_utilization` | The source warehouse's `current_utilization` (Stage 2), 0..1. |
 | 5 | Inventory Holding Cost | `inventory_holding_cost` | Units of stock on hand × a per-unit holding rate (simulated). |
 | 6 | Stockouts | `stockouts` | Shipments that could not be placed (no capacity) or demands that no warehouse could serve (pending). |
 | 7 | Late Deliveries | `late_deliveries` | Deliveries carried on a vehicle loaded above the late-delivery threshold (a documented **proxy**). |
 | 8 | Orders Fulfilled | `orders_fulfilled` | Shipments assigned / demands placed / stops routed. |
-| 9 | Optimization Runtime | `optimization_runtime_ms` | Wall-clock time of the solve (`Timer`, Week 5). |
+| 9 | Optimization Runtime | `optimization_runtime_ms` | Wall-clock time of the solve (`Timer`, Stage 5). |
 | 10 | Solver Status | `solver_status` | `OPTIMAL` / `FEASIBLE` (CP-SAT) or `OK` (heuristics). |
 | 11 | Number of Constraints | `num_constraints` | Estimated from the model's structure (see below). |
 | 12 | Number of Variables | `num_variables` | Estimated from the model's structure (see below). |
@@ -42,7 +42,7 @@ run) and `vehicles_used`.
 ## Where each number comes from, by optimizer
 
 ```
-assignment  cost/distance/util : taken straight from AssignmentSolution (Week 5)
+assignment  cost/distance/util : taken straight from AssignmentSolution (Stage 5)
             stockouts          : len(unassigned_shipments)
             late               : shipments on vehicles with utilization > 0.90
             orders             : len(assignments)
@@ -68,10 +68,10 @@ routes      distance           : the optimized (nearest-neighbour) distance
 
 The Olist data has **no accounting figures**, so two rates are *simulated*
 assumptions, defined once in `optimization/execution_config.py` and clearly
-labelled — the same real-vs-simulated discipline as Week 2:
+labelled — the same real-vs-simulated discipline as Stage 2:
 
 - **`OPT_DEFAULT_COST_PER_KM`** (default `1.20`) — the per-km rate used to price a
-  plan that has no vehicle rate. `1.20` matches the rate Week 2 used to compute
+  plan that has no vehicle rate. `1.20` matches the rate Stage 2 used to compute
   `delivery_routes.estimated_cost`, so the numbers line up with the stored data.
 - **`OPT_INVENTORY_HOLDING_COST_PER_UNIT`** (default `0.10`) — the cost of holding
   one unit of stock for the reporting period. Inventory holding cost =
@@ -83,7 +83,7 @@ labelled — the same real-vs-simulated discipline as Week 2:
 
 This project has **no live delivery clock**, so "late deliveries" is a documented
 **proxy**: a shipment carried on a vehicle loaded above
-`OPT_LATE_DELIVERY_LOAD_THRESHOLD` (default `0.90`, the same fraction Week 5 calls
+`OPT_LATE_DELIVERY_LOAD_THRESHOLD` (default `0.90`, the same fraction Stage 5 calls
 "overloaded") is flagged *at risk of being late*. A stressed, over-full vehicle
 is the operational signal we use. Under a demand spike or a vehicle failure the
 remaining vehicles run near capacity, so this count rises — exactly the pressure
@@ -93,7 +93,7 @@ those scenarios model.
 
 ## "Number of variables / constraints" is an honest estimate
 
-The Week 5 solvers do not report their raw model size back, and Week 6 does not
+The Stage 5 solvers do not report their raw model size back, and Stage 6 does not
 modify them. So the CP-SAT problems (assignment, fleet) have their size
 **estimated from the problem's dimensions**, mirroring the exact structure each
 solver builds:

@@ -1,5 +1,5 @@
 """
-api/routers/ package  (Week 4)
+api/routers/ package  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 
 WHAT LIVES HERE: the ROUTERS - the actual URL endpoints, one file per entity:
@@ -22,7 +22,7 @@ THE GOLDEN RULE: ROUTERS ARE THIN
   A router only ever: (1) receives the HTTP request and its parameters,
   (2) calls a SERVICE function, (3) returns the result. It NEVER touches the
   database directly and holds NO business logic. That lives in services/. This
-  is what keeps the API easy to test and lets later weeks reuse the services
+  is what keeps the API easy to test and lets later stages reuse the services
   without going through HTTP. See docs/rest_api_design.md.
 
 WHAT ARE HTTP METHODS? (zero-knowledge version)
@@ -49,10 +49,10 @@ from api.routers import (
 )
 
 # The ordered list main.py registers. One APIRouter per module (named `router`).
-# The optimization router (Week 5) exposes the /optimize/* endpoints (the raw,
-# stateless solvers). The execution router (Week 6) exposes the /optimization/*
+# The optimization router (Stage 5) exposes the /optimize/* endpoints (the raw,
+# stateless solvers). The execution router (Stage 6) exposes the /optimization/*
 # endpoints (the execution layer: run, measure, evaluate, and STORE runs). The
-# agents router (Week 7) exposes the /agents/* endpoints (the AI orchestration
+# agents router (Stage 7) exposes the /agents/* endpoints (the AI orchestration
 # layer that drives the execution layer to make autonomous decisions).
 all_routers = [
     customers.router,

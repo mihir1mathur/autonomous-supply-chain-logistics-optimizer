@@ -1,6 +1,6 @@
 """
 ============================================================================
-SHARED SCHEMA BASE  (Week 4)
+SHARED SCHEMA BASE  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -14,7 +14,7 @@ WHY `from_attributes=True` MATTERS (the ORM bridge)
   builds a model from a dict; `from_attributes=True` tells it "you may also
   build me from an OBJECT by reading its attributes" - i.e. read
   warehouse.warehouse_id, warehouse.capacity, ... directly off the SQLAlchemy
-  row. This is the clean seam between the database objects (Week 3 models) and
+  row. This is the clean seam between the database objects (Stage 3 models) and
   the JSON the API returns.
 
 ORMModel is the base class every <Entity>Response inherits from.

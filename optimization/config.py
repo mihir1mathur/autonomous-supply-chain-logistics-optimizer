@@ -1,6 +1,6 @@
 """
 ============================================================================
-OPTIMIZATION CONFIG  (Week 5)
+OPTIMIZATION CONFIG  (Stage 5)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -13,7 +13,7 @@ WHAT THIS FILE DOES
   ask for. Each setting has a safe default, so the engine runs with no .env at
   all, and each can be overridden by an environment variable (prefixed OPT_).
 
-WHY A SEPARATE CONFIG (the same reasoning as Weeks 3 and 4)
+WHY A SEPARATE CONFIG (the same reasoning as Stages 3 and 4)
 -----------------------------------------------------------
   Values that a user might reasonably want to change - a solver time limit, a
   utilization threshold - do not belong hidden inside the solver code. Keeping
@@ -23,7 +23,7 @@ WHY A SEPARATE CONFIG (the same reasoning as Weeks 3 and 4)
 
 HOW IT WORKS (pydantic-settings, exactly like api/config.py)
 ------------------------------------------------------------
-  APISettings in Week 4 used pydantic-settings' BaseSettings with the API_
+  APISettings in Stage 4 used pydantic-settings' BaseSettings with the API_
   prefix. This mirrors that pattern with the OPT_ prefix, so the whole project
   configures the same way.
 ============================================================================
@@ -57,9 +57,9 @@ class OptimizationSettings(BaseSettings):
     # How many worker threads CP-SAT may use in parallel (0 = let it decide).
     solver_workers: int = 8
 
-    # ---- Distance model (kept identical to Week 2) ------------------------
+    # ---- Distance model (kept identical to Stage 2) ------------------------
     # Straight-line (haversine) distances are scaled by this to approximate
-    # real road distance. 1.30 is the value Week 2 used for delivery_routes.
+    # real road distance. 1.30 is the value Stage 2 used for delivery_routes.
     winding_factor: float = 1.30
 
     # ---- Simulated shipment size (see optimization/utils.py) --------------
@@ -86,7 +86,7 @@ class OptimizationSettings(BaseSettings):
 
     # ---- Route optimization -----------------------------------------------
     # The default routing strategy. "nearest_neighbor" is the simple heuristic
-    # implemented in Week 5; the interface is ready for a future VRP solver.
+    # implemented in Stage 5; the interface is ready for a future VRP solver.
     default_route_strategy: str = "nearest_neighbor"
 
 

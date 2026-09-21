@@ -1,27 +1,27 @@
 """
 ============================================================================
-WEEK 2 - WAREHOUSE GENERATION SCRIPT
+STAGE 2 - WAREHOUSE GENERATION SCRIPT
 Project: Supply Chain & Logistics Optimizer
 Dataset: Brazilian E-Commerce Public Dataset by Olist
 ============================================================================
 
-WHERE WE ARE (continuity from Week 0 and Week 1)
+WHERE WE ARE (continuity from Stage 0 and Stage 1)
 ------------------------------------------------
-  Week 0 = understood the business + profiled the 9 raw CSV files.
-  Week 1 = CLEANED those files into processed/ and JOINED them into one
+  Stage 0 = understood the business + profiled the 9 raw CSV files.
+  Stage 1 = CLEANED those files into processed/ and JOINED them into one
            order-item master table, and wrote the logistics DATA MODEL
            (docs/logistics_data_model.md). That model made one key decision:
 
                an Olist SELLER is treated as a WAREHOUSE / fulfillment origin.
 
-WHY WE ARE HERE NOW (Week 2)
+WHY WE ARE HERE NOW (Stage 2)
 ----------------------------
   Olist records online SALES. It does NOT contain a logistics operation:
   there are no warehouses, no stock levels, no trucks, no live traffic.
   To build (later) an optimization + planning system, we need those things.
 
-  So Week 2 SIMULATES a realistic logistics layer ON TOP of the real,
-  cleaned Week 1 data. This first script builds the WAREHOUSES - the places
+  So Stage 2 SIMULATES a realistic logistics layer ON TOP of the real,
+  cleaned Stage 1 data. This first script builds the WAREHOUSES - the places
   shipments start from.
 
 WHAT IS REAL vs WHAT IS SIMULATED HERE
@@ -40,7 +40,7 @@ OUTPUT
 ------
     simulation/warehouses.csv   (one row per warehouse)
 
-GOLDEN RULE (unchanged from Week 1)
+GOLDEN RULE (unchanged from Stage 1)
 -----------------------------------
   We only READ from data/ and processed/.  We only WRITE to simulation/.
   The original raw CSV files in data/ are NEVER modified.
@@ -48,9 +48,9 @@ GOLDEN RULE (unchanged from Week 1)
 HOW TO RUN
 ----------
     pip install pandas numpy
-    python notebooks/week2_generate_warehouses.py
+    python notebooks/warehouse_generation.py
 
-  Run this FIRST. The other Week 2 scripts read simulation/warehouses.csv.
+  Run this FIRST. The other Stage 2 scripts read simulation/warehouses.csv.
 ============================================================================
 """
 
@@ -83,7 +83,7 @@ TOP_N_WAREHOUSES = 150
 
 
 # ---------------------------------------------------------------------------
-# Small helper functions (same reporting style as the Week 1 scripts).
+# Small helper functions (same reporting style as the Stage 1 scripts).
 # ---------------------------------------------------------------------------
 def banner(title):
     print("\n" + "=" * 78)
@@ -96,7 +96,7 @@ def step(msg):
 
 
 def load_processed(file_name):
-    """Read one CLEANED CSV from processed/ (produced in Week 1)."""
+    """Read one CLEANED CSV from processed/ (produced in Stage 1)."""
     return pd.read_csv(os.path.join(PROCESSED_DIR, file_name))
 
 
@@ -104,7 +104,7 @@ def load_processed(file_name):
 # MAIN
 # ---------------------------------------------------------------------------
 def main():
-    banner("WEEK 2 - WAREHOUSE GENERATION")
+    banner("STAGE 2 - WAREHOUSE GENERATION")
     print("Reading cleaned data from processed/ (never modified).")
     print(f"Writing simulated warehouses to: {SIM_DIR}")
 
@@ -129,7 +129,7 @@ def main():
     step(f"Computed real shipped volume for {len(volume):,} sellers.")
 
     # -------------------------------------------------------------------
-    # 3) Attach coordinates (REAL) via the zip -> lat/lng lookup from Week 1.
+    # 3) Attach coordinates (REAL) via the zip -> lat/lng lookup from Stage 1.
     #    Routing later needs a point on the map for each warehouse.
     # -------------------------------------------------------------------
     sellers = sellers.merge(
@@ -205,7 +205,7 @@ def main():
     # -------------------------------------------------------------------
     # 6) Build a clean warehouse_id and assemble the final columns.
     #    warehouse_id (WH-0001 ...) is a stable, human-readable key the other
-    #    Week 2 files (inventory, vehicles, routes) will reference.
+    #    Stage 2 files (inventory, vehicles, routes) will reference.
     # -------------------------------------------------------------------
     chosen["warehouse_id"] = [f"WH-{i+1:04d}" for i in range(len(chosen))]
 
@@ -227,8 +227,8 @@ def main():
     step(f"Saved -> simulation/warehouses.csv  ({len(warehouses):,} rows)")
 
     banner("DONE - warehouses generated")
-    print("  Next: notebooks/week2_inventory_simulation.py  (stock per warehouse)")
-    print("        notebooks/week2_vehicle_generation.py    (fleet per warehouse)")
+    print("  Next: notebooks/inventory_simulation.py  (stock per warehouse)")
+    print("        notebooks/vehicle_generation.py    (fleet per warehouse)")
     print("  Reminder: data/ and processed/ were NOT modified.")
 
 

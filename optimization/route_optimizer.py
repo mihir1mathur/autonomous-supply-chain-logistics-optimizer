@@ -1,6 +1,6 @@
 """
 ============================================================================
-ROUTE OPTIMIZER  (Week 5, simplified)
+ROUTE OPTIMIZER  (Stage 5, simplified)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -11,7 +11,7 @@ THE PROBLEM (in plain words)
   back and forth) burns distance, time, fuel, and money. Choosing a good order
   is the heart of route optimization.
 
-WHAT WEEK 5 IMPLEMENTS: THE NEAREST-NEIGHBOUR HEURISTIC
+WHAT STAGE 5 IMPLEMENTS: THE NEAREST-NEIGHBOUR HEURISTIC
 -------------------------------------------------------
   A HEURISTIC is a quick, sensible rule of thumb that usually gives a good
   answer without guaranteeing the perfect one. Nearest-neighbour is the classic
@@ -27,20 +27,20 @@ WHY IT IS ONLY A STARTING POINT (and the interface for the future)
   Nearest-neighbour is greedy: an early cheap hop can force an expensive one
   later, so it does not find the true shortest tour. The full problem is the
   Vehicle Routing Problem (VRP), which OR-Tools has a dedicated solver for
-  (multiple vehicles, capacities, time windows). To keep Week 5 ready for that,
+  (multiple vehicles, capacities, time windows). To keep Stage 5 ready for that,
   routing is written behind a small STRATEGY interface:
 
       RoutingStrategy (abstract)
         - NearestNeighbourStrategy   <- implemented now
         - VehicleRoutingProblemStrategy <- placeholder, raises NotImplementedError
 
-  A future week drops in the VRP strategy without touching the solver's callers:
+  A later stage drops in the VRP strategy without touching the solver's callers:
   same inputs, same RouteSolution output. This is the Open/Closed principle from
   SOLID - open to a better algorithm, closed against rewrites of everything else.
 
 DISTANCES
 ---------
-  Legs use the same estimate as the rest of Week 5 and Week 2: haversine
+  Legs use the same estimate as the rest of Stage 5 and Stage 2: haversine
   distance * winding factor. We also compute the NAIVE distance (the stops in
   the order they arrived) so we can report how much the optimizer saved.
 ============================================================================
@@ -129,8 +129,8 @@ class NearestNeighbourStrategy(RoutingStrategy):
 class VehicleRoutingProblemStrategy(RoutingStrategy):
     """
     PLACEHOLDER for a future OR-Tools VRP solver (multiple vehicles, capacities,
-    time windows). Intentionally not implemented in Week 5: it exists so the
-    interface and the wiring are ready. A later week fills in order_stops() (or
+    time windows). Intentionally not implemented in Stage 5: it exists so the
+    interface and the wiring are ready. A later stage fills in order_stops() (or
     a richer solve) using ortools.constraint_solver.routing_enums / RoutingModel.
     """
 
@@ -144,7 +144,7 @@ class VehicleRoutingProblemStrategy(RoutingStrategy):
         winding_factor: float,
     ) -> list[int]:
         raise NotImplementedError(
-            "The VRP strategy is reserved for a future week. Use "
+            "The VRP strategy is reserved for a later stage. Use "
             "'nearest_neighbor' for now."
         )
 

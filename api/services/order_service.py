@@ -1,6 +1,6 @@
 """
 ============================================================================
-ORDER SERVICE  (Week 4)   entity: orders
+ORDER SERVICE  (Stage 4)   entity: orders
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 

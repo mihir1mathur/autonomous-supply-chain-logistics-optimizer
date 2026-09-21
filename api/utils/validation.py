@@ -1,13 +1,13 @@
 """
 ============================================================================
-REUSABLE VALIDATION & ALLOWED-VALUE LISTS (ENUMS)  (Week 4)
+REUSABLE VALIDATION & ALLOWED-VALUE LISTS (ENUMS)  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS FILE HOLDS
 --------------------
   The lists of ALLOWED VALUES for the "status"-style columns, taken directly
-  from the Week 2 simulation rules and the Week 3 model comments. Keeping them
+  from the Stage 2 simulation rules and the Stage 3 model comments. Keeping them
   here (once) means the Pydantic schemas, the services, and the docs all agree
   on exactly which values are legal - there is a single source of truth.
 
@@ -18,13 +18,13 @@ WHY USE ENUMS?
   "free" or "busy" or a typo. Declaring that as an enum means Pydantic rejects
   anything else automatically (a clean 422), and editors/Swagger show the exact
   choices. This is the same idea as the CHECK-constraint values documented in
-  Week 3, enforced now at the API boundary before bad data can ever reach the
+  Stage 3, enforced now at the API boundary before bad data can ever reach the
   database.
 
   We define them as `str, Enum` subclasses so they behave like plain strings
   (JSON-friendly) but with a locked set of members.
 
-THE STOCK RULE (reused verbatim from Week 2 / Week 3 crud.py)
+THE STOCK RULE (reused verbatim from Stage 2 / Stage 3 crud.py)
 -------------------------------------------------------------
   out_of_stock  if stock_level <= 0
   low_stock     if stock_level <= reorder_threshold
@@ -38,7 +38,7 @@ from enum import Enum
 
 
 # ===========================================================================
-# ALLOWED-VALUE ENUMS  (mirroring the Week 2/3 model comments)
+# ALLOWED-VALUE ENUMS  (mirroring the Stage 2/3 model comments)
 # ===========================================================================
 class OperatingStatus(str, Enum):
     """warehouses.operating_status"""
@@ -109,12 +109,12 @@ class DisruptionStatus(str, Enum):
 
 
 # ===========================================================================
-# SHARED BUSINESS RULE  (kept identical to database/crud.py Week 3)
+# SHARED BUSINESS RULE  (kept identical to database/crud.py Stage 3)
 # ===========================================================================
 def recompute_inventory_status(stock_level: int, reorder_threshold: int) -> str:
     """
     Return the correct inventory_status for a stock level, using the SAME rule
-    as Week 2 and database/crud.py. The service layer calls this after any stock
+    as Stage 2 and database/crud.py. The service layer calls this after any stock
     change so stock_level and inventory_status can never drift apart.
     """
     if stock_level <= 0:

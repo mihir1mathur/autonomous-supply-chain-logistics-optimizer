@@ -1,21 +1,21 @@
-# Optimization Architecture (Week 5)
+# Optimization Architecture (Stage 5)
 
-This document explains the **architecture** of the Week 5 optimization engine:
-the new `optimization/` package, how it plugs into the Week 4 FastAPI backend
-and the Week 3 database, and the design principles that keep it modular and
-ready for later weeks.
+This document explains the **architecture** of the Stage 5 optimization engine:
+the new `optimization/` package, how it plugs into the Stage 4 FastAPI backend
+and the Stage 3 database, and the design principles that keep it modular and
+ready for later stages.
 
 For *why* OR-Tools and the mathematics behind the solvers, see
 [`or_tools_design.md`](or_tools_design.md); for the step-by-step data flow of
 each optimizer see [`optimization_flow.md`](optimization_flow.md); for how
-future weeks extend this see [`future_scaling.md`](future_scaling.md).
+later stages extend this see [`future_scaling.md`](future_scaling.md).
 
 ---
 
-## What Week 5 adds
+## What Stage 5 adds
 
-Weeks 3 and 4 gave the project a database and a REST API that could **store and
-serve** supply-chain data. Week 5 adds the ability to **make decisions** with
+Stages 3 and 4 gave the project a database and a REST API that could **store and
+serve** supply-chain data. Stage 5 adds the ability to **make decisions** with
 that data: which vehicle carries which shipment, which warehouse should serve a
 demand, how to balance a fleet, and what order to visit delivery stops in.
 
@@ -25,10 +25,10 @@ existing FastAPI app.
 
 ---
 
-## The layering (an extension of the Week 4 layering)
+## The layering (an extension of the Stage 4 layering)
 
-Week 4 established a strict layering: `Client → Router → Service → SQLAlchemy →
-PostgreSQL`. Week 5 slots in cleanly, adding one new layer — the engine — that
+Stage 4 established a strict layering: `Client → Router → Service → SQLAlchemy →
+PostgreSQL`. Stage 5 slots in cleanly, adding one new layer — the engine — that
 the service calls:
 
 ```
@@ -38,8 +38,8 @@ Client  (browser, dashboard, agent, script)
 Optimization Router     api/routers/optimization.py     (thin: HTTP only)
   ▼
 Optimization Service    api/services/optimization_service.py
-  │   reads the Week 3 DB, maps rows -> engine inputs, calls a solver
-  ├───────────────► SQLAlchemy models + PostgreSQL   (Week 3, reused)
+  │   reads the Stage 3 DB, maps rows -> engine inputs, calls a solver
+  ├───────────────► SQLAlchemy models + PostgreSQL   (Stage 3, reused)
   ▼
 Optimization Engine     optimization/*.py              (OR-Tools, DB-free)
   ▼
@@ -67,7 +67,7 @@ the database and the engine.
 | `route_optimizer.py` | Problem 4 — order stops into a short route (nearest-neighbour; VRP interface reserved). |
 
 Each solver exposes both a **class** (`AssignmentSolver`, …) and a ready-made
-**default instance** (`assignment_solver`, …), mirroring how the Week 4 entity
+**default instance** (`assignment_solver`, …), mirroring how the Stage 4 entity
 services expose both a class and a singleton.
 
 ---
@@ -86,19 +86,19 @@ same capacity rule, but a different objective (consolidate vs. spread).
 
 ---
 
-## How it reuses Weeks 3 and 4
+## How it reuses Stages 3 and 4
 
-- **Week 3 models, unchanged.** The service reads `warehouses`, `vehicles`,
+- **Stage 3 models, unchanged.** The service reads `warehouses`, `vehicles`,
   `inventory`, and `delivery_routes` through the existing SQLAlchemy models. No
   model or table was modified. The `delivery_routes.vehicle_id` column that
-  Week 3 reserved is exactly where an assignment result can be written back.
-- **Week 4 patterns, reused.** The router is thin; the service holds the logic
+  Stage 3 reserved is exactly where an assignment result can be written back.
+- **Stage 4 patterns, reused.** The router is thin; the service holds the logic
   and is the only layer touching the database; responses use Pydantic schemas
   with `from_attributes=True` (which read a solution dataclass's attributes the
   same way they read a SQLAlchemy row); errors flow through the same
   `AppError` handlers, so a bad request returns the same clean JSON envelope.
-- **Week 2 distance model, reused.** Distances use the haversine formula scaled
-  by the same `1.30` winding factor Week 2 used, so optimizer distances line up
+- **Stage 2 distance model, reused.** Distances use the haversine formula scaled
+  by the same `1.30` winding factor Stage 2 used, so optimizer distances line up
   with the stored `estimated_distance_km`.
 
 ---
@@ -111,12 +111,12 @@ same capacity rule, but a different objective (consolidate vs. spread).
   HTTP.
 - **Open/Closed.** Routing is written behind a `RoutingStrategy` interface with
   a `NearestNeighbourStrategy` today and a reserved `VehicleRoutingProblem`
-  strategy. A future week adds the VRP solver without changing any caller.
+  strategy. A later stage adds the VRP solver without changing any caller.
 - **Dependency Inversion.** The engine depends on simple data (the input
   dataclasses), not on FastAPI or SQLAlchemy. High-level policy (the service)
   depends on abstractions (the solver interfaces), not the other way round.
 
-This is what makes the engine reusable: the Week 7 CrewAI agents will call the
+This is what makes the engine reusable: the Stage 7 CrewAI agents will call the
 same service methods (or the solvers directly) without going through HTTP.
 
 ---
@@ -128,5 +128,5 @@ contains. Because the vehicle-capacity constraints only become meaningful if
 each shipment has a size, the service fills that gap with a **stable, simulated
 package count** derived deterministically from the shipment id
 (`optimization/utils.py::simulated_package_demand`). This follows the project's
-long-standing discipline — established in Week 2 — of clearly separating real
+long-standing discipline — established in Stage 2 — of clearly separating real
 Olist data from documented, reproducible simulated values.

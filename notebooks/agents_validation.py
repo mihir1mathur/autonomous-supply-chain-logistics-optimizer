@@ -1,14 +1,14 @@
 """
 ============================================================================
-WEEK 7 - AI MULTI-AGENT ORCHESTRATION VALIDATION
+STAGE 7 - AI MULTI-AGENT ORCHESTRATION VALIDATION
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  Proves the Week 7 orchestration layer is CORRECT, not just that it runs. It
+  Proves the Stage 7 orchestration layer is CORRECT, not just that it runs. It
   drives the REST API and asserts the properties every autonomous decision must
-  have, marking each check PASS/FAIL so the output doubles as a Week 7
+  have, marking each check PASS/FAIL so the output doubles as a Stage 7
   validation CHECKLIST:
 
     STATUS      the /agents/status endpoint reports a valid mode, the five
@@ -19,7 +19,7 @@ WHAT THIS SCRIPT DOES
     REASONING   the Planner infers the optimizer and the Scenario agent picks
                 the right existing scenario from plain-language requests, and
                 explicit overrides are honoured.
-    REUSE       the optimization the crew runs goes THROUGH the Week 6 execution
+    REUSE       the optimization the crew runs goes THROUGH the Stage 6 execution
                 service (never OR-Tools directly): it carries the twelve KPIs and
                 a before-vs-after evaluation, and a stored run has a run_id.
     WHAT-IF     /agents/simulate produces a full decision WITHOUT storing a run.
@@ -29,12 +29,12 @@ WHAT THIS SCRIPT DOES
                 fails LOUDLY: success=false with the failure captured in the
                 trace, never a 500.
     OFFLINE     the whole layer works with NO LLM key (deterministic mode).
-    REGRESSION  Week 4 / 5 / 6 endpoints still work (no regressions).
+    REGRESSION  Stage 4 / 5 / 6 endpoints still work (no regressions).
     ERRORS      an invalid request body returns a clean 422.
 
 HOW THE REQUESTS ARE MADE
 -------------------------
-  Same as the Week 4/5/6 scripts: the in-process TestClient by default, or a
+  Same as the Stage 4/5/6 scripts: the in-process TestClient by default, or a
   real running server if API_BASE_URL is set. No LLM key is needed - the layer
   runs deterministically.
 
@@ -42,8 +42,8 @@ PREREQUISITES
 -------------
         pip install -r requirements.txt
         python database/init_db.py
-        python notebooks/week3_load_database.py
-        python notebooks/week7_validation.py
+        python notebooks/load_database.py
+        python notebooks/agents_validation.py
 ============================================================================
 """
 
@@ -194,10 +194,10 @@ def validate_reasoning(client, results):
 
 
 # ===========================================================================
-# REUSE  (the crew drives the Week 6 execution service, not OR-Tools)
+# REUSE  (the crew drives the Stage 6 execution service, not OR-Tools)
 # ===========================================================================
 def validate_reuse(client, results):
-    banner("REUSE  (decisions go THROUGH the Week 6 execution service)")
+    banner("REUSE  (decisions go THROUGH the Stage 6 execution service)")
     d = client.post("/agents/decide",
                     json={"goal": "assign shipments for high demand", "max_shipments": 40}).json()
     opt = d["optimization"]
@@ -214,7 +214,7 @@ def validate_reuse(client, results):
         "optimization_runtime_ms", "solver_status", "num_constraints", "num_variables",
     }
     results.append(check(
-        "the run carries all twelve Week 6 KPIs",
+        "the run carries all twelve Stage 6 KPIs",
         expected_kpis.issubset(set(kpis.keys())),
         f"missing={expected_kpis - set(kpis.keys())}",
     ))
@@ -285,22 +285,22 @@ def validate_errors(client, results):
 
 
 # ===========================================================================
-# REGRESSION  (Weeks 4/5/6 untouched)
+# REGRESSION  (Stages 4/5/6 untouched)
 # ===========================================================================
 def validate_regression(client, results):
-    banner("REGRESSION  (Weeks 4 / 5 / 6 endpoints still work)")
+    banner("REGRESSION  (Stages 4 / 5 / 6 endpoints still work)")
     r = client.get("/warehouses", params={"page": 1, "page_size": 1})
-    results.append(check("Week 4: GET /warehouses returns 200", r.status_code == 200, f"got {r.status_code}"))
+    results.append(check("Stage 4: GET /warehouses returns 200", r.status_code == 200, f"got {r.status_code}"))
     r = client.get("/optimize/status")
-    results.append(check("Week 5: GET /optimize/status returns 200", r.status_code == 200, f"got {r.status_code}"))
+    results.append(check("Stage 5: GET /optimize/status returns 200", r.status_code == 200, f"got {r.status_code}"))
     r = client.post("/optimization/run", json={"optimizer": "assignment", "scenario": "normal", "max_shipments": 20})
     results.append(check(
-        "Week 6: POST /optimization/run still succeeds",
+        "Stage 6: POST /optimization/run still succeeds",
         r.status_code == 200 and r.json().get("success") is True,
         f"got {r.status_code}",
     ))
     r = client.get("/optimization/scenarios")
-    results.append(check("Week 6: GET /optimization/scenarios returns 200", r.status_code == 200, f"got {r.status_code}"))
+    results.append(check("Stage 6: GET /optimization/scenarios returns 200", r.status_code == 200, f"got {r.status_code}"))
 
 
 # ===========================================================================
@@ -325,7 +325,7 @@ def main():
     total = len(results)
     print(f"  {passed}/{total} checks passed.")
     if passed == total:
-        print("  ALL WEEK 7 CHECKS PASSED - the AI orchestration layer is correct,")
+        print("  ALL STAGE 7 CHECKS PASSED - the AI orchestration layer is correct,")
         print("  additive, and drives the existing platform without regressions.")
     else:
         print("  SOME CHECKS FAILED - see the [FAIL] lines above.")

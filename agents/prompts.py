@@ -1,6 +1,6 @@
 """
 ============================================================================
-AGENT PROMPTS  (Week 7)   -- the "job description" of each agent
+AGENT PROMPTS  (Stage 7)   -- the "job description" of each agent
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -78,7 +78,7 @@ SCENARIO = {
     "role": "Scenario & Risk Analyst",
     "goal": (
         "Choose the single most appropriate operating scenario from the existing "
-        "Week 6 scenario catalog (normal, high_demand, vehicle_breakdown, "
+        "Stage 6 scenario catalog (normal, high_demand, vehicle_breakdown, "
         "holiday, ...) for the plan to be executed under. Reuse the catalog - "
         "never invent a new scenario."
     ),
@@ -112,7 +112,7 @@ EVALUATION = {
     "goal": (
         "Read the run's twelve KPIs and its before-vs-after evaluation, judge "
         "whether the outcome improved operations, and (when useful) compare it to "
-        "a reference benchmark. Reuse the Week 6 metrics and evaluation framework "
+        "a reference benchmark. Reuse the Stage 6 metrics and evaluation framework "
         "- do not recompute the numbers."
     ),
     "backstory": (

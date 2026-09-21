@@ -1,16 +1,16 @@
-# Database Schema Reference (Week 3)
+# Database Schema Reference (Stage 3)
 
-The exact tables, columns, keys, and indexes created by the Week 3 models. For
+The exact tables, columns, keys, and indexes created by the Stage 3 models. For
 the reasoning behind these choices, see [`database_design.md`](database_design.md).
 
 - **PK** = primary key · **FK** = foreign key · **IDX** = indexed column.
 - Types are the logical types the SQLAlchemy models declare (PostgreSQL stores
   them as `VARCHAR`, `INTEGER`, `DOUBLE PRECISION`, `DATE`, `TIMESTAMP`, `TEXT`).
-- **Source** notes whether the data is real Olist data, simulated (Week 2), or
+- **Source** notes whether the data is real Olist data, simulated (Stage 2), or
   computed.
 
 There are **9 tables**. They are created by `database/init_db.py` from the
-models in `models/`, and loaded from CSV by `notebooks/week3_load_database.py`.
+models in `models/`, and loaded from CSV by `notebooks/load_database.py`.
 
 ---
 
@@ -52,7 +52,7 @@ models in `models/`, and loaded from CSV by `notebooks/week3_load_database.py`.
 | `seller_state` | String | IDX | |
 
 **Relationships:** one seller → zero or one `warehouse` (the top 150 sellers
-were promoted to warehouses in Week 2).
+were promoted to warehouses in Stage 2).
 
 ## `products` — inventory item catalog (real)
 
@@ -60,7 +60,7 @@ were promoted to warehouses in Week 2).
 |--------|------|-------------|-------|
 | `product_id` | String | **PK** | |
 | `product_category_name` | String | IDX | Portuguese (original) |
-| `product_category_name_english` | String | IDX | added in Week 1 |
+| `product_category_name_english` | String | IDX | added in Stage 1 |
 | `product_name_length` | Integer | nullable | |
 | `product_description_length` | Integer | nullable | |
 | `product_photos_qty` | Integer | nullable | |
@@ -172,7 +172,7 @@ optional `vehicle`; can be pointed at by `disruptions`.
 | `location_city` | String | | real place name |
 | `location_state` | String | IDX | |
 | `affected_warehouse_id` | String | **FK → warehouses**, IDX, nullable | NULL for area-wide events |
-| `affected_route_id` | String | **FK → delivery_routes**, IDX, nullable | reserved for Week 7 replanning; NULL now |
+| `affected_route_id` | String | **FK → delivery_routes**, IDX, nullable | reserved for Stage 7 replanning; NULL now |
 | `start_time` | DateTime | nullable | |
 | `end_time` | DateTime | nullable | |
 | `impact_description` | Text | | |
@@ -183,12 +183,12 @@ optional `vehicle`; can be pointed at by `disruptions`.
 
 ---
 
-## Reserved for the future (not built this week)
+## Reserved for the future (not yet built)
 
 - **`delivery_routes.vehicle_id`** and **`disruptions.affected_route_id`** exist
   and are indexed but stay `NULL` — they let OR-Tools (vehicle assignment) and
-  Week 7 (disruption-driven replanning) attach data with no schema change.
-- **`agent_decisions`** — a planned audit table (Week 5, CrewAI) recording what
+  Stage 7 (disruption-driven replanning) attach data with no schema change.
+- **`agent_decisions`** — a planned audit table (Stage 5, CrewAI) recording what
   each agent decided and why, referencing the order/route/inventory it acted on.
   It is documented here so its future foreign keys are anticipated, but it is
   **not** created yet.
@@ -204,11 +204,11 @@ createdb supply_chain_optimizer
 # 2. create all tables, indexes, and foreign keys from the models
 python database/init_db.py
 
-# 3. load the Week 1 + Week 2 CSVs into the tables (read-only on the CSVs)
-python notebooks/week3_load_database.py
+# 3. load the Stage 1 + Stage 2 CSVs into the tables (read-only on the CSVs)
+python notebooks/load_database.py
 
 # 4. verify every CRUD function against the loaded data
-python notebooks/week3_test_crud.py
+python notebooks/database_crud_demo.py
 ```
 
 The loader inserts in batches with `INSERT ... ON CONFLICT DO NOTHING`, so it is

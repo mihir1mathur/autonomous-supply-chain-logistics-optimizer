@@ -1,6 +1,6 @@
 """
 ============================================================================
-WEEK 0 - DATASET ANALYSIS SCRIPT
+STAGE 0 - DATASET ANALYSIS SCRIPT
 Project: Supply Chain & Logistics Optimizer
 Dataset: Brazilian E-Commerce Public Dataset by Olist
 ============================================================================
@@ -8,9 +8,8 @@ Dataset: Brazilian E-Commerce Public Dataset by Olist
 WHAT IS THIS FILE?
 ------------------
 This is a simple Python script that *reads* every CSV file in the data/
-folder and *describes* it for us. It does NOT change anything. It only looks
-at the data and prints a friendly report so a complete beginner can
-understand what each file contains.
+folder and *describes* it. It does NOT change anything. It only looks
+at the data and prints a clear report of what each file contains.
 
 Think of it like this:
     You just received 9 boxes (the 9 CSV files).
@@ -24,7 +23,7 @@ HOW TO RUN IT
 -------------
 1. Open a terminal in the project root: "D:\\Supply Chain Logistics Optimizer"
 2. Make sure pandas is installed:   pip install pandas
-3. Run:                             python notebooks/week0_dataset_analysis.py
+3. Run:                             python notebooks/dataset_analysis.py
 
 ============================================================================
 """
@@ -77,7 +76,7 @@ CSV_FILES = [
 # prints a full report about that file. We call it once for each CSV.
 # ---------------------------------------------------------------------------
 def describe_csv(file_name):
-    """Load one CSV file and print a beginner-friendly report about it."""
+    """Load one CSV file and print a clear report about it."""
 
     file_path = os.path.join(DATA_DIR, file_name)
 
@@ -170,7 +169,7 @@ def describe_csv(file_name):
 # ---------------------------------------------------------------------------
 def main():
     print("=" * 78)
-    print("WEEK 0 DATASET ANALYSIS - Supply Chain & Logistics Optimizer")
+    print("STAGE 0 DATASET ANALYSIS - Supply Chain & Logistics Optimizer")
     print("Reading every CSV in the data/ folder and describing it.")
     print(f"Data folder: {DATA_DIR}")
     print("=" * 78)

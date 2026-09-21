@@ -1,6 +1,6 @@
 """
 ============================================================================
-WEEK 3 - CRUD TEST / DEMO
+STAGE 3 - CRUD TEST / DEMO
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -18,8 +18,8 @@ WHAT THIS SCRIPT DOES
 HOW TO RUN (from the project root)
 ----------------------------------
     python database/init_db.py
-    python notebooks/week3_load_database.py
-    python notebooks/week3_test_crud.py
+    python notebooks/load_database.py
+    python notebooks/database_crud_demo.py
 ============================================================================
 """
 
@@ -60,7 +60,7 @@ def first_id(db, model, column):
 
 def main():
     print("=" * 70)
-    print("WEEK 3 - CRUD TEST / DEMO")
+    print("STAGE 3 - CRUD TEST / DEMO")
     print("=" * 70)
 
     if not test_connection():
@@ -77,7 +77,7 @@ def main():
         sample_warehouse_id = first_id(db, Warehouse, Warehouse.warehouse_id)
 
         if sample_warehouse_id is None:
-            print("\nNo data found. Run notebooks/week3_load_database.py first.")
+            print("\nNo data found. Run notebooks/load_database.py first.")
             sys.exit(1)
 
         # ---- READ: single lookups ------------------------------------
@@ -161,7 +161,7 @@ def main():
             affected_warehouse_id=None,
             estimated_delay_minutes=120,
             status="active",
-            impact_description="TEST row created by week3_test_crud.py",
+            impact_description="TEST row created by database_crud_demo.py",
         )
         print(f"  Inserted: {created}")
         db.delete(created)

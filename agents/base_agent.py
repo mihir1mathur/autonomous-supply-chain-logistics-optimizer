@@ -1,12 +1,12 @@
 """
 ============================================================================
-BASE AGENT  (Week 7)   -- the shared machinery every agent inherits
+BASE AGENT  (Stage 7)   -- the shared machinery every agent inherits
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT A "BASE AGENT" IS (zero-knowledge version)
 -----------------------------------------------
-  The five Week 7 agents (Planner, Scenario, Optimization, Evaluation,
+  The five Stage 7 agents (Planner, Scenario, Optimization, Evaluation,
   Reporting) all do very different jobs, but they share the SAME surrounding
   chores every time they run:
 
@@ -17,7 +17,7 @@ WHAT A "BASE AGENT" IS (zero-knowledge version)
       * write one tidy entry into the run's execution trace.
 
   Rather than repeat that in five places, we put it ONCE here in BaseAgent, and
-  every agent inherits it - exactly the same idea as the Week 4 BaseService,
+  every agent inherits it - exactly the same idea as the Stage 4 BaseService,
   which gave every entity service its shared CRUD. Each agent then only has to
   implement its own real work in `_run(...)`; BaseAgent wraps that work in the
   logging / timing / error-handling / tracing shell.
@@ -66,7 +66,7 @@ class AgentValidationError(AgentError):
 # ===========================================================================
 class BaseAgent:
     """
-    Common base for every Week 7 agent: logging, timing, error handling,
+    Common base for every Stage 7 agent: logging, timing, error handling,
     structured-output validation, and execution tracing.
 
     Subclasses set `name` and `action` and implement `_run(**kwargs)`; they get
@@ -79,7 +79,7 @@ class BaseAgent:
 
     def __init__(self, settings: AgentSettings | None = None) -> None:
         # Shared configuration (LLM provider/model, switches). Every agent reads
-        # the same settings object, mirroring the Week 4/5/6 services.
+        # the same settings object, mirroring the Stage 4/5/6 services.
         self.settings = settings or get_agent_settings()
         # A logger namespaced under this agent, e.g. "agents.PlannerAgent".
         self.logger = get_logger(f"agents.{self.name}")

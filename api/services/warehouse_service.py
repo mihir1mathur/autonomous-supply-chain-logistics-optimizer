@@ -1,6 +1,6 @@
 """
 ============================================================================
-WAREHOUSE SERVICE  (Week 4)   entity: warehouses
+WAREHOUSE SERVICE  (Stage 4)   entity: warehouses
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 

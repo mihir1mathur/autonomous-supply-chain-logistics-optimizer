@@ -1,13 +1,13 @@
 """
 ============================================================================
-VEHICLE SERVICE  (Week 4)   entity: vehicles
+VEHICLE SERVICE  (Stage 4)   entity: vehicles
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 Business logic for vehicles (the delivery FLEET). Subclasses BaseService for
 generic CRUD + pagination and declares the vehicle-specific safelists.
 
-The Week 3 helper crud.update_vehicle_status already exists for the common
+The Stage 3 helper crud.update_vehicle_status already exists for the common
 "change a vehicle's availability" action; a future endpoint can delegate to it,
 while the generic update() here covers arbitrary field changes.
 ============================================================================

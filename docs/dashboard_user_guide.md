@@ -1,4 +1,4 @@
-# Dashboard User Guide (Week 8)
+# Dashboard User Guide (Stage 8)
 
 _A short, practical guide to running and using the Streamlit analytics
 dashboard for the Supply Chain & Logistics Optimizer._
@@ -6,12 +6,12 @@ dashboard for the Supply Chain & Logistics Optimizer._
 ## 1. Start the backend
 
 The dashboard shows what the backend produces, so start the backend first
-(Weeks 4–7). From the project root:
+(Stages 4–7). From the project root:
 
 ```bash
-pip install -r requirements.txt          # includes streamlit + plotly (Week 8)
+pip install -r requirements.txt          # includes streamlit + plotly (Stage 8)
 python database/init_db.py                # (if not already) create tables
-python notebooks/week3_load_database.py   # (if not already) load the data
+python notebooks/load_database.py   # (if not already) load the data
 uvicorn api.main:app --reload             # start the API at http://127.0.0.1:8000
 ```
 
@@ -95,7 +95,7 @@ status** and the current **configuration** (base URL, timeout, version).
 - **Improvement percentages** (evaluation) — the optimized plan compared to a
   naive baseline; a **positive** value is an improvement.
 
-The KPIs are computed by the backend (Week 6). The dashboard only formats and
+The KPIs are computed by the backend (Stage 6). The dashboard only formats and
 charts them.
 
 ## 6. How to export results
@@ -120,4 +120,4 @@ numbers to export.
   shows exactly which step failed (e.g. an unknown warehouse). Fix the input and
   try again.
 - **Verify everything with one command:**
-  `python notebooks/week8_validation.py` (prints a PASS/FAIL checklist).
+  `python notebooks/dashboard_validation.py` (prints a PASS/FAIL checklist).

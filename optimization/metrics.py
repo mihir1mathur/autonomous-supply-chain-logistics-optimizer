@@ -1,6 +1,6 @@
 """
 ============================================================================
-PERFORMANCE METRICS  (Week 6)   -- the KPIs of an optimization run
+PERFORMANCE METRICS  (Stage 6)   -- the KPIs of an optimization run
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -11,9 +11,9 @@ WHAT A "METRIC" (KPI) IS (zero-knowledge version)
   do the vehicles drive, how full are they, how many orders got fulfilled, how
   many could not, how long did the solve take. Those numbers are the KEY
   PERFORMANCE INDICATORS (KPIs) of the run. This file turns a solver's output
-  (the Solution dataclasses from Week 5) into ONE tidy RunMetrics object.
+  (the Solution dataclasses from Stage 5) into ONE tidy RunMetrics object.
 
-THE TWELVE METRICS THE WEEK 6 GOALS ASK FOR
+THE TWELVE METRICS THE STAGE 6 GOALS ASK FOR
 -------------------------------------------
   1.  Total Cost            - money the plan spends (distance x per-km rate)
   2.  Travel Distance       - total kilometres driven
@@ -30,18 +30,18 @@ THE TWELVE METRICS THE WEEK 6 GOALS ASK FOR
 
 WHY THIS FILE IS PURE (no database, no FastAPI, no OR-Tools)
 ------------------------------------------------------------
-  Exactly like cost_functions.py and constraints.py in Week 5, everything here
+  Exactly like cost_functions.py and constraints.py in Stage 5, everything here
   is a pure function of plain data: give it a Solution (and a little context)
   and it returns a RunMetrics. That keeps "how do we score a plan?" separate
   from "how do we solve?" and "how do we store?", and it makes every metric
-  trivially unit-testable. The Week 6 execution service supplies the context
+  trivially unit-testable. The Stage 6 execution service supplies the context
   (the source warehouse's utilization, the stock on hand) that the engine's
   Solution objects do not carry.
 
 A NOTE ON "NUMBER OF VARIABLES / CONSTRAINTS" (an honest estimate)
 ------------------------------------------------------------------
-  The Week 5 solvers do not report their raw model size back (and we do not
-  modify them - Week 6 is additive). So we ESTIMATE the model size from the
+  The Stage 5 solvers do not report their raw model size back (and we do not
+  modify them - Stage 6 is additive). So we ESTIMATE the model size from the
   problem's dimensions using the exact structure each solver builds (see
   assignment_solver.py / vehicle_optimizer.py). For the greedy warehouse
   selector and the nearest-neighbour router - which are heuristics, not solver
@@ -124,10 +124,10 @@ def _price_assignments(
     """
     Return (total_distance_km, total_cost) for a list of assignments.
 
-    Distance is the sum of each assigned shipment's leg (from Week 2's
+    Distance is the sum of each assigned shipment's leg (from Stage 2's
     estimated_distance_km). Cost prices each leg at its vehicle's per-km rate,
     falling back to the configured default when a vehicle has no rate. This is
-    the same pricing rule the Week 5 assignment solver uses; we reuse it here so
+    the same pricing rule the Stage 5 assignment solver uses; we reuse it here so
     the fleet optimizer (which does not compute cost itself) is priced the same.
     """
     total_distance = 0.0
@@ -166,7 +166,7 @@ def _avg_used_utilization(loads: list[VehicleLoad]) -> float:
 def _estimate_assignment_model(n_ships: int, n_vehicles: int, *, has_peak: bool) -> tuple[int, int]:
     """
     Estimate (num_constraints, num_variables) for the CP-SAT assignment / fleet
-    model, mirroring the structure the Week 5 solvers actually build:
+    model, mirroring the structure the Stage 5 solvers actually build:
 
       variables : x[s][v] (n_ships*n_vehicles) + one per-vehicle marker
                   (used[v] for assignment, or assigned[s] for fleet) + an
@@ -176,7 +176,7 @@ def _estimate_assignment_model(n_ships: int, n_vehicles: int, *, has_peak: bool)
                   linking constraints (n_ships*n_vehicles for assignment's
                   used-link; n_vehicles for fleet's peak-link).
 
-    These are honest structural estimates, not a solver read-out (the Week 5
+    These are honest structural estimates, not a solver read-out (the Stage 5
     solvers are not modified). Good enough to show how model size scales.
     """
     cross = n_ships * n_vehicles
@@ -261,7 +261,7 @@ def metrics_from_assignment(
     n_vehicles = len(solution.vehicle_loads)
     constraints, variables = _estimate_assignment_model(n_ships, n_vehicles, has_peak=False)
 
-    # The Week 5 assignment solution already carries cost/distance; trust it.
+    # The Stage 5 assignment solution already carries cost/distance; trust it.
     return RunMetrics(
         optimizer="assignment",
         total_cost=solution.total_cost,

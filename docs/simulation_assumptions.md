@@ -1,13 +1,13 @@
 # Simulation Assumptions
 
-This document lists **every modeling assumption** behind the Week 2 simulated
+This document lists **every modeling assumption** behind the Stage 2 simulated
 logistics datasets. It is the companion to
 [`logistics_simulation.md`](logistics_simulation.md) (which explains *how* the
 data is generated) and extends the assumptions already recorded in
 [`logistics_data_model.md`](logistics_data_model.md).
 
 The guiding principle: **be explicit about the boundary between real Olist data
-and invented values**, so later weeks can trust the solid parts and improve the
+and invented values**, so later stages can trust the solid parts and improve the
 approximate ones.
 
 ---
@@ -94,7 +94,7 @@ approximate ones.
 | Cost estimate | `estimated_cost` = distance × a representative freight rate of **1.20** generic cost units/km. |
 | `route_status` is derived | From the real order status: `delivered` → `completed`, `shipped` → `in_transit`, else `planned`. |
 | Sample, not full set | A reproducible sample of **10,000** legs (of ~52k) is kept to keep the file light; set `MAX_ROUTES = None` to generate all. |
-| No optimization | These are **simple estimates**. No vehicle assignment, multi-stop combining, or disruption avoidance — that is OR-Tools' job in a later week. |
+| No optimization | These are **simple estimates**. No vehicle assignment, multi-stop combining, or disruption avoidance — that is OR-Tools' job in a later stage. |
 
 ---
 
@@ -103,12 +103,12 @@ approximate ones.
 - Locations are **zip-prefix centroids**, not exact addresses (Olist anonymizes
   addresses) — so distances are area-to-area, not door-to-door.
 - Straight-line distance (even with the winding factor) is **not** real road
-  distance; a routing engine will improve this in Week 3.
+  distance; a routing engine will improve this in Stage 3.
 - Inventory, capacity, fleet, and disruptions are **plausible inventions**, not
   measured facts — they exist to make the system testable, not to predict
   Olist's real operations.
 - The route estimate ignores vehicle assignment and current disruptions; both
-  are deliberately deferred to later weeks.
+  are deliberately deferred to later stages.
 
-Being explicit now means later weeks can rely on the real foundation and
+Being explicit now means later stages can rely on the real foundation and
 sharpen the approximations with intent rather than rediscovering their limits.

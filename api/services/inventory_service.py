@@ -1,6 +1,6 @@
 """
 ============================================================================
-INVENTORY SERVICE  (Week 4)   entity: inventory
+INVENTORY SERVICE  (Stage 4)   entity: inventory
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -9,14 +9,14 @@ read-heavy entities): inventory_status must always agree with stock_level and
 reorder_threshold. We enforce that here - in ONE place - so it can never be
 forgotten or half-applied, no matter who calls the service.
 
-  RULE (identical to Week 2 and database/crud.py):
+  RULE (identical to Stage 2 and database/crud.py):
     out_of_stock  if stock_level <= 0
     low_stock     if stock_level <= reorder_threshold
     healthy       otherwise
 
 We reuse recompute_inventory_status() from api/utils/validation.py (which itself
 mirrors database/crud.py) and, for pure stock updates, we can delegate to the
-Week 3 crud.update_inventory_stock helper.
+Stage 3 crud.update_inventory_stock helper.
 ============================================================================
 """
 

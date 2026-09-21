@@ -1,10 +1,10 @@
 """
 ============================================================================
-CUSTOMER SCHEMAS  (Week 4)   entity: customers   (Week 3 model: models/customer.py)
+CUSTOMER SCHEMAS  (Stage 4)   entity: customers   (Stage 3 model: models/customer.py)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-A customer is a delivery DESTINATION (Week 0 mapping). These schemas describe
+A customer is a delivery DESTINATION (Stage 0 mapping). These schemas describe
 the JSON the API accepts and returns for customers.
 
 FOUR SCHEMAS (the pattern used for every entity):
@@ -13,7 +13,7 @@ FOUR SCHEMAS (the pattern used for every entity):
   CustomerUpdate   - PUT/PATCH body; every field optional (change some fields).
   CustomerResponse - what the API returns (reads from the SQLAlchemy model).
 
-Field names match the Week 3 model EXACTLY, so nothing has to be translated
+Field names match the Stage 3 model EXACTLY, so nothing has to be translated
 between the API and the database.
 ============================================================================
 """

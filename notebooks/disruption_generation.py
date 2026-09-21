@@ -1,6 +1,6 @@
 """
 ============================================================================
-WEEK 2 - DISRUPTION GENERATION SCRIPT
+STAGE 2 - DISRUPTION GENERATION SCRIPT
 Project: Supply Chain & Logistics Optimizer
 Dataset: Brazilian E-Commerce Public Dataset by Olist
 ============================================================================
@@ -21,7 +21,7 @@ WHY DO WE SIMULATE DISRUPTIONS?
   need problems to react to. So we invent a realistic set of disruptions now.
 
   These simulated disruptions are the raw material the later optimization and
-  agent layers (Week 3 / Week 5 / Week 7) will use to trigger re-routing and
+  agent layers (Stage 3 / Stage 5 / Stage 7) will use to trigger re-routing and
   re-stocking decisions.
 
 DISRUPTION TYPES WE GENERATE
@@ -48,8 +48,8 @@ GOLDEN RULE: READ simulation/warehouses.csv; WRITE only to simulation/.
 
 HOW TO RUN
 ----------
-    python notebooks/week2_generate_warehouses.py   # must run first
-    python notebooks/week2_disruption_generation.py
+    python notebooks/warehouse_generation.py   # must run first
+    python notebooks/disruption_generation.py
 ============================================================================
 """
 
@@ -69,7 +69,7 @@ os.makedirs(SIM_DIR, exist_ok=True)
 RANDOM_SEED = 42
 rng = np.random.default_rng(RANDOM_SEED)
 
-# Same fixed "today" used across Week 2 so all simulated dates line up. The
+# Same fixed "today" used across Stage 2 so all simulated dates line up. The
 # Olist window ends 2018-10-17; we centre disruptions around just after it.
 SIM_REFERENCE_DATE = pd.Timestamp("2018-11-01")
 
@@ -125,7 +125,7 @@ def load_sim(file_name):
 
 
 def main():
-    banner("WEEK 2 - DISRUPTION GENERATION")
+    banner("STAGE 2 - DISRUPTION GENERATION")
     print("Reading simulated warehouses; inventing realistic disruption events.")
     print(f"Writing simulated disruptions to: {SIM_DIR}")
 
@@ -196,7 +196,7 @@ def main():
 
     banner("DONE - disruptions generated")
     print("  Each row = one simulated real-world problem affecting deliveries.")
-    print("  Next: notebooks/week2_route_generation.py")
+    print("  Next: notebooks/route_generation.py")
     print("  Reminder: data/ and processed/ were NOT modified.")
 
 

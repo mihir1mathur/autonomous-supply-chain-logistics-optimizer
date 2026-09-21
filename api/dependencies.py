@@ -1,6 +1,6 @@
 """
 ============================================================================
-SHARED DEPENDENCIES (DEPENDENCY INJECTION)  (Week 4)
+SHARED DEPENDENCIES (DEPENDENCY INJECTION)  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -19,8 +19,8 @@ WHAT IS "DEPENDENCY INJECTION"? (zero-knowledge version)
 WHY THIS MATTERS FOR THE PROJECT (future-ready)
 -----------------------------------------------
   Because endpoints only DECLARE their needs, we can change how a need is met
-  in ONE place and every endpoint follows. Later weeks lean on this heavily:
-    - Week 6 Redis: wrap get_db-backed reads with a cache dependency.
+  in ONE place and every endpoint follows. Later stages lean on this heavily:
+    - Stage 6 Redis: wrap get_db-backed reads with a cache dependency.
     - Auth (future): add a `current_user` dependency to protect endpoints.
   None of the endpoints have to be rewritten - we just swap what gets injected.
 

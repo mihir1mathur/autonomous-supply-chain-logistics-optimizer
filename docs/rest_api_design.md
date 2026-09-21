@@ -1,6 +1,6 @@
-# REST API Design (Week 4)
+# REST API Design (Stage 4)
 
-This document describes the **REST conventions** every endpoint in the Week 4
+This document describes the **REST conventions** every endpoint in the Stage 4
 backend follows: how resources map to URLs, which HTTP methods do what, the
 status codes returned, and the shared conventions for filtering, sorting,
 searching, and pagination.
@@ -16,9 +16,9 @@ overall layering see [`api_architecture.md`](api_architecture.md).
 with standard **HTTP methods** (verbs). The design is intentionally predictable:
 once you know the pattern for one entity, you know it for all seven.
 
-The seven resources map one-to-one to the Week 3 tables:
+The seven resources map one-to-one to the Stage 3 tables:
 
-| Resource | URL prefix | Week 3 table |
+| Resource | URL prefix | Stage 3 table |
 |----------|------------|--------------|
 | Customers | `/customers` | `customers` |
 | Warehouses | `/warehouses` | `warehouses` |
@@ -51,7 +51,7 @@ Every entity supports the same set of operations:
 
 There is one small extra convenience endpoint,
 `GET /disruptions/active`, which returns all currently-active disruptions by
-reusing the Week 3 `crud.get_active_disruptions()` query.
+reusing the Stage 3 `crud.get_active_disruptions()` query.
 
 ---
 
@@ -71,7 +71,7 @@ reusing the Week 3 `crud.get_active_disruptions()` query.
 | 500 Internal Error | an unexpected server-side failure (details logged) |
 
 `401` and `403` are documented now but not enforced — authentication arrives in
-a later week, and the design already reserves their place.
+a later stage, and the design already reserves their place.
 
 ---
 
@@ -162,7 +162,7 @@ GET /inventory?inventory_status=low_stock&sort_by=stock_level&sort_dir=asc&page=
 - **Stable shapes.** The list envelope and error envelope never change form, so
   clients (including the future dashboard) can rely on them.
 - **Thin routers, logic in services.** Endpoints only translate HTTP to service
-  calls; the rules live in the service layer and reuse the Week 3 CRUD helpers.
+  calls; the rules live in the service layer and reuse the Stage 3 CRUD helpers.
 
 These conventions give the project a consistent, predictable surface that the
-optimization engine, agents, and dashboard in later weeks all build on.
+optimization engine, agents, and dashboard in later stages all build on.

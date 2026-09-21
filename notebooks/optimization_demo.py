@@ -1,12 +1,12 @@
 """
 ============================================================================
-WEEK 5 - OPTIMIZATION DEMO  (happy paths)
+STAGE 5 - OPTIMIZATION DEMO  (happy paths)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  Exercises the Week 5 optimization engine end to end through the REST API and
+  Exercises the Stage 5 optimization engine end to end through the REST API and
   prints clean, explained output for each of the four optimization problems:
 
     1. Shipment assignment  (pack shipments onto vehicles, respect capacity)
@@ -14,7 +14,7 @@ WHAT THIS SCRIPT DOES
     3. Vehicle utilization  (balance shipments evenly across the fleet)
     4. Route optimization   (order a warehouse's stops with nearest-neighbour)
 
-  For each it reports the numbers the Week 5 prompt asks for: success, cost,
+  For each it reports the numbers the Stage 5 prompt asks for: success, cost,
   distance, vehicle utilization, unassigned shipments, and execution time.
 
   It also shows the KEY CONTRAST between problems 1 and 3: given the SAME
@@ -24,18 +24,18 @@ WHAT THIS SCRIPT DOES
 
 HOW THE REQUESTS ARE MADE (no separate server needed)
 -----------------------------------------------------
-  Same pattern as the Week 4 scripts: FastAPI's in-process TestClient by
+  Same pattern as the Stage 4 scripts: FastAPI's in-process TestClient by
   default (one command, no running server), or a real running server if the
   environment variable API_BASE_URL is set.
 
 PREREQUISITES
 -------------
-  The Week 3 database must exist and be loaded, and OR-Tools installed:
+  The Stage 3 database must exist and be loaded, and OR-Tools installed:
         pip install -r requirements.txt
         python database/init_db.py
-        python notebooks/week3_load_database.py
+        python notebooks/load_database.py
   Then run:
-        python notebooks/week5_optimization_demo.py
+        python notebooks/optimization_demo.py
 ============================================================================
 """
 
@@ -82,7 +82,7 @@ def step(title):
 
 
 def main():
-    banner("WEEK 5 - OPTIMIZATION DEMO (happy paths)")
+    banner("STAGE 5 - OPTIMIZATION DEMO (happy paths)")
     client = get_client()
 
     # ---- STATUS -----------------------------------------------------------

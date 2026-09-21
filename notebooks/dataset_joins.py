@@ -1,24 +1,24 @@
 """
 ============================================================================
-WEEK 1 - DATASET JOINS SCRIPT
+STAGE 1 - DATASET JOINS SCRIPT
 Project: Supply Chain & Logistics Optimizer
 Dataset: Brazilian E-Commerce Public Dataset by Olist
 ============================================================================
 
 WHERE WE ARE (continuity)
 -------------------------
-- Week 0 (note 07) taught the THEORY of joins: tables, rows, primary keys,
+- Stage 0 (note 07) taught the THEORY of joins: tables, rows, primary keys,
   foreign keys, and how the 9 files link together.
-- Week 1 (week1_data_cleaning.py) produced cleaned files in processed/.
+- Stage 1 (data_cleaning.py) produced cleaned files in processed/.
 - THIS script puts the theory into practice: it actually JOINS the cleaned
-  files into ONE big "order-level" table - the foundation every later week
+  files into ONE big "order-level" table - the foundation every later stage
   will analyze and optimize.
 
 WHAT IS A JOIN? (quick reminder)
 --------------------------------
 A join snaps two tables together by matching a key column. Example:
 orders has a customer_id; customers also has customer_id. Matching them
-lets us see the customer's city right next to each order. (Week 0, note 07.)
+lets us see the customer's city right next to each order. (Stage 0, note 07.)
 
 THE JOURNEY WE BUILD (one order across the whole dataset):
     Orders
@@ -31,12 +31,12 @@ THE JOURNEY WE BUILD (one order across the whole dataset):
 WHY READ FROM processed/?
 -------------------------
 We join the CLEANED files so the result is trustworthy. If processed/ is
-missing, run week1_data_cleaning.py first.
+missing, run data_cleaning.py first.
 
 HOW TO RUN
 ----------
-    python notebooks/week1_data_cleaning.py     (first, once)
-    python notebooks/week1_dataset_joins.py
+    python notebooks/data_cleaning.py     (first, once)
+    python notebooks/dataset_joins.py
 ============================================================================
 """
 
@@ -61,7 +61,7 @@ def load_clean(file_name):
     path = os.path.join(PROCESSED_DIR, file_name)
     if not os.path.exists(path):
         print(f"\n!! Missing {path}")
-        print("   Please run: python notebooks/week1_data_cleaning.py  first.")
+        print("   Please run: python notebooks/data_cleaning.py  first.")
         sys.exit(1)
     return pd.read_csv(path)
 
@@ -73,7 +73,7 @@ def show(df, label):
 
 
 def main():
-    banner("WEEK 1 DATASET JOINS - building one order-level table")
+    banner("STAGE 1 DATASET JOINS - building one order-level table")
     print("Reading cleaned files from processed/ and joining them step by step.")
 
     # -----------------------------------------------------------------------
@@ -141,7 +141,7 @@ def main():
     print("       We look up lat/lng for BOTH the customer zip (destination)")
     print("       and the seller zip (origin).")
     print("  NEW INFO: map points for origin AND destination -> enables")
-    print("       distance + routing in Week 3.")
+    print("       distance + routing in Stage 3.")
 
     # Customer side: rename the lookup columns so we know they're the customer's.
     cust_geo = geo.rename(
@@ -174,7 +174,7 @@ def main():
     print(f"  Rows missing customer coordinates: {missing_cust_coord:,}")
     print(f"  Rows missing seller coordinates:   {missing_sell_coord:,}")
     print("  (Some zip prefixes have no geolocation match - normal; later")
-    print("   weeks can fall back to city/state averages.)")
+    print("   stages can fall back to city/state averages.)")
 
     out_path = os.path.join(PROCESSED_DIR, "orders_master_table.csv")
     df.to_csv(out_path, index=False)
@@ -183,7 +183,7 @@ def main():
     banner("DONE - the dataset is now ONE connected logistics table")
     print("  Each row = one item in one order, with its origin, destination,")
     print("  product details, costs, and delivery dates - all in one place.")
-    print("  This master table is the foundation for Weeks 2-8.")
+    print("  This master table is the foundation for Stages 2-8.")
 
 
 if __name__ == "__main__":

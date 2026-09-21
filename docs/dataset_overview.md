@@ -268,5 +268,5 @@ full logistics optimization system needs. We will clearly separate what is
 
 ## Status
 
-This document reflects **Week 0** — business and dataset understanding. The
+This document reflects **Stage 0** — business and dataset understanding. The
 original CSV files are kept unchanged; this project only reads from them.

@@ -14,8 +14,8 @@ built to record online sales, not to run a logistics operation.
 ## Why a "data model"?
 
 A **data model** is simply a clear statement of *what each thing in our system
-represents and how the things relate*. Before we simulate inventory (Week 2) or
-optimize routes (Week 3), we must agree on what a "warehouse", a "shipment", or
+represents and how the things relate*. Before we simulate inventory (Stage 2) or
+optimize routes (Stage 3), we must agree on what a "warehouse", a "shipment", or
 a "destination" actually maps to in the raw data. This document is that
 agreement.
 
@@ -23,7 +23,7 @@ agreement.
 
 ## The core mapping
 
-| Olist concept | Logistics role | Source columns (after Week 1 cleaning) |
+| Olist concept | Logistics role | Source columns (after Stage 1 cleaning) |
 |---------------|----------------|----------------------------------------|
 | Customer | **Delivery destination** | `customer_city`, `customer_state`, `customer_zip_code_prefix`, `customer_lat`, `customer_lng` |
 | Seller | **Warehouse / fulfillment origin** | `seller_city`, `seller_state`, `seller_zip_code_prefix`, `seller_lat`, `seller_lng` |
@@ -68,7 +68,7 @@ buildings, no capacity, no stock. We *treat each seller as a single-location
 warehouse*. This is a modeling choice. Real fulfillment networks have multiple
 warehouses, cross-docking, and capacity limits; we approximate each seller as
 one origin point. Inventory and capacity for these "warehouses" are
-**simulated** later (Week 2 / Week 7), not taken from the data.
+**simulated** later (Stage 2 / Stage 7), not taken from the data.
 
 ### Product → Inventory Item
 **Why reasonable:** a product has a category, a weight, and dimensions — exactly
@@ -76,7 +76,7 @@ the attributes a warehouse tracks for an item it stores and ships.
 
 **Assumption made:** the dataset records product *attributes* but **not stock
 levels** (how many units are on hand). "Inventory item" therefore means "a thing
-that *can* be stocked"; the actual quantity-on-hand is **simulated** in Week 2.
+that *can* be stocked"; the actual quantity-on-hand is **simulated** in Stage 2.
 Also, 2 products lack weight/dimensions and 610 lacked a category (filled as
 `unknown` during cleaning) — minor gaps to keep in mind.
 
@@ -88,7 +88,7 @@ logistics terms, is a request to move goods from origin(s) to a destination.
 which really means multiple origin points for a single order. In a strict
 logistics sense that is several shipments. For modeling we treat each
 **order-item line** as the unit of movement (origin = its seller, destination =
-the order's customer). This is why the Week 1 master table is at *item* grain,
+the order's customer). This is why the Stage 1 master table is at *item* grain,
 not *order* grain.
 
 ### Delivery Dates → Delay Analysis
@@ -110,14 +110,14 @@ destination points to measure distance between.
 **Assumption made:** one zip prefix maps to **many** raw coordinate rows, so we
 reduce each prefix to a **single representative point** (median lat/lng during
 cleaning). A "location" is therefore an approximate area center. Straight-line
-(haversine) distance — used from Week 3 — is also an approximation of true road
+(haversine) distance — used from Stage 3 — is also an approximation of true road
 distance.
 
 ---
 
 ## Grain of the combined table
 
-After the Week 1 joins (`week1_dataset_joins.py`), the master table is at the
+After the Stage 1 joins (`dataset_joins.py`), the master table is at the
 **order-item grain**: one row = *one product line within one order*, enriched
 with its origin (seller), destination (customer), product attributes, costs, and
 delivery timestamps.
@@ -135,11 +135,11 @@ delivery timestamps.
 | Destinations (customers) | ✅ | zip-prefix centroid | — |
 | Origins (sellers) | ✅ (location only) | "seller = warehouse" | capacity, count |
 | Product attributes | ✅ | — | — |
-| Inventory / stock levels | — | — | ✅ Week 2 |
+| Inventory / stock levels | — | — | ✅ Stage 2 |
 | Shipment requests (orders) | ✅ | item-grain movement | — |
 | Delivery delays | ✅ | — | — |
 | Coordinates / distance | ✅ (zip lookup) | area centroid, straight-line | road distance later |
-| Traffic / weather / congestion | — | — | ✅ Week 7 |
+| Traffic / weather / congestion | — | — | ✅ Stage 7 |
 
 ---
 
@@ -147,12 +147,12 @@ delivery timestamps.
 
 This model is the contract the rest of the project is built on:
 
-- **Week 2** — simulate inventory for the "warehouse" sellers.
-- **Week 3** — use origin/destination coordinates for route optimization.
-- **Week 4** — turn these mapped entities into database tables
+- **Stage 2** — simulate inventory for the "warehouse" sellers.
+- **Stage 3** — use origin/destination coordinates for route optimization.
+- **Stage 4** — turn these mapped entities into database tables
   (see [`future_database_design.md`](future_database_design.md)).
-- **Week 7** — layer simulated disruptions onto routes.
-- **Week 8** — visualize destinations, origins, routes, and delays.
+- **Stage 7** — layer simulated disruptions onto routes.
+- **Stage 8** — visualize destinations, origins, routes, and delays.
 
-Being explicit about the assumptions now means later weeks can trust — and, where
+Being explicit about the assumptions now means later stages can trust — and, where
 needed, improve — the foundation rather than rediscovering its limits.

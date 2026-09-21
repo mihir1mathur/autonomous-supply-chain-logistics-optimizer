@@ -1,11 +1,11 @@
 """
 VEHICLE MODEL  (table: vehicles)  -- the delivery FLEET.
 
-Source: simulation/vehicles.csv (Week 2). Entirely SIMULATED - Olist has no
+Source: simulation/vehicles.csv (Stage 2). Entirely SIMULATED - Olist has no
 carrier/vehicle data. Each vehicle is based at a warehouse.
 
 A vehicle carries packages along routes. Its capacity is a hard limit that
-route planning (Week 3+ / OR-Tools later) must respect.
+route planning (Stage 3+ / OR-Tools later) must respect.
 """
 
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
@@ -44,7 +44,7 @@ class Vehicle(Base):
     # RELATIONSHIPS.
     warehouse = relationship("Warehouse", back_populates="vehicles")
     # A vehicle can be assigned to many routes. The link lives on the route
-    # side (route.vehicle_id) and is filled in LATER (OR-Tools, Week 3+).
+    # side (route.vehicle_id) and is filled in LATER (OR-Tools, Stage 3+).
     routes = relationship("DeliveryRoute", back_populates="vehicle")
 
     def __repr__(self):

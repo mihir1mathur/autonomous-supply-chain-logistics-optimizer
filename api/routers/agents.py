@@ -1,11 +1,11 @@
 """
 ============================================================================
-AGENT ORCHESTRATION ROUTER  (Week 7)   URL prefix: /agents
+AGENT ORCHESTRATION ROUTER  (Stage 7)   URL prefix: /agents
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-REST endpoints for the Week 7 AI MULTI-AGENT ORCHESTRATION layer. THIN, exactly
-like the Week 4 entity routers, the Week 5 optimization router and the Week 6
+REST endpoints for the Stage 7 AI MULTI-AGENT ORCHESTRATION layer. THIN, exactly
+like the Stage 4 entity routers, the Stage 5 optimization router and the Stage 6
 execution router: each endpoint reads the request, calls one method on a
 service, and returns the result. No business logic and no database access live
 here.
@@ -15,17 +15,17 @@ here.
   GET  /agents/status     describe the orchestration layer (mode, agents, LLM)
 
 WHY A NEW /agents PREFIX
-  Week 5 owns /optimize/* (raw solvers); Week 6 owns /optimization/* (the
-  execution layer). Week 7 adds a DISTINCT /agents/* namespace for the AI layer
+  Stage 5 owns /optimize/* (raw solvers); Stage 6 owns /optimization/* (the
+  execution layer). Stage 7 adds a DISTINCT /agents/* namespace for the AI layer
   that ORCHESTRATES the execution layer. Keeping the prefixes separate means
-  every earlier week is untouched and the concerns never collide.
+  every earlier stage is untouched and the concerns never collide.
 
 WHY /decide RETURNS 200 EVEN ON A PARTIAL FAILURE
   An autonomous decision ALWAYS produces an auditable trace and (usually) a
   report, even if an agent could not complete. So this endpoint returns 200 with
   the full result and a `success` flag + `message`, rather than a bare 4xx - the
   caller reads `success` and inspects `trace` to see exactly what happened. (Bad
-  JSON in the body is still a clean 422 via the Week 4 validation handler.)
+  JSON in the body is still a clean 422 via the Stage 4 validation handler.)
 ============================================================================
 """
 

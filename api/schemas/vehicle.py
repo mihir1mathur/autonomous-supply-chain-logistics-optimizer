@@ -1,10 +1,10 @@
 """
 ============================================================================
-VEHICLE SCHEMAS  (Week 4)   entity: vehicles  (model: models/vehicle.py)
+VEHICLE SCHEMAS  (Stage 4)   entity: vehicles  (model: models/vehicle.py)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-A vehicle is part of the delivery FLEET (Week 2, fully simulated). vehicle_type
+A vehicle is part of the delivery FLEET (Stage 2, fully simulated). vehicle_type
 and availability_status are restricted to their allowed values via enums.
 
 Four schemas: Base (validation) -> Create / Update -> Response.

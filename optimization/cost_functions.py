@@ -1,6 +1,6 @@
 """
 ============================================================================
-COST FUNCTIONS  (Week 5)   -- how we PRICE a decision
+COST FUNCTIONS  (Stage 5)   -- how we PRICE a decision
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -12,12 +12,12 @@ WHAT A "COST FUNCTION" IS (zero-knowledge version)
   is just that scoring rule. Here we keep those rules in ONE place so every
   solver prices things the same way and the scoring is easy to read and test.
 
-WHAT WE PRICE IN WEEK 5
+WHAT WE PRICE IN STAGE 5
 -----------------------
   - travel cost of a leg   = road distance (km) * the vehicle's cost_per_km
   - unused capacity        = capacity a vehicle carries but does not use
   - utilization            = how full a vehicle is (0..1), and the fleet spread
-  These mirror the Week 2 route economics (distance * a per-km rate) so the
+  These mirror the Stage 2 route economics (distance * a per-km rate) so the
   numbers stay comparable to the stored estimates.
 
 WHY PURE FUNCTIONS
@@ -52,7 +52,7 @@ def leg_cost_between(
 ) -> float:
     """
     Convenience: the travel cost between two coordinates, using the same
-    road-distance estimate (haversine * winding factor) as the rest of Week 5.
+    road-distance estimate (haversine * winding factor) as the rest of Stage 5.
     """
     distance = road_distance_km(lat1, lon1, lat2, lon2, winding_factor)
     return travel_cost(distance, cost_per_km)

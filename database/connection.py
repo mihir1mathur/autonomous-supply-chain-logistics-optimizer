@@ -1,6 +1,6 @@
 """
 ============================================================================
-DATABASE CONNECTION  (Week 3)
+DATABASE CONNECTION  (Stage 3)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -33,7 +33,7 @@ from database.config import DATABASE_URL, safe_database_url
 # ---------------------------------------------------------------------------
 # 1) ENGINE - the connection manager.
 #    - pool_pre_ping=True checks a connection is still alive before using it
-#      (avoids "stale connection" errors), which is friendly for beginners.
+#      (avoids "stale connection" errors).
 #    - echo=False keeps the terminal clean. Set to True to see the raw SQL.
 # ---------------------------------------------------------------------------
 # connect_args sets a short connection timeout (5 seconds) so that, if
@@ -69,7 +69,7 @@ def get_session():
             customer = db.get(Customer, "abc123")
 
     If something goes wrong inside the block we roll back (undo) so the
-    database is never left half-changed. (FastAPI in Week 4 will use a very
+    database is never left half-changed. (FastAPI in Stage 4 will use a very
     similar dependency.)
     """
     db = SessionLocal()
@@ -87,7 +87,7 @@ def test_connection() -> bool:
     """
     Try to actually reach PostgreSQL and run a trivial query (SELECT 1).
 
-    Returns True on success. On failure it prints a CLEAR, beginner-friendly
+    Returns True on success. On failure it prints a CLEAR, actionable
     explanation of what to check, and returns False (it does not crash).
     """
     print(f"Testing connection to: {safe_database_url()}")

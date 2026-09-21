@@ -1,6 +1,6 @@
 """
 ============================================================================
-WEEK 2 - INVENTORY SIMULATION SCRIPT
+STAGE 2 - INVENTORY SIMULATION SCRIPT
 Project: Supply Chain & Logistics Optimizer
 Dataset: Brazilian E-Commerce Public Dataset by Olist
 ============================================================================
@@ -49,8 +49,8 @@ GOLDEN RULE: READ from processed/ + simulation/warehouses.csv;
 
 HOW TO RUN
 ----------
-    python notebooks/week2_generate_warehouses.py   # must run first
-    python notebooks/week2_inventory_simulation.py
+    python notebooks/warehouse_generation.py   # must run first
+    python notebooks/inventory_simulation.py
 ============================================================================
 """
 
@@ -96,7 +96,7 @@ def load_sim(file_name):
 
 
 def main():
-    banner("WEEK 2 - INVENTORY SIMULATION")
+    banner("STAGE 2 - INVENTORY SIMULATION")
     print("Reading cleaned data + simulated warehouses.")
     print(f"Writing simulated inventory to: {SIM_DIR}")
 
@@ -164,7 +164,7 @@ def main():
     # 4) SIMULATE the CURRENT stock_level (where the shelf is right now).
     #    We draw current stock as a random fraction of the target so that some
     #    items are full, some are running low, and a few are out of stock - a
-    #    realistic snapshot the later weeks can react to.
+    #    realistic snapshot the later stages can react to.
     # -------------------------------------------------------------------
     current_frac = rng.uniform(0.0, 1.1, size=len(demand))
     stock_level = np.round(target_stock * current_frac).astype(int)
@@ -216,7 +216,7 @@ def main():
 
     banner("DONE - inventory generated")
     print("  Each row = one product stocked at one warehouse, with a quantity.")
-    print("  Next: notebooks/week2_vehicle_generation.py")
+    print("  Next: notebooks/vehicle_generation.py")
     print("  Reminder: data/ and processed/ were NOT modified.")
 
 

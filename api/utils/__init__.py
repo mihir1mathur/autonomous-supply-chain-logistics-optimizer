@@ -1,5 +1,5 @@
 """
-api/utils/ package  (Week 4)
+api/utils/ package  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 
 Small, shared building blocks used across the whole API so the same behaviour
@@ -12,7 +12,7 @@ is written ONCE and reused everywhere:
   pagination.py - the reusable "page of results" logic (limit/offset, sorting,
                   and the standard paginated response envelope).
   validation.py - reusable field validators and the allowed value lists (enums)
-                  that mirror the Week 2 / Week 3 rules (e.g. inventory_status
+                  that mirror the Stage 2 / Stage 3 rules (e.g. inventory_status
                   can only be healthy / low_stock / out_of_stock).
 
 Keeping these here means routers and services stay short and consistent.

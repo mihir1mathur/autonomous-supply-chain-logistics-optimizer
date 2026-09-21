@@ -1,13 +1,13 @@
 """
 ============================================================================
-ROUTE SERVICE  (Week 4)   entity: delivery_routes
+ROUTE SERVICE  (Stage 4)   entity: delivery_routes
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 Business logic for delivery routes (warehouse -> customer trips). Subclasses
 BaseService for generic CRUD + pagination and declares route-specific safelists.
 
-This is the entity Week 5 (OR-Tools) will write back into: the optimizer will
+This is the entity Stage 5 (OR-Tools) will write back into: the optimizer will
 set vehicle_id and improve the estimated_* fields. Because all writes go through
 this service, that future work plugs in here without touching routers.
 ============================================================================

@@ -1,6 +1,6 @@
 """
 ============================================================================
-PAGINATION, SORTING & THE PAGE ENVELOPE  (Week 4)
+PAGINATION, SORTING & THE PAGE ENVELOPE  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 

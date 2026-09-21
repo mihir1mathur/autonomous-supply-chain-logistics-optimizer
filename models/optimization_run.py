@@ -1,22 +1,22 @@
 """
 OPTIMIZATION RUN MODEL  (table: optimization_runs)  -- a STORED optimization run.
 
-New in Week 6 (the "optimization execution layer"). Weeks 3-5 stored the supply
+New in Stage 6 (the "optimization execution layer"). Stages 3-5 stored the supply
 chain DATA and computed optimization plans on demand, but never KEPT a record of
-a run. Week 6 does: every time the execution layer runs an optimization (or a
+a run. Stage 6 does: every time the execution layer runs an optimization (or a
 scenario), it saves one row here - what was run, how it went, and the resulting
 KPIs - so the project can show a HISTORY, look a run up by id, and aggregate
 metrics across runs.
 
 WHY THIS IS ADDITIVE (no migration, no change to earlier tables)
   This is a brand-new table. database/init_db.py's create_all() creates only
-  tables that do not yet exist, so running it once after Week 6 adds this table
-  and leaves every Week 3 table and its rows untouched. Nothing about Weeks 0-5
+  tables that do not yet exist, so running it once after Stage 6 adds this table
+  and leaves every Stage 3 table and its rows untouched. Nothing about Stages 0-5
   changes.
 
 WHAT A ROW HOLDS
   - identity + context: run_id, created_at, scenario, optimizer, warehouse_id.
-  - the twelve KPIs (Week 6, Part 5) promoted to real columns so history and
+  - the twelve KPIs (Stage 6, Part 5) promoted to real columns so history and
     the /optimization/metrics aggregate can query/sort them directly.
   - three JSON blobs for the full detail: the complete metrics, the before/after
     evaluation, and a compact result/context snapshot (scenario changes, sizes).
@@ -52,7 +52,7 @@ class OptimizationRun(Base):
     success = Column(Boolean, default=True)
     solver_status = Column(String)            # OPTIMAL / FEASIBLE / OK / ...
 
-    # ---- The twelve KPIs (Week 6, Part 5), promoted to columns ------------
+    # ---- The twelve KPIs (Stage 6, Part 5), promoted to columns ------------
     total_cost = Column(Float, default=0.0)
     travel_distance_km = Column(Float, default=0.0)
     vehicle_utilization = Column(Float, default=0.0)      # 0..1

@@ -1,12 +1,12 @@
-# Week 8 — Dashboard Summary
+# Stage 8 — Dashboard Summary
 
-_What Week 8 added to the Supply Chain & Logistics Optimizer, and how it fits._
+_What Stage 8 added to the Supply Chain & Logistics Optimizer, and how it fits._
 
 ## What was added
 
-Week 8 adds a **Streamlit analytics dashboard** that makes the existing backend
+Stage 8 adds a **Streamlit analytics dashboard** that makes the existing backend
 visible and demo-ready. It is a **presentation layer only**: it consumes the
-existing Week 6 `/optimization/*` and Week 7 `/agents/*` endpoints over HTTP and
+existing Stage 6 `/optimization/*` and Stage 7 `/agents/*` endpoints over HTTP and
 never calls OR-Tools, the database, or the services directly. It computes no
 KPIs — it formats and charts the numbers the backend already produced.
 
@@ -15,7 +15,7 @@ Highlights:
 - A six-page dashboard (Overview, Optimization History, Scenario Analysis,
   Agent Decisions, Reports, System Health) with sidebar navigation and a live
   backend connection badge.
-- **KPI cards** that read the Week 6 aggregate metrics and single-run metrics
+- **KPI cards** that read the Stage 6 aggregate metrics and single-run metrics
   (utilization shown as a percentage, never as a raw 0–1 value).
 - **Charts** (Plotly) for cost, distance, utilization, orders and stockouts by
   scenario, runtime by optimizer, runs over time, and per-run improvement.
@@ -24,11 +24,11 @@ Highlights:
 - **Scenario comparison** across the stored runs, plus an optional what-if
   **simulate**.
 - An **Agent Decisions** page that turns a plain-English request into a recorded,
-  explained decision via the Week 7 crew.
+  explained decision via the Stage 7 crew.
 - An **execution-trace viewer** that draws the five-agent flow (Planner →
   Scenario → Optimization → Evaluation → Reporting), each step timed and
   pass/fail — proof that the autonomous workflow is auditable.
-- A **report viewer** (Markdown | Text | JSON tabs) that renders the Week 7
+- A **report viewer** (Markdown | Text | JSON tabs) that renders the Stage 7
   Reporting Agent output (it never writes a report itself).
 - **Exports**: history CSV, run JSON, report Markdown/JSON — via Streamlit
   download buttons.
@@ -48,40 +48,35 @@ Highlights:
 
 **Scripts** (`notebooks/`)
 
-- `week8_dashboard_demo.py` — a printed walkthrough + live endpoint checks.
-- `week8_validation.py` — a PASS/FAIL checklist for the dashboard.
+- `dashboard_demo.py` — a printed walkthrough + live endpoint checks.
+- `dashboard_validation.py` — a PASS/FAIL checklist for the dashboard.
 
 **Documentation** (`docs/`)
 
-- `dashboard_architecture.md` — why Week 8 exists, the architecture, endpoints,
+- `dashboard_architecture.md` — why Stage 8 exists, the architecture, endpoints,
   error handling, and the deployment path.
 - `dashboard_user_guide.md` — how to run and use every page.
-- `week8_dashboard_summary.md` — this file.
-
-**Notes** (`notes/Week8/`)
-
-- `00_INDEX.txt` plus `01`–`12` learning notes (same 12-section style as
-  Weeks 0–7).
+- `dashboard_summary.md` — this file.
 
 ## Files modified (additively)
 
 - `requirements.txt` — added `streamlit` and `plotly` (the only two new
   dependencies; `httpx` and `pandas` were already present and are reused).
 - `.env.example` — added the optional `DASHBOARD_*` settings.
-- `README.md` — added the Week 8 section and updated the project structure.
+- `README.md` — added the Stage 8 section and updated the project structure.
 
-No Week 0–7 code file was rewritten. No backend behavior changed.
+No Stage 0–7 code file was rewritten. No backend behavior changed.
 
-## How Week 8 connects to Weeks 0–7
+## How Stage 8 connects to Stages 0–7
 
 ```
-Week 0-2  understand + clean + simulate the logistics data
-Week 3    store it in PostgreSQL behind SQLAlchemy
-Week 4    serve it via a FastAPI REST API
-Week 5    optimize it with OR-Tools (/optimize)
-Week 6    run + measure (12 KPIs) + evaluate + store runs (/optimization)
-Week 7    let agents decide + explain (/agents)
-Week 8    VISUALIZE all of it in a dashboard  <-- consumes Week 6 + Week 7 APIs
+Stage 0-2  understand + clean + simulate the logistics data
+Stage 3    store it in PostgreSQL behind SQLAlchemy
+Stage 4    serve it via a FastAPI REST API
+Stage 5    optimize it with OR-Tools (/optimize)
+Stage 6    run + measure (12 KPIs) + evaluate + store runs (/optimization)
+Stage 7    let agents decide + explain (/agents)
+Stage 8    VISUALIZE all of it in a dashboard  <-- consumes Stage 6 + Stage 7 APIs
 ```
 
 The dashboard sits at the very top of the stack and reaches the lower layers
@@ -93,7 +88,7 @@ Dashboard -> FastAPI -> Execution Service / Agent Service -> Optimizers -> Postg
 
 ## Software-engineering relevance
 
-Week 8 demonstrates skills that matter for backend / full-stack engineering,
+Stage 8 demonstrates skills that matter for backend / full-stack engineering,
 described honestly for a professional project dashboard (not an enterprise
 product):
 
@@ -112,7 +107,7 @@ product):
 
 ## The one-line pitch
 
-> _"Week 8 made the system demonstrable. Instead of only returning JSON from
+> _"Stage 8 made the system demonstrable. Instead of only returning JSON from
 > APIs, I built a Streamlit analytics dashboard that visualizes optimization
 > history, KPIs, scenario comparisons, agent decisions, execution traces, and
 > reports. The dashboard remains a presentation layer only; it consumes the
@@ -120,8 +115,8 @@ product):
 
 ## Next recommended step
 
-**Week 9 — deployment (Docker + AWS)** and/or **testing / production
+**Stage 9 — deployment (Docker + AWS)** and/or **testing / production
 hardening**: containerize the API and the dashboard, point
 `DASHBOARD_API_BASE_URL` at a deployed backend (ECS/Fargate + RDS), and add a
-test suite and CI. The layering built through Weeks 3–8 makes this a
+test suite and CI. The layering built through Stages 3–8 makes this a
 configuration exercise, not a rewrite.

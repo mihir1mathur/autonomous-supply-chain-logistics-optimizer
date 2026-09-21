@@ -1,6 +1,6 @@
 """
 ============================================================================
-CUSTOMERS ROUTER  (Week 4)   URL prefix: /customers
+CUSTOMERS ROUTER  (Stage 4)   URL prefix: /customers
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 

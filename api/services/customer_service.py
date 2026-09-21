@@ -1,6 +1,6 @@
 """
 ============================================================================
-CUSTOMER SERVICE  (Week 4)   entity: customers
+CUSTOMER SERVICE  (Stage 4)   entity: customers
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 

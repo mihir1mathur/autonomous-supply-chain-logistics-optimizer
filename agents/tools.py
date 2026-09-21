@@ -1,6 +1,6 @@
 """
 ============================================================================
-AGENT TOOLS  (Week 7)   -- the ONLY seam through which agents touch the platform
+AGENT TOOLS  (Stage 7)   -- the ONLY seam through which agents touch the platform
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -8,11 +8,11 @@ WHAT A "TOOL" IS HERE (zero-knowledge version)
 ----------------------------------------------
   The agents are decision-makers; they must never poke at OR-Tools or the
   database directly. Instead, every capability they are allowed to use is
-  exposed as a small, named TOOL that calls the EXISTING Week 6 execution
+  exposed as a small, named TOOL that calls the EXISTING Stage 6 execution
   service (api/services/execution_service.py). The agents only ever act through
-  these tools. This is exactly the architecture the Week 7 goals require:
+  these tools. This is exactly the architecture the Stage 7 goals require:
 
-      agents  ->  tools  ->  Week 6 execution service  ->  Week 5 engine  ->  DB
+      agents  ->  tools  ->  Stage 6 execution service  ->  Stage 5 engine  ->  DB
 
   Because the platform capabilities live behind ONE thin module, both
   orchestration modes use the identical tools: the deterministic pipeline calls
@@ -29,12 +29,12 @@ THE BLACKBOARD (ToolContext)
   the blackboard - so after the crew finishes we harvest trustworthy data from
   the blackboard rather than trying to parse it back out of the LLM's prose.
 
-DATABASE SESSIONS (reusing Week 3/4 wiring, never re-creating it)
+DATABASE SESSIONS (reusing Stage 3/4 wiring, never re-creating it)
 -----------------------------------------------------------------
   The execution service needs a SQLAlchemy Session. When the API calls the
   orchestrator it passes the request's session straight through (ToolContext.db).
   When a script or the crew runs a tool with no session supplied, the tool opens
-  ONE short-lived session from the Week 3 SessionLocal and always closes it -
+  ONE short-lived session from the Stage 3 SessionLocal and always closes it -
   the same open/use/close discipline as api/database.get_db.
 
 WHY NO CREWAI IMPORT AT THE TOP
@@ -53,10 +53,10 @@ from typing import Any, Iterator
 
 from sqlalchemy.orm import Session
 
-# Reuse the Week 3 session factory (lazy engine - importing does NOT connect).
+# Reuse the Stage 3 session factory (lazy engine - importing does NOT connect).
 from database.connection import SessionLocal
-# The single Week 6 service the agents are allowed to drive. Importing it does
-# NOT touch the database or pull in CrewAI/OR-Tools eagerly beyond Week 5/6.
+# The single Stage 6 service the agents are allowed to drive. Importing it does
+# NOT touch the database or pull in CrewAI/OR-Tools eagerly beyond Stage 5/6.
 from api.services.execution_service import execution_service
 
 from agents.config import AgentSettings, get_agent_settings
@@ -86,7 +86,7 @@ class ToolContext:
 
     * db        - the SQLAlchemy session to use (from the API request). If None,
                   each tool opens and closes its own short-lived session.
-    * settings  - the Week 7 agent settings.
+    * settings  - the Stage 7 agent settings.
     * last_outcome    - where run_optimization stashes its structured result, so
                         the evaluation agent (and the CrewAI harvester) can read
                         the real numbers regardless of orchestration mode.
@@ -104,7 +104,7 @@ def _session(ctx: ToolContext) -> Iterator[Session]:
     """
     Yield a database session: the one on the blackboard if present, otherwise a
     fresh SessionLocal that we open here and ALWAYS close. This mirrors the
-    open/use/close rule of api/database.get_db without duplicating any Week 3
+    open/use/close rule of api/database.get_db without duplicating any Stage 3
     connection logic.
     """
     if ctx.db is not None:
@@ -118,13 +118,13 @@ def _session(ctx: ToolContext) -> Iterator[Session]:
 
 
 # ===========================================================================
-# TOOL 1: the scenario catalog  (reuses the Week 6 scenario engine)
+# TOOL 1: the scenario catalog  (reuses the Stage 6 scenario engine)
 # ===========================================================================
 def get_scenario_catalog(ctx: ToolContext) -> list[dict]:
     """
     Return the catalog of scenarios the platform knows about (key / name /
     category / description). Delegates to execution_service.list_scenarios(),
-    which reads the Week 6 scenario engine - the agents never redefine scenarios.
+    which reads the Stage 6 scenario engine - the agents never redefine scenarios.
     Cached on the blackboard so repeated calls in one run are free.
     """
     if ctx.scenario_catalog is None:
@@ -145,7 +145,7 @@ def run_optimization(
     constraints: dict | None = None,
 ) -> dict:
     """
-    Run ONE optimization under a scenario by calling the Week 6 execution
+    Run ONE optimization under a scenario by calling the Stage 6 execution
     service, and record the result on the blackboard.
 
     This is the tool that actually makes the platform do work. It does NOT touch
@@ -192,7 +192,7 @@ def run_benchmark(
 ) -> dict:
     """
     Run the SAME optimizer under several scenarios and return one comparison
-    report. Delegates to execution_service.run_benchmark() (Week 6, Part 7).
+    report. Delegates to execution_service.run_benchmark() (Stage 6, Part 7).
     Defaults to persist=False so a benchmark comparison does not clutter the
     stored history unless the caller asks for it.
     """

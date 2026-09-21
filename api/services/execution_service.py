@@ -1,44 +1,44 @@
 """
 ============================================================================
-OPTIMIZATION EXECUTION SERVICE  (Week 6)   -- run, measure, evaluate, store
+OPTIMIZATION EXECUTION SERVICE  (Stage 6)   -- run, measure, evaluate, store
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-WHAT THIS SERVICE IS (and how it sits ON TOP of Week 5)
+WHAT THIS SERVICE IS (and how it sits ON TOP of Stage 5)
 -------------------------------------------------------
-  Week 5 built the optimization ENGINE and a bridge service
+  Stage 5 built the optimization ENGINE and a bridge service
   (api/services/optimization_service.py) that reads the database, calls a
-  solver, and returns a plan. Week 6 adds the EXECUTION LAYER: one clean service
+  solver, and returns a plan. Stage 6 adds the EXECUTION LAYER: one clean service
   that turns a single request into a complete, recorded outcome:
 
-      1. LOAD the real inputs from the Week 3 database (the same rows Week 5
+      1. LOAD the real inputs from the Stage 3 database (the same rows Stage 5
          reads: warehouses, vehicles, inventory, delivery routes).
       2. APPLY a SCENARIO (optimization/scenarios.py) - "high demand",
          "vehicle breakdown", ... - to those inputs.
-      3. SOLVE with the Week 5 OR-Tools solvers (reused unchanged).
-      4. MEASURE the run's KPIs (optimization/metrics.py, Week 6 Part 5).
+      3. SOLVE with the Stage 5 OR-Tools solvers (reused unchanged).
+      4. MEASURE the run's KPIs (optimization/metrics.py, Stage 6 Part 5).
       5. EVALUATE it against an un-optimized baseline
-         (optimization/evaluation.py, Week 6 Part 6).
+         (optimization/evaluation.py, Stage 6 Part 6).
       6. PERSIST the run to the optimization_runs table so it appears in the
          history and the metrics aggregate.
 
-  It reuses Week 5 and Week 4 without changing either: the solver singletons,
-  the Week 3 models, and the Week 4 error envelope. The Week 5 service still
+  It reuses Stage 5 and Stage 4 without changing either: the solver singletons,
+  the Stage 3 models, and the Stage 4 error envelope. The Stage 5 service still
   serves the raw /optimize/* endpoints; this service powers the new
   /optimization/* endpoints. Neither is modified.
 
-WHY THE LOGIC LIVES HERE, NOT IN THE ROUTER (the Week 4 rule, kept)
+WHY THE LOGIC LIVES HERE, NOT IN THE ROUTER (the Stage 4 rule, kept)
 -------------------------------------------------------------------
   Routers stay thin (HTTP only). All of the "load -> scenario -> solve ->
   measure -> evaluate -> store" business logic lives in this one service, so it
-  is testable without HTTP and reusable by later weeks (agents, dashboards).
+  is testable without HTTP and reusable by later stages (agents, dashboards).
 
 SELF-CONTAINED LOADING (documented duplication)
 -----------------------------------------------
-  This service reads the SAME rows the Week 5 service reads, but it loads them
+  This service reads the SAME rows the Stage 5 service reads, but it loads them
   itself so it can apply a scenario's effects BETWEEN loading and solving. That
   is a small, deliberate repetition (a scenario-aware loader), not a rewrite of
-  Week 5 - the Week 5 service is left exactly as it was.
+  Stage 5 - the Stage 5 service is left exactly as it was.
 ============================================================================
 """
 
@@ -82,10 +82,10 @@ from optimization.utils import simulated_package_demand
 from optimization.vehicle_optimizer import vehicle_optimizer
 from optimization.warehouse_selector import warehouse_selector
 
-# Only vehicles in this state may be dispatched (same rule as Week 5).
+# Only vehicles in this state may be dispatched (same rule as Stage 5).
 _DISPATCHABLE_STATUS = "available"
 
-# The optimizers this execution layer can run (the four Week 5 problems).
+# The optimizers this execution layer can run (the four Stage 5 problems).
 _OPTIMIZERS = {"assignment", "fleet", "routes", "warehouse"}
 
 
@@ -93,12 +93,12 @@ class OptimizationExecutionService:
     """
     Runs an optimization end to end - load, scenario, solve, measure, evaluate,
     store - and reads back the stored history. Holds no per-request state; it
-    just carries the Week 5 and Week 6 settings.
+    just carries the Stage 5 and Stage 6 settings.
     """
 
     def __init__(self):
-        self.opt_settings = get_optimization_settings()      # Week 5 caps/limits.
-        self.exec_settings = get_execution_settings()        # Week 6 KPI pricing.
+        self.opt_settings = get_optimization_settings()      # Stage 5 caps/limits.
+        self.exec_settings = get_execution_settings()        # Stage 6 KPI pricing.
 
     # =======================================================================
     # PUBLIC: the scenario catalog (for GET /optimization/scenarios)
@@ -113,7 +113,7 @@ class OptimizationExecutionService:
     def resolve_dispatch_warehouse(self, db: Session, warehouse_id: str | None = None) -> str:
         """
         Public, side-effect-free wrapper over the default dispatch-warehouse
-        rule. The Week 6 benchmark runner calls this ONCE to pin a single
+        rule. The Stage 6 benchmark runner calls this ONCE to pin a single
         warehouse for every scenario in a sweep (rather than letting each
         scenario re-resolve independently), which keeps a whole benchmark
         anchored to the same, deterministically-chosen warehouse.
@@ -206,7 +206,7 @@ class OptimizationExecutionService:
         return self.run(db, **kwargs)
 
     # =======================================================================
-    # PUBLIC: run a whole benchmark sweep (Week 6, Part 7)
+    # PUBLIC: run a whole benchmark sweep (Stage 6, Part 7)
     # =======================================================================
     def run_benchmark(
         self,
@@ -221,7 +221,7 @@ class OptimizationExecutionService:
         """
         Run the SAME optimizer under several scenarios and return one report:
         a row of KPIs per scenario plus the baseline for comparison. Reused by
-        notebooks/week6_benchmark_runner.py.
+        notebooks/benchmark_runner.py.
         """
         rows: list[dict] = []
         for key in scenarios:
@@ -280,7 +280,7 @@ class OptimizationExecutionService:
         distance_by_shipment = {s.shipment_id: (s.distance_km or 0.0) for s in shipments}
         cost_by_vehicle = {v.vehicle_id: v.cost_per_km for v in vehicles}
 
-        # 3) solve with the reused Week 5 solver.
+        # 3) solve with the reused Stage 5 solver.
         if optimizer == "assignment":
             solution = assignment_solver.solve(shipments, vehicles)
             after = metrics_from_assignment(
@@ -444,7 +444,7 @@ class OptimizationExecutionService:
         )
 
         # Baseline for warehouse selection: serve each demand from the FIRST
-        # operating, in-stock warehouse found (ignore distance). The Week 5
+        # operating, in-stock warehouse found (ignore distance). The Stage 5
         # selector picks the NEAREST, so its total distance should be shorter.
         evaluation = None
         if do_eval:
@@ -510,7 +510,7 @@ class OptimizationExecutionService:
         return run_id, created_at
 
     # =======================================================================
-    # HELPERS: resolving a default warehouse (same rules as Week 5)
+    # HELPERS: resolving a default warehouse (same rules as Stage 5)
     # =======================================================================
     def _resolve_dispatch_warehouse(self, db: Session, warehouse_id: str | None) -> str:
         """Validate a given id, or pick the warehouse with the most available vehicles + routes.
@@ -569,7 +569,7 @@ class OptimizationExecutionService:
         return row[0]
 
     # =======================================================================
-    # HELPERS: loading + mapping rows into engine inputs (mirrors Week 5)
+    # HELPERS: loading + mapping rows into engine inputs (mirrors Stage 5)
     # =======================================================================
     def _load_shipments(self, db: Session, warehouse_id: str, limit: int) -> list[ShipmentInput]:
         rows = (
@@ -657,7 +657,7 @@ class OptimizationExecutionService:
         return {(wid, pid): int(stock or 0) for wid, pid, stock in rows}
 
     def _sample_demands(self, db: Session, size: int) -> list[DemandInput]:
-        """Sample demands from real inventory + route destinations (as in Week 5)."""
+        """Sample demands from real inventory + route destinations (as in Stage 5)."""
         product_rows = db.execute(
             select(
                 Inventory.product_id,
@@ -734,5 +734,5 @@ class OptimizationExecutionService:
         return max(1, min(int(requested), maximum))
 
 
-# A ready-to-use singleton, mirroring the Week 4 / Week 5 services.
+# A ready-to-use singleton, mirroring the Stage 4 / Stage 5 services.
 execution_service = OptimizationExecutionService()

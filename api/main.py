@@ -1,6 +1,6 @@
 """
 ============================================================================
-FASTAPI APPLICATION ENTRY POINT  (Week 4)
+FASTAPI APPLICATION ENTRY POINT  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -12,9 +12,9 @@ WHAT THIS FILE IS
 
 HOW TO RUN THE API (from the project root)
 ------------------------------------------
-    # 1. make sure the Week 3 database exists and is loaded:
+    # 1. make sure the Stage 3 database exists and is loaded:
     python database/init_db.py
-    python notebooks/week3_load_database.py
+    python notebooks/load_database.py
     # 2. start the API server:
     uvicorn api.main:app --reload
     # 3. open the automatic, interactive documentation in a browser:
@@ -36,7 +36,7 @@ WHAT GETS WIRED UP HERE (in order)
 
 DATABASE NOTE
   This file does NOT create tables or connect at import time. The database is
-  the Week 3 one; the API only opens a session per request (see get_db). If
+  the Stage 3 one; the API only opens a session per request (see get_db). If
   PostgreSQL is down, importing/starting the app still works - only the
   endpoints that touch the database will error (cleanly) until it is back.
 ============================================================================
@@ -46,8 +46,8 @@ import os
 import sys
 
 # Make the PROJECT ROOT importable so `import models` / `import database` (the
-# Week 3 packages) resolve when the app is started as `uvicorn api.main:app`
-# from the project root. This mirrors the pattern used by the Week 3 scripts.
+# Stage 3 packages) resolve when the app is started as `uvicorn api.main:app`
+# from the project root. This mirrors the pattern used by the Stage 3 scripts.
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)

@@ -1,14 +1,14 @@
 """
 ============================================================================
-WEEK 6 - OPTIMIZATION EXECUTION VALIDATION
+STAGE 6 - OPTIMIZATION EXECUTION VALIDATION
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  Proves the Week 6 execution layer is CORRECT, not just that it runs. It drives
+  Proves the Stage 6 execution layer is CORRECT, not just that it runs. It drives
   the REST API and asserts the properties every run must have, marking each
-  check PASS/FAIL so the output doubles as a Week 6 validation CHECKLIST:
+  check PASS/FAIL so the output doubles as a Stage 6 validation CHECKLIST:
 
     ENGINE        an optimization run completes and reports success.
     SCENARIOS     every scenario in the catalog executes without crashing.
@@ -20,21 +20,21 @@ WHAT THIS SCRIPT DOES
     DATABASE      a run is STORED, is retrievable by id, appears in the history,
                   and is counted in the metrics aggregate; a /simulate is NOT.
     APIS          the scenarios / history / metrics endpoints return the right
-                  shapes; Week 4 and Week 5 endpoints still work (no regressions).
+                  shapes; Stage 4 and Stage 5 endpoints still work (no regressions).
     ERRORS        bad optimizer / scenario / warehouse / id / body all return a
                   clean 4xx, never a 500.
 
 HOW THE REQUESTS ARE MADE
 -------------------------
-  Same as the Week 4/5 scripts: the in-process TestClient by default, or a real
+  Same as the Stage 4/5 scripts: the in-process TestClient by default, or a real
   running server if API_BASE_URL is set.
 
 PREREQUISITES
 -------------
         pip install -r requirements.txt
         python database/init_db.py                 # creates optimization_runs
-        python notebooks/week3_load_database.py
-        python notebooks/week6_validation.py
+        python notebooks/load_database.py
+        python notebooks/execution_validation.py
 ============================================================================
 """
 
@@ -232,16 +232,16 @@ def validate_database(client, results):
 
 
 def validate_apis_and_regressions(client, results):
-    banner("APIS + REGRESSIONS  (shapes right; Weeks 4 & 5 still work)")
+    banner("APIS + REGRESSIONS  (shapes right; Stages 4 & 5 still work)")
     hist = client.get("/optimization/history?page_size=3").json()
     results.append(check("history returns the standard {items, pagination} envelope", "items" in hist and "pagination" in hist))
     agg = client.get("/optimization/metrics").json()
     results.append(check("metrics aggregate has a run_count", "run_count" in agg))
 
-    results.append(check("Week 5 /optimize/status still works", client.get("/optimize/status").status_code == 200))
-    results.append(check("Week 5 /optimize/assignment still works", client.post("/optimize/assignment", json={"max_shipments": 20}).status_code == 200))
-    results.append(check("Week 4 /vehicles still works", client.get("/vehicles?page_size=2").status_code == 200))
-    results.append(check("Week 4 /health still works", client.get("/health").status_code == 200))
+    results.append(check("Stage 5 /optimize/status still works", client.get("/optimize/status").status_code == 200))
+    results.append(check("Stage 5 /optimize/assignment still works", client.post("/optimize/assignment", json={"max_shipments": 20}).status_code == 200))
+    results.append(check("Stage 4 /vehicles still works", client.get("/vehicles?page_size=2").status_code == 200))
+    results.append(check("Stage 4 /health still works", client.get("/health").status_code == 200))
 
 
 def validate_errors(client, results):
@@ -260,7 +260,7 @@ def validate_errors(client, results):
 
 def validate_reproducibility(client, results):
     """
-    Prove the Week 6 benchmark is REPRODUCIBLE: deterministic warehouse choice
+    Prove the Stage 6 benchmark is REPRODUCIBLE: deterministic warehouse choice
     and loading, one pinned warehouse reused across a whole sweep, a stable input
     fingerprint, and identical stable business fields across two runs (with
     runtime explicitly excluded from the comparison).
@@ -276,7 +276,7 @@ def validate_reproducibility(client, results):
     from api.services.execution_service import execution_service
     from database.connection import get_session
     from models import DeliveryRoute, Vehicle
-    from notebooks.week6_benchmark_runner import (
+    from notebooks.benchmark_runner import (
         IGNORED_FIELDS,
         MAX_SHIPMENTS,
         BENCHMARK_SCENARIOS,
@@ -386,7 +386,7 @@ def validate_report_semantics(client, results):
     """
     banner("REPORT SEMANTICS  (honest wording over the unchanged numbers)")
 
-    from notebooks.week6_benchmark_runner import (
+    from notebooks.benchmark_runner import (
         OBJECTIVE_NOTE,
         UTILIZATION_FORMULA_NOTE,
         _signed_pct,
@@ -552,7 +552,7 @@ def validate_report_semantics(client, results):
 
 
 def main():
-    banner("WEEK 6 - OPTIMIZATION EXECUTION VALIDATION")
+    banner("STAGE 6 - OPTIMIZATION EXECUTION VALIDATION")
     client = get_client()
     results = []
 
@@ -571,7 +571,7 @@ def main():
     total = len(results)
     print(f"  {passed}/{total} checks passed.")
     if passed == total:
-        print("  Week 6 execution layer is correct: runs, scenarios, metrics,")
+        print("  Stage 6 execution layer is correct: runs, scenarios, metrics,")
         print("  evaluation, storage, APIs, error handling and reproducibility all hold.")
     else:
         print("  Some checks failed - review the output above.")

@@ -1,12 +1,12 @@
 """
 ============================================================================
-AGENT COORDINATOR  (Week 7)   -- the orchestrator that runs the whole crew
+AGENT COORDINATOR  (Stage 7)   -- the orchestrator that runs the whole crew
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THE COORDINATOR IS
 -----------------------
-  The single entry point of the Week 7 orchestration layer. Give it a user
+  The single entry point of the Stage 7 orchestration layer. Give it a user
   request and it drives the five agents, in order, to turn that request into a
   complete, recorded decision:
 
@@ -18,8 +18,8 @@ WHAT THE COORDINATOR IS
         -> ReportingAgent     write the report             (AgentReport)
         -> OrchestrationResult (everything + the execution trace)
 
-  This IS the "CrewAI Agent Orchestrator" box in the Week 7 architecture. It
-  sits below FastAPI and above the Week 6 execution service, exactly as the
+  This IS the "CrewAI Agent Orchestrator" box in the Stage 7 architecture. It
+  sits below FastAPI and above the Stage 6 execution service, exactly as the
   goals require:  User -> FastAPI -> Execution Service -> Coordinator -> agents
   -> Execution Service -> engine -> database.
 
@@ -28,7 +28,7 @@ THE TWO MODES (see agents/config.py)
   The coordinator ALWAYS runs the deterministic five-agent pipeline. It is the
   authoritative path: tested, reproducible, offline, and it fully realises the
   Planner -> Scenario -> Optimization -> Evaluation -> Reporting architecture in
-  plain code. The numbers it reports always come from the Week 6 execution
+  plain code. The numbers it reports always come from the Stage 6 execution
   service through the tools.
 
   When the richer "crewai" mode is active (crewai installed + an LLM key +
@@ -78,7 +78,7 @@ class AgentCoordinator:
     def __init__(self, settings: AgentSettings | None = None) -> None:
         self.settings = settings or get_agent_settings()
         self.logger = get_logger("agents.Coordinator")
-        # The five agents, instantiated once and reused (like the Week 4/5/6
+        # The five agents, instantiated once and reused (like the Stage 4/5/6
         # service singletons).
         self.planner = PlannerAgent(self.settings)
         self.scenario = ScenarioAgent(self.settings)
@@ -185,5 +185,5 @@ class AgentCoordinator:
             return None
 
 
-# A ready-to-use singleton, mirroring the Week 4/5/6 service singletons.
+# A ready-to-use singleton, mirroring the Stage 4/5/6 service singletons.
 coordinator = AgentCoordinator()

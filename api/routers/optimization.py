@@ -1,11 +1,11 @@
 """
 ============================================================================
-OPTIMIZATION ROUTER  (Week 5)   URL prefix: /optimize
+OPTIMIZATION ROUTER  (Stage 5)   URL prefix: /optimize
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-REST endpoints for the Week 5 optimization engine. THIN, exactly like the seven
-Week 4 entity routers: each endpoint reads the request, calls one method on
+REST endpoints for the Stage 5 optimization engine. THIN, exactly like the seven
+Stage 4 entity routers: each endpoint reads the request, calls one method on
 optimization_service, and returns the result. No optimization logic and no
 database access live here.
 
@@ -21,7 +21,7 @@ WHY POST FOR THE OPTIMIZERS (and GET for status)?
   computation, so POST is the natural verb. `status` only reads fixed
   capability info and changes nothing, so it is a GET.
 
-RESPONSES (as the Week 5 prompt asks) report, per problem: success, cost,
+RESPONSES (as the Stage 5 prompt asks) report, per problem: success, cost,
 distance, vehicle utilization, unassigned shipments, and execution time - all
 carried on the response models in api/schemas/optimization.py.
 ============================================================================

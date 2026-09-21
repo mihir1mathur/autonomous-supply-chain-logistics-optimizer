@@ -1,13 +1,13 @@
 """
 ============================================================================
-OPTIMIZATION AGENT  (Week 7)   -- drives the EXISTING execution service
+OPTIMIZATION AGENT  (Stage 7)   -- drives the EXISTING execution service
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 THE OPTIMIZATION AGENT'S ONE JOB
 --------------------------------
   Take the Planner's plan and the Scenario Agent's scenario, and actually make
-  the platform run the optimization - by calling the EXISTING Week 6 execution
+  the platform run the optimization - by calling the EXISTING Stage 6 execution
   service through the run-optimization tool. It then returns that result
   unchanged.
 
@@ -16,7 +16,7 @@ THE OPTIMIZATION AGENT'S ONE JOB
     * It does NOT call OR-Tools directly.
     * It does NOT duplicate any optimization logic.
     * It does NOT reshape or recompute the numbers.
-  All of that already exists and is tested (Week 5 solvers + Week 6 execution
+  All of that already exists and is tested (Stage 5 solvers + Stage 6 execution
   service). The agent's whole value is orchestration: pass the right arguments,
   press the button, hand the outcome on. Supporting all four optimizers
   (assignment, fleet, routes, warehouse) is simply a matter of forwarding the
@@ -28,7 +28,7 @@ WHY GOING THROUGH THE TOOL MATTERS
   orchestration modes call the same tool, the actual optimization is always done
   by the trusted execution service - whether a human, the deterministic
   pipeline, or an LLM decided to run it. That is exactly the layered
-  architecture the Week 7 goals require:
+  architecture the Stage 7 goals require:
       agent -> tool -> execution service -> engine -> database.
 ============================================================================
 """
@@ -98,5 +98,5 @@ class OptimizationAgent(BaseAgent):
             )
 
 
-# A ready-to-use singleton, mirroring the Week 4/5/6 service singletons.
+# A ready-to-use singleton, mirroring the Stage 4/5/6 service singletons.
 optimization_agent = OptimizationAgent()

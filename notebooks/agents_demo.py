@@ -1,22 +1,22 @@
 """
 ============================================================================
-WEEK 7 - AI MULTI-AGENT ORCHESTRATION DEMO
+STAGE 7 - AI MULTI-AGENT ORCHESTRATION DEMO
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  A friendly walk-through of the Week 7 AI orchestration layer. It sends a few
+  A friendly walk-through of the Stage 7 AI orchestration layer. It sends a few
   plain-language requests to the new /agents endpoints and prints what the crew
   decided - the plan, the scenario it chose, the KPIs it measured, its verdict,
   and the human-readable report it wrote. It is meant to be READ as much as run:
   it shows how one sentence ("optimize for a holiday peak") turns into a
   complete, recorded optimization decision, entirely by ORCHESTRATING the
-  existing Week 6 execution service (never OR-Tools directly).
+  existing Stage 6 execution service (never OR-Tools directly).
 
 HOW THE REQUESTS ARE MADE
 -------------------------
-  Same as the Week 4/5/6 demos: the in-process FastAPI TestClient by default (no
+  Same as the Stage 4/5/6 demos: the in-process FastAPI TestClient by default (no
   separate server needed), or a real running server if API_BASE_URL is set.
 
 ORCHESTRATION MODE
@@ -30,8 +30,8 @@ PREREQUISITES
 -------------
         pip install -r requirements.txt
         python database/init_db.py
-        python notebooks/week3_load_database.py
-        python notebooks/week7_agents_demo.py
+        python notebooks/load_database.py
+        python notebooks/agents_demo.py
 ============================================================================
 """
 
@@ -147,7 +147,7 @@ def main():
 
     banner("DONE")
     print("The crew turned three plain-language requests into three complete,")
-    print("measured, recorded decisions - all by orchestrating the Week 6")
+    print("measured, recorded decisions - all by orchestrating the Stage 6")
     print("execution service. No agent touched OR-Tools directly.")
 
 

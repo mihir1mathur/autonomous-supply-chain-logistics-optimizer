@@ -1,7 +1,7 @@
-# CrewAI Integration Design (Week 7)
+# CrewAI Integration Design (Stage 7)
 Project: Supply Chain & Logistics Optimizer
 
-The Week 7 orchestration layer runs in two modes (see
+The Stage 7 orchestration layer runs in two modes (see
 [`agent_orchestration.md`](agent_orchestration.md)): a **deterministic** default
 that is always available, and an optional **CrewAI** mode that adds a
 natural-language reasoning and narration layer on top. This document explains the
@@ -30,7 +30,7 @@ actions:
   then Reporting — passing each task's result forward as context.
 
 The important idea for this project: an LLM agent only affects the outside world
-by **calling a tool**. If the only tools we give it call our tested Week 6
+by **calling a tool**. If the only tools we give it call our tested Stage 6
 execution service, then no matter how the LLM reasons, the actual optimization
 is always done by trusted code.
 
@@ -98,7 +98,7 @@ into a `Crew(process=Process.sequential)` ready to `kickoff()`.
 
 `agents/tools.py` is the single doorway through which any agent — deterministic
 *or* LLM — touches the platform. It exposes three plain functions, each of which
-calls the Week 6 execution service:
+calls the Stage 6 execution service:
 
 | Tool | Calls | Purpose |
 |------|-------|---------|
@@ -109,7 +109,7 @@ calls the Week 6 execution service:
 The deterministic agents call these functions directly. That is the whole seam:
 
 ```
-agents  ->  tools.py  ->  Week 6 execution service  ->  Week 5 engine  ->  DB
+agents  ->  tools.py  ->  Stage 6 execution service  ->  Stage 5 engine  ->  DB
 ```
 
 ### The `ToolContext` blackboard
@@ -121,8 +121,8 @@ call reads and writes. It holds:
   the request's session straight through; when a script or the crew runs a tool
   with no session, the tool opens one short-lived `SessionLocal` and always
   closes it (the same open/use/close discipline as `api/database.get_db`, reusing
-  the Week 3 wiring rather than re-creating it).
-- `settings` — the Week 7 agent settings.
+  the Stage 3 wiring rather than re-creating it).
+- `settings` — the Stage 7 agent settings.
 - `last_outcome` — where `run_optimization` stashes its **real, structured
   result**.
 - `scenario_catalog` — the catalog, fetched once and cached for the run.
@@ -212,7 +212,7 @@ LLM API key found in OPENAI_API_KEY)"*) for reports and logs, and
 ## LLM provider configuration
 
 CrewAI talks to models through **LiteLLM**, a thin adapter that speaks to many
-providers behind one interface. The Week 7 settings (`AgentSettings`, a
+providers behind one interface. The Stage 7 settings (`AgentSettings`, a
 Pydantic-settings object read from `AGENT_*` environment variables) capture the
 provider and model:
 
@@ -250,7 +250,7 @@ Coordinator enforces it:
 
 1. The Coordinator **first** runs the full deterministic five-agent pipeline.
    This produces the authoritative `OrchestrationResult` — the real plan,
-   scenario, KPIs, and evaluation, all from the Week 6 execution service.
+   scenario, KPIs, and evaluation, all from the Stage 6 execution service.
 2. **Only if** the mode is `crewai` does it additionally call `run_crew(...)`.
    The crew receives the already-computed decision as **context** (embedded in
    the task descriptions with the explicit instruction *"do not contradict these

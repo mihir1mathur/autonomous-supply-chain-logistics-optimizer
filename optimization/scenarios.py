@@ -1,6 +1,6 @@
 """
 ============================================================================
-SCENARIOS  (Week 6)   -- "what if?" conditions for the optimizer to face
+SCENARIOS  (Stage 6)   -- "what if?" conditions for the optimizer to face
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -11,9 +11,9 @@ WHAT A "SCENARIO" IS (zero-knowledge version)
   half the vans breaking down, a fuel price jump, a supplier shipping late. A
   SCENARIO is one such condition, expressed as a small set of CHANGES applied to
   the optimizer's inputs before it solves. Nothing about the solver changes -
-  only the numbers it is fed - so every scenario reuses the SAME Week 5 solvers.
+  only the numbers it is fed - so every scenario reuses the SAME Stage 5 solvers.
 
-THE SEVEN CORE SCENARIOS (Week 6 goals, Part 4)
+THE SEVEN CORE SCENARIOS (Stage 6 goals, Part 4)
 -----------------------------------------------
   high_demand        - customers order more (package counts scaled up).
   low_demand         - a quiet period (package counts scaled down).
@@ -24,19 +24,19 @@ THE SEVEN CORE SCENARIOS (Week 6 goals, Part 4)
   priority_orders    - only the highest-priority shipments are served.
 
   Plus a "normal" baseline and three extra BENCHMARK scenarios reused by the
-  Week 6 benchmark runner (Part 7): holiday, demand_spike, vehicle_failure.
+  Stage 6 benchmark runner (Part 7): holiday, demand_spike, vehicle_failure.
 
 HOW A SCENARIO IS APPLIED (pure transforms, no database, no solver)
 -------------------------------------------------------------------
   Each scenario is just a set of numeric EFFECTS. The functions here take the
-  plain Week 5 input dataclasses (ShipmentInput, VehicleInput, WarehouseInput)
+  plain Stage 5 input dataclasses (ShipmentInput, VehicleInput, WarehouseInput)
   and the stock dictionary, and return MODIFIED copies plus a human-readable
   list of what changed. They never mutate the originals (dataclasses.replace
-  makes copies) and never touch the database - the Week 6 execution service
+  makes copies) and never touch the database - the Stage 6 execution service
   loads the real inputs, calls apply_scenario(), and passes the result to a
   solver. This keeps scenarios reusable and unit-testable.
 
-HONESTY (same discipline as Week 2)
+HONESTY (same discipline as Stage 2)
 -----------------------------------
   The multipliers below are SIMULATED planning assumptions, not real Olist
   figures. They are chosen to be illustrative (a demand spike really does
@@ -186,7 +186,7 @@ SCENARIOS: dict[str, Scenario] = {
     ),
 }
 
-# The scenarios the Week 6 benchmark runner sweeps by default (Part 7 list:
+# The scenarios the Stage 6 benchmark runner sweeps by default (Part 7 list:
 # Normal, Holiday, Demand Spike, Vehicle Failure, Supplier Delay).
 BENCHMARK_SCENARIOS: list[str] = [
     "normal",

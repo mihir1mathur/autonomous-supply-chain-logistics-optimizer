@@ -1,6 +1,6 @@
 """
 ============================================================================
-PLANNER AGENT  (Week 7)   -- decides WHAT should happen, never HOW
+PLANNER AGENT  (Stage 7)   -- decides WHAT should happen, never HOW
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -182,5 +182,5 @@ class PlannerAgent(BaseAgent):
         )
 
 
-# A ready-to-use singleton, mirroring the Week 4/5/6 service singletons.
+# A ready-to-use singleton, mirroring the Stage 4/5/6 service singletons.
 planner_agent = PlannerAgent()

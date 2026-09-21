@@ -1,6 +1,6 @@
 """
 ============================================================================
-WEEK 2 - DELIVERY ROUTE GENERATION SCRIPT
+STAGE 2 - DELIVERY ROUTE GENERATION SCRIPT
 Project: Supply Chain & Logistics Optimizer
 Dataset: Brazilian E-Commerce Public Dataset by Olist
 ============================================================================
@@ -15,11 +15,11 @@ WHAT IS A DELIVERY ROUTE?
 
   For each shipment we want to know: how far is it, how long will it take, and
   roughly what will it cost? Those three numbers are what later optimization
-  (Week 3, OR-Tools) will try to MINIMIZE.
+  (Stage 3, OR-Tools) will try to MINIMIZE.
 
 HOW WE USE GEOLOCATION DATA
 ---------------------------
-  In Week 1 we turned every zip-code prefix into a single (latitude, longitude)
+  In Stage 1 we turned every zip-code prefix into a single (latitude, longitude)
   point. A warehouse and a customer each sit at such a point. The distance
   between two points on Earth is computed with the HAVERSINE formula (great-
   circle / "as the crow flies" distance). That is an APPROXIMATION of the real
@@ -30,7 +30,7 @@ WHY THIS IS A SIMPLE ESTIMATE (NOT OPTIMIZATION YET)
   This script does NOT optimize anything. It does not pick the best vehicle,
   combine stops, or avoid disruptions. It just produces one straightforward
   estimated route per shipment leg. The real optimization (OR-Tools) arrives
-  in a later week; this dataset is the input it will improve upon.
+  in a later stage; this dataset is the input it will improve upon.
 
 WHAT IS REAL vs WHAT IS SIMULATED HERE
 --------------------------------------
@@ -52,8 +52,8 @@ GOLDEN RULE: READ processed/ + simulation/warehouses.csv; WRITE only simulation/
 
 HOW TO RUN
 ----------
-    python notebooks/week2_generate_warehouses.py   # must run first
-    python notebooks/week2_route_generation.py
+    python notebooks/warehouse_generation.py   # must run first
+    python notebooks/route_generation.py
 ============================================================================
 """
 
@@ -129,7 +129,7 @@ def route_status_from_order(order_status):
 
 
 def main():
-    banner("WEEK 2 - DELIVERY ROUTE GENERATION")
+    banner("STAGE 2 - DELIVERY ROUTE GENERATION")
     print("Building estimated warehouse -> customer routes from real coordinates.")
     print(f"Writing simulated routes to: {SIM_DIR}")
 
@@ -160,7 +160,7 @@ def main():
     step(f"Reduced to {len(legs):,} unique (order, warehouse) shipment legs.")
 
     # A route needs BOTH endpoints on the map. Drop legs missing any coordinate
-    # (a small number of customers had no zip match in Week 1).
+    # (a small number of customers had no zip match in Stage 1).
     coord_cols = ["seller_lat", "seller_lng", "customer_lat", "customer_lng"]
     before = len(legs)
     legs = legs.dropna(subset=coord_cols)

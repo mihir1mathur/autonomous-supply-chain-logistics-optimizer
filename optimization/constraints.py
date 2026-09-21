@@ -1,6 +1,6 @@
 """
 ============================================================================
-CONSTRAINTS  (Week 5)   -- the RULES a valid plan must obey
+CONSTRAINTS  (Stage 5)   -- the RULES a valid plan must obey
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -13,7 +13,7 @@ WHAT A "CONSTRAINT" IS (zero-knowledge version)
 
 WHY GATHER THE RULES HERE
 -------------------------
-  The business rules of Week 5 live in this one file as small, readable,
+  The business rules of Stage 5 live in this one file as small, readable,
   pure predicate functions:
     - vehicle capacity        (a vehicle's load must fit its capacity)
     - warehouse inventory      (a warehouse must actually hold enough stock)
@@ -23,7 +23,7 @@ WHY GATHER THE RULES HERE
   tests check any finished plan for violations without a solver. One source of
   truth, checked two ways.
 
-  These mirror the Week 2/Week 3 domain: vehicles.capacity_packages is a hard
+  These mirror the Stage 2/Stage 3 domain: vehicles.capacity_packages is a hard
   limit; inventory.stock_level is what a warehouse can ship; a warehouse whose
   operating_status is not "active" is treated as unavailable.
 ============================================================================
@@ -39,7 +39,7 @@ from optimization.solution_models import (
 )
 
 # A warehouse is only usable if it is operating normally. "overloaded" and
-# "inactive" (the other Week 2 statuses) are treated as unavailable so we never
+# "inactive" (the other Stage 2 statuses) are treated as unavailable so we never
 # route new work to a warehouse that cannot take it.
 USABLE_WAREHOUSE_STATUS = "active"
 
@@ -115,7 +115,7 @@ def count_capacity_violations(
     """
     Given a finished assignment (vehicle_id -> the shipments placed on it),
     count how many vehicles exceed their capacity. A correct solve must return
-    0 here - the Week 5 validation script asserts exactly that.
+    0 here - the Stage 5 validation script asserts exactly that.
     """
     violations = 0
     for vehicle_id, shipments in grouped.items():

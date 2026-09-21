@@ -1,6 +1,6 @@
 """
 ============================================================================
-EVALUATION AGENT  (Week 7)   -- judges the outcome, reusing Week 6 numbers
+EVALUATION AGENT  (Stage 7)   -- judges the outcome, reusing Stage 6 numbers
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -10,7 +10,7 @@ THE EVALUATION AGENT'S ONE JOB
   judgement a human can act on: what did the run cost and save, did it improve
   operations, and is there anything to worry about?
 
-  It REUSES the Week 6 numbers verbatim - the twelve KPIs from metrics.py and
+  It REUSES the Stage 6 numbers verbatim - the twelve KPIs from metrics.py and
   the before-vs-after percentages from evaluation.py, both already computed by
   the execution service. This agent does NOT recompute any metric; it INTERPRETS
   the existing ones: it derives an overall VERDICT (improved / degraded / mixed /
@@ -113,7 +113,7 @@ class EvaluationAgent(BaseAgent):
 
     @staticmethod
     def _improvement_slice(evaluation: dict) -> dict:
-        """The named improvement percentages the Week 7 goals list, if present."""
+        """The named improvement percentages the Stage 7 goals list, if present."""
         if not evaluation:
             return {}
         keys = _IMPROVEMENT_FIELDS + ("inventory_reduction_percent", "resource_utilization_percent")
@@ -187,5 +187,5 @@ class EvaluationAgent(BaseAgent):
         }
 
 
-# A ready-to-use singleton, mirroring the Week 4/5/6 service singletons.
+# A ready-to-use singleton, mirroring the Stage 4/5/6 service singletons.
 evaluation_agent = EvaluationAgent()

@@ -1,10 +1,10 @@
 """
 ============================================================================
-ORDER SCHEMAS  (Week 4)   entity: orders  (model: models/order.py)
+ORDER SCHEMAS  (Stage 4)   entity: orders  (model: models/order.py)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
-An order is a SHIPMENT REQUEST (Week 0). It belongs to one customer and carries
+An order is a SHIPMENT REQUEST (Stage 0). It belongs to one customer and carries
 the five delivery timestamps used to measure delays. order_status is kept as a
 free string because the real Olist data uses many values (delivered, shipped,
 canceled, invoiced, processing, unavailable, created, approved).

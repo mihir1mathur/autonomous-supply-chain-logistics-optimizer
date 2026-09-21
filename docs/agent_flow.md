@@ -1,7 +1,7 @@
-# Agent Orchestration Flow, End to End (Week 7)
+# Agent Orchestration Flow, End to End (Stage 7)
 Project: Supply Chain & Logistics Optimizer
 
-This document walks **one request** through the entire Week 7 orchestration layer,
+This document walks **one request** through the entire Stage 7 orchestration layer,
 step by step, so you can see exactly how a plain sentence becomes a complete,
 recorded optimization decision. It complements the overview
 ([`agent_orchestration.md`](agent_orchestration.md)) and the CrewAI design
@@ -24,7 +24,7 @@ curl -X POST http://127.0.0.1:8000/agents/decide \
      -d '{"goal":"optimize deliveries for a holiday peak, we are short on vans"}'
 ```
 
-Following the Week 4 layering rule, the router (`api/routers/agents.py`) stays
+Following the Stage 4 layering rule, the router (`api/routers/agents.py`) stays
 HTTP-only: it validates the body against `AgentDecisionRequest`, then calls
 `agent_service.decide(db, req.model_dump(), persist=True)`. The service
 (`api/services/agent_service.py`) is deliberately tiny — it pulls the recognised
@@ -75,7 +75,7 @@ priority one of two) and records a trace step. **The Planner never runs a solver
 
 ---
 
-## Step 2 — Scenario: pick the existing Week 6 scenario
+## Step 2 — Scenario: pick the existing Stage 6 scenario
 
 `ScenarioAgent._run(ctx=…, request=…, plan=…)` first calls the
 `get_scenario_catalog` tool, which delegates to
@@ -92,13 +92,13 @@ ScenarioDecision(
 
 Note how well this fits the request: the `holiday` scenario already models both a
 demand surge **and** a reduced fleet — exactly *"a holiday peak, short on vans."*
-The scenario's actual effects stay owned by Week 6's `scenarios.py`; this agent
+The scenario's actual effects stay owned by Stage 6's `scenarios.py`; this agent
 only decides *which one* to use. Validated (non-empty key present in the live
 catalog) and traced.
 
 ---
 
-## Step 3 — Optimization: drive the Week 6 execution service
+## Step 3 — Optimization: drive the Stage 6 execution service
 
 `OptimizationAgent._run(ctx=…, plan=…, scenario=…, persist=True)` is the "hands"
 of the crew, and deliberately thin. It calls the `run_optimization` tool with the
@@ -111,12 +111,12 @@ run_optimization(ctx, optimizer="assignment", scenario="holiday",
 
 That tool (`agents/tools.py`) opens/uses the shared session and calls
 `execution_service.run(db, persist=True, optimizer="assignment",
-scenario="holiday")`. The Week 6 service then does the whole heavy pipeline —
+scenario="holiday")`. The Stage 6 service then does the whole heavy pipeline —
 **exactly the work described in [`optimization_execution.md`](optimization_execution.md)**:
 
 ```
 load real inputs from the DB  →  apply the 'holiday' scenario (demand ×1.6,
-  keep 80% of fleet, fuel ×1.1)  →  solve with the Week 5 assignment solver  →
+  keep 80% of fleet, fuel ×1.1)  →  solve with the Stage 5 assignment solver  →
   measure the 12 KPIs  →  evaluate before-vs-after  →  store one optimization_runs row
 ```
 
@@ -132,13 +132,13 @@ OptimizationOutcome(
 
 Validation here checks the result really contains `metrics`. **The agent never
 touches OR-Tools, the solvers, or the database directly** — all of that is the
-trusted Week 6/5 code.
+trusted Stage 6/5 code.
 
 ---
 
 ## Step 4 — Evaluation: read the KPIs, form a verdict, benchmark
 
-`EvaluationAgent._run(ctx=…, outcome=…, benchmark=True)` reuses the Week 6 numbers
+`EvaluationAgent._run(ctx=…, outcome=…, benchmark=True)` reuses the Stage 6 numbers
 verbatim — it **interprets**, it does not recompute. From the result it reads:
 
 - the **12 KPIs** (`metrics`): total cost, travel distance, vehicle utilization,
@@ -184,7 +184,7 @@ audiences at once:
 - **markdown** — headings, a KPI table, evaluation, benchmark, notes,
   recommendations (for a human);
 - **text** — the same, plain, for logs and terminals;
-- **json** — the structured object (for a program or the Week 8 dashboard).
+- **json** — the structured object (for a program or the Stage 8 dashboard).
 
 Because all three render from the same data, they can never drift apart. It also
 derives two action lists **from the actual outcome, not boilerplate**:
@@ -195,7 +195,7 @@ derives two action lists **from the actual outcome, not boilerplate**:
   are at risk, *"run the 'fleet' optimizer to rebalance load off the over-full
   vehicles"*; and because the run was stored, *"compare it against past runs via
   GET /optimization/metrics."*
-- **Future improvements** — e.g. feed the stored runs into a Week 8 dashboard;
+- **Future improvements** — e.g. feed the stored runs into a Stage 8 dashboard;
   implement the reserved OR-Tools VRP routing strategy; let the crew trial
   several optimizers/scenarios and recommend the best. In deterministic mode it
   additionally suggests enabling the CrewAI LLM mode.
@@ -225,7 +225,7 @@ computed and reported but **not stored** — a safe what-if.
 
 ---
 
-## How it maps to the Week 7 architecture
+## How it maps to the Stage 7 architecture
 
 Each step above is one hop down the layered diagram from
 [`agent_orchestration.md`](agent_orchestration.md):
@@ -241,7 +241,7 @@ User  ──►  /agents/decide  ──►  agent_service  ──►  Coordinato
                       execution_service.run  ────┘        OrchestrationResult
                               │                              (+ trace)
                               ▼
-                      Week 5 OR-Tools engine  ──►  optimization_runs (DB)
+                      Stage 5 OR-Tools engine  ──►  optimization_runs (DB)
 ```
 
 The trace records one `AgentStep` per box in the middle row, so the finished
@@ -265,7 +265,7 @@ the representative numbers in [`scenario_execution.md`](scenario_execution.md)):
 > The Planner reads *"holiday peak, short on vans"* and plans a **cost/consolidation
 > (`assignment`)** run. The Scenario agent matches this to the existing **`holiday`**
 > scenario — demand × 1.6, only 80% of the fleet, fuel × 1.1 — a perfect fit for
-> "peak plus fewer vans." The Optimization agent presses the button: the Week 6
+> "peak plus fewer vans." The Optimization agent presses the button: the Stage 6
 > service loads the data, applies those effects, solves, and stores the run. The
 > Evaluation agent reads the KPIs — utilization pinned at **100%**, **12 orders
 > become stockouts**, **38 deliveries at risk of being late** — and, benchmarking
@@ -284,19 +284,19 @@ explaining the trade-off in natural language — the LLM never changes the figur
 
 ## Tying it back — and forward
 
-**Back to Weeks 0–6 (the phone charger journey).** The charger the customer
-ordered in Week 0 was modelled (Week 2), stored (Week 3), served over HTTP
-(Week 4), and had its van and route optimized (Week 5) and scored under scenarios
-(Week 6). Week 7 is the layer that finally lets someone *ask, in plain words*,
+**Back to Stages 0–6 (the phone charger journey).** The charger the customer
+ordered in Stage 0 was modelled (Stage 2), stored (Stage 3), served over HTTP
+(Stage 4), and had its van and route optimized (Stage 5) and scored under scenarios
+(Stage 6). Stage 7 is the layer that finally lets someone *ask, in plain words*,
 for that optimization to happen for a whole holiday's worth of chargers — and get
 back not just numbers but a reasoned, recorded decision. Every charger still
 flows through the exact same tested pipeline; the agents just decide which button
 to press and explain the result.
 
-**Forward to Week 8 (monitoring dashboards).** Every `/agents/decide` run stores
-an `optimization_runs` row (Week 6) and produces a structured JSON report and
-trace (Week 7). Week 8 will build monitoring dashboards over those stored runs —
+**Forward to Stage 8 (monitoring dashboards).** Every `/agents/decide` run stores
+an `optimization_runs` row (Stage 6) and produces a structured JSON report and
+trace (Stage 7). Stage 8 will build monitoring dashboards over those stored runs —
 charting KPIs, verdicts, and evaluations across many autonomous decisions over
 time. That is exactly why the Reporting agent emits a machine-ingestible `json`
 rendering and lists a dashboard as its first future improvement: the data the
-next week needs is already being written, in the right shape, today.
+the next stage needs is already being written, in the right shape, today.

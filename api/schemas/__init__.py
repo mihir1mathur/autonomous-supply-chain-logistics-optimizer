@@ -1,16 +1,16 @@
 """
-api/schemas/ package  (Week 4)
+api/schemas/ package  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 
 WHAT LIVES HERE: the PYDANTIC SCHEMAS - the "shape" of the JSON that goes into
-and comes out of the API. One file per entity, matching the Week 3 models:
+and comes out of the API. One file per entity, matching the Stage 3 models:
 
   customer.py   warehouse.py   inventory.py   vehicle.py
   route.py      disruption.py  order.py
 
-SQLAlchemy MODEL vs. PYDANTIC SCHEMA (the key beginner distinction)
+SQLAlchemy MODEL vs. PYDANTIC SCHEMA (the key distinction)
 ------------------------------------------------------------------
-  - A SQLAlchemy MODEL (models/*.py, Week 3) describes a DATABASE TABLE: what
+  - A SQLAlchemy MODEL (models/*.py, Stage 3) describes a DATABASE TABLE: what
     is stored on disk, the columns, keys, and relationships.
   - A PYDANTIC SCHEMA (here) describes the JSON at the API BOUNDARY: what a
     caller may SEND and what they RECEIVE. It validates incoming data and

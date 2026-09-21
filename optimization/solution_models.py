@@ -1,6 +1,6 @@
 """
 ============================================================================
-SOLUTION MODELS  (Week 5)   -- the INPUT and OUTPUT shapes of the engine
+SOLUTION MODELS  (Stage 5)   -- the INPUT and OUTPUT shapes of the engine
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -18,16 +18,16 @@ WHY DATACLASSES, AND WHY NO DATABASE / NO FASTAPI HERE
   these plain objects. This is the Dependency-Inversion idea from SOLID: the
   optimization core depends on simple data, not on the web or the database.
 
-    - The SERVICE layer (api/services/optimization_service.py) reads the Week 3
+    - The SERVICE layer (api/services/optimization_service.py) reads the Stage 3
       database, maps rows into the INPUT dataclasses here, and calls a solver.
     - The solver returns an OUTPUT dataclass here.
     - The ROUTER shapes that output into JSON via a Pydantic response schema.
 
   Because the outputs are ordinary objects with attributes, Pydantic's
-  `from_attributes=True` response schemas (Week 4 pattern) read them directly -
+  `from_attributes=True` response schemas (Stage 4 pattern) read them directly -
   the same bridge used for SQLAlchemy rows.
 
-  Every output object also offers `as_dict()` so scripts (the Week 5 demo /
+  Every output object also offers `as_dict()` so scripts (the Stage 5 demo /
   validation) can print or serialise a solution without FastAPI.
 ============================================================================
 """
@@ -52,7 +52,7 @@ class ShipmentInput:
     destination_latitude: float | None = None
     destination_longitude: float | None = None
     weight_kg: float | None = None
-    # The warehouse -> destination leg distance (km). Populated from the Week 2
+    # The warehouse -> destination leg distance (km). Populated from the Stage 2
     # delivery_routes.estimated_distance_km so cost/distance totals reuse the
     # existing estimate rather than recomputing it.
     distance_km: float | None = None

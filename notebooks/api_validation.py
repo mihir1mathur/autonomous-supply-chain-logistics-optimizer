@@ -1,6 +1,6 @@
 """
 ============================================================================
-WEEK 4 - API VALIDATION & ERROR-HANDLING DEMO
+STAGE 4 - API VALIDATION & ERROR-HANDLING DEMO
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -8,7 +8,7 @@ WHAT THIS SCRIPT DOES
 ---------------------
   Deliberately triggers the ERROR paths to prove the API fails CLEANLY, with the
   right HTTP status code and a consistent JSON error envelope - never a stack
-  trace and never raw SQL. It is the companion to week4_api_demo.py (happy path).
+  trace and never raw SQL. It is the companion to api_demo.py (happy path).
 
   Every error the API returns has the SAME shape:
         { "error": { "code": "...", "message": "...", "details": ... } }
@@ -25,14 +25,14 @@ WHAT THIS SCRIPT DOES
 
 HOW THE REQUESTS ARE MADE
 -------------------------
-  Same as week4_api_demo.py: the in-process TestClient by default, or a real
+  Same as api_demo.py: the in-process TestClient by default, or a real
   running server if API_BASE_URL is set. See that file's header for details.
 
 PREREQUISITES
 -------------
         python database/init_db.py
-        python notebooks/week3_load_database.py
-        python notebooks/week4_api_validation.py
+        python notebooks/load_database.py
+        python notebooks/api_validation.py
 ============================================================================
 """
 
@@ -99,7 +99,7 @@ def check(description, response, expected_status):
 
 
 def main():
-    banner("WEEK 4 - API VALIDATION & ERROR-HANDLING DEMO")
+    banner("STAGE 4 - API VALIDATION & ERROR-HANDLING DEMO")
     client = get_client()
     results = []
 

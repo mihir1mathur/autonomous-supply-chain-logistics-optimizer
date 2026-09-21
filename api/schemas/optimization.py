@@ -1,6 +1,6 @@
 """
 ============================================================================
-OPTIMIZATION SCHEMAS  (Week 5)   endpoints: /optimize/*
+OPTIMIZATION SCHEMAS  (Stage 5)   endpoints: /optimize/*
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -8,11 +8,11 @@ WHAT THIS FILE HOLDS
 --------------------
   The Pydantic REQUEST and RESPONSE schemas for the optimization endpoints -
   the JSON shape a caller sends and the JSON they get back. Same idea as the
-  seven entity schema files from Week 4, but here the "response" objects mirror
+  seven entity schema files from Stage 4, but here the "response" objects mirror
   the plain dataclasses the optimization engine returns
   (optimization/solution_models.py) rather than a database table.
 
-THE BRIDGE (from_attributes=True, reused from Week 4)
+THE BRIDGE (from_attributes=True, reused from Stage 4)
 -----------------------------------------------------
   The service calls a solver, which returns a dataclass (e.g. AssignmentSolution
   with .assignments, .vehicle_loads, ...). Each Response schema below inherits
@@ -115,7 +115,7 @@ class RoutesRequest(BaseModel):
     strategy: str | None = Field(
         None,
         description="Routing strategy: 'nearest_neighbor' (default). 'vrp' is "
-        "reserved for a future week.",
+        "reserved for a later stage.",
     )
 
 

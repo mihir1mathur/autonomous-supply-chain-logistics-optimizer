@@ -34,7 +34,7 @@ Turning a real-world e-commerce dataset into a modular, deployable logistics dec
 | ✅ **Persistent optimization history** | ✅ **Executive decision reporting** |
 | ✅ **Deployed on AWS EC2** (systemd, Nginx, CloudWatch, SNS) | ✅ **Fully additive, modular design** |
 
-**Verified at a glance** — `182/182` validation checks passed (weeks 5–8) · `360/360` live API requests succeeded (100% HTTP 200) · server-side CP-SAT solve `~17–79 ms` for a 50-shipment assignment (live) · reproducible deterministic benchmark with a byte-identical two-run SHA-256 fingerprint · AWS EC2 deployment with CloudWatch monitoring. All five benchmark scenarios returned successful solver outcomes under the configured limits — full detail and caveats in [Verified Engineering Results](#verified-results).
+**Verified at a glance** — `182/182` validation checks passed (stages 5–8) · `360/360` live API requests succeeded (100% HTTP 200) · server-side CP-SAT solve `~17–79 ms` for a 50-shipment assignment (live) · reproducible deterministic benchmark with a byte-identical two-run SHA-256 fingerprint · AWS EC2 deployment with CloudWatch monitoring. All five benchmark scenarios returned successful solver outcomes under the configured limits — full detail and caveats in [Verified Engineering Results](#verified-results).
 
 ---
 
@@ -349,7 +349,7 @@ pip install -r requirements.txt
 cp .env.example .env                      # then set DATABASE_PASSWORD in .env
 createdb supply_chain_optimizer           # one-time: create the database
 python database/init_db.py                # create tables, indexes, foreign keys
-python notebooks/week3_load_database.py   # load processed/ + simulation/ CSVs
+python notebooks/load_database.py   # load processed/ + simulation/ CSVs
 
 # 3) Start the backend (FastAPI)
 uvicorn api.main:app --reload             # http://127.0.0.1:8000/docs (Swagger)
@@ -365,11 +365,11 @@ Point the dashboard at a different backend with one environment variable
 <summary>Demo &amp; validation scripts (no server needed — in-process TestClient, deterministic)</summary>
 
 ```bash
-python notebooks/week4_api_demo.py          # REST endpoints        + week4_api_validation.py
-python notebooks/week5_optimization_demo.py # four optimizers       + week5_validation.py
-python notebooks/week6_execution_demo.py    # run/simulate/history  + week6_validation.py   (46/46)
-python notebooks/week7_agents_demo.py       # autonomous decisions  + week7_validation.py   (42/42)
-python notebooks/week8_dashboard_demo.py    # dashboard walkthrough + week8_validation.py
+python notebooks/api_demo.py          # REST endpoints        + api_validation.py
+python notebooks/optimization_demo.py # four optimizers       + optimization_validation.py
+python notebooks/execution_demo.py    # run/simulate/history  + execution_validation.py   (46/46)
+python notebooks/agents_demo.py       # autonomous decisions  + agents_validation.py   (42/42)
+python notebooks/dashboard_demo.py    # dashboard walkthrough + dashboard_validation.py
 ```
 
 **Optional CrewAI (LLM) mode:** uncomment `crewai` in `requirements.txt`, install it, and
@@ -462,7 +462,7 @@ delivery-service KPIs under the tested conditions. Outcomes varied by scenario a
 objective, reflecting explicit trade-offs among utilization, consolidation, modeled
 cost, distance, and late deliveries. All five scenarios returned successful solver
 outcomes under the configured limits; detailed solver statuses are documented in the
-[benchmark report](benchmarks/week6_benchmark_report.md).
+[benchmark report](benchmarks/benchmark_report.md).
 
 Normal scenario, optimized vs. naive baseline:
 
@@ -487,8 +487,8 @@ benchmark artifacts linked below.
   optimizer and is not claimed here).
 - Full solver status per scenario and the complete cost / distance / utilization /
   fulfillment / stockout / late-delivery results are documented in the benchmark
-  report: [`week6_benchmark_report.md`](benchmarks/week6_benchmark_report.md) ·
-  [`week6_benchmark_report.json`](benchmarks/week6_benchmark_report.json).
+  report: [`benchmark_report.md`](benchmarks/benchmark_report.md) ·
+  [`benchmark_report.json`](benchmarks/benchmark_report.json).
 - These are simulated logistics KPIs (model outputs), **not** real-world savings,
   real money, or customer impact.
 
@@ -504,14 +504,14 @@ benchmark artifacts linked below.
   excluded from the comparison.
 - `utilization_gain% = (0.5976 − 0.4435) / 0.4435 × 100 = +34.7%` (relative %, not pp).
 - `late_delivery_reduction% = (10 − 0) / 10 × 100 = 100%`.
-- *Evidence: `benchmarks/week6_benchmark_report.{md,json}`;
-  `notebooks/week6_benchmark_runner.py`; `notebooks/week6_reproducibility_check.py` (exit 0).*
+- *Evidence: `benchmarks/benchmark_report.{md,json}`;
+  `notebooks/benchmark_runner.py`; `notebooks/benchmark_reproducibility_check.py` (exit 0).*
 
 </details>
 
 ### C. Validation and live AWS performance
 
-- **182/182** automated validation checks pass across weeks 5–8 (20 / 46 / 42 / 74).
+- **182/182** automated validation checks pass across stages 5–8 (20 / 46 / 42 / 74).
 - **360/360** sequential live API requests succeeded — **0 failures, 100% HTTP 200**.
 - Lightweight API latency: **median ~68–76 ms**, **p95 ~87–113 ms** (end-to-end).
 - DB-backed optimization-history read: **median ~110 ms**, **p95 ~146 ms**.
@@ -532,8 +532,9 @@ benchmark artifacts linked below.
 - The **17–79 ms** solve time applies to the tested live 50-shipment cases; it is
   not a universal solve-time guarantee. Runtime varies with scenario, warehouse, and
   constraint hardness; per-scenario runtimes are documented in the
-  [benchmark report](benchmarks/week6_benchmark_report.md).
-- *Evidence: validation via `notebooks/week{5,6,7,8}_validation.py` (in-process
+  [benchmark report](benchmarks/benchmark_report.md).
+- *Evidence: validation via `notebooks/optimization_validation.py`, `execution_validation.py`,
+  `agents_validation.py`, and `dashboard_validation.py` (in-process
   `TestClient`); live latency, solve-time and persistence from a controlled
   sequential probe of the deployed endpoint (raw measurement JSON retained locally).*
 
@@ -640,7 +641,7 @@ Added a **five-agent crew** (Planner → Scenario → Optimization → Evaluatio
 
 Added a **Streamlit** dashboard (a **presentation layer only** — it consumes the APIs and never recomputes a KPI): **six pages**, reusable KPI cards / charts / execution-trace viewer / report viewer, CSV/JSON/Markdown exports, and resilient offline handling.
 
-📖 [`dashboard_architecture.md`](docs/dashboard_architecture.md) · [`dashboard_user_guide.md`](docs/dashboard_user_guide.md) · [`week8_dashboard_summary.md`](docs/week8_dashboard_summary.md)
+📖 [`dashboard_architecture.md`](docs/dashboard_architecture.md) · [`dashboard_user_guide.md`](docs/dashboard_user_guide.md) · [`dashboard_summary.md`](docs/dashboard_summary.md)
 
 ---
 
@@ -673,7 +674,7 @@ Full technical documentation lives in [`docs/`](docs/):
 | **Optimization** | [optimization_architecture](docs/optimization_architecture.md) · [or_tools_design](docs/or_tools_design.md) · [optimization_flow](docs/optimization_flow.md) · [future_scaling](docs/future_scaling.md) |
 | **Execution & evaluation** | [optimization_execution](docs/optimization_execution.md) · [optimization_metrics](docs/optimization_metrics.md) · [evaluation_framework](docs/evaluation_framework.md) · [scenario_execution](docs/scenario_execution.md) |
 | **Agents** | [agent_orchestration](docs/agent_orchestration.md) · [crewai_design](docs/crewai_design.md) · [agent_flow](docs/agent_flow.md) |
-| **Dashboard** | [dashboard_architecture](docs/dashboard_architecture.md) · [dashboard_user_guide](docs/dashboard_user_guide.md) · [week8_dashboard_summary](docs/week8_dashboard_summary.md) |
+| **Dashboard** | [dashboard_architecture](docs/dashboard_architecture.md) · [dashboard_user_guide](docs/dashboard_user_guide.md) · [dashboard_summary](docs/dashboard_summary.md) |
 
 ---
 

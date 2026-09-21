@@ -1,6 +1,6 @@
 """
 ============================================================================
-OPTIMIZATION RUN SERVICE  (Week 6)   entity: optimization_runs
+OPTIMIZATION RUN SERVICE  (Stage 6)   entity: optimization_runs
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -13,13 +13,13 @@ WHAT THIS SERVICE DOES
       GET /optimization/{run_id}     -> one run by id
       GET /optimization/metrics      -> aggregate KPIs across the stored runs
 
-WHY IT REUSES THE WEEK 4 BaseService (no new CRUD code)
+WHY IT REUSES THE STAGE 4 BaseService (no new CRUD code)
 -------------------------------------------------------
   Listing with filters + sorting + pagination and "get one by id (or 404)" are
-  EXACTLY what the Week 4 BaseService already provides for the seven entities.
+  EXACTLY what the Stage 4 BaseService already provides for the seven entities.
   A stored optimization run is just another table, so this service subclasses
   BaseService and only declares its safelists - the list/get logic is inherited
-  unchanged. The one Week 6-specific addition is the metrics AGGREGATE, which is
+  unchanged. The one Stage 6-specific addition is the metrics AGGREGATE, which is
   a small custom query.
 ============================================================================
 """
@@ -143,5 +143,5 @@ class OptimizationRunService(BaseService):
         }
 
 
-# A ready-to-use singleton, mirroring the Week 4 / Week 5 services.
+# A ready-to-use singleton, mirroring the Stage 4 / Stage 5 services.
 optimization_run_service = OptimizationRunService()

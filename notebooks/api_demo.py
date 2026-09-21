@@ -1,15 +1,15 @@
 """
 ============================================================================
-WEEK 4 - API DEMO  (happy paths)
+STAGE 4 - API DEMO  (happy paths)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  Exercises the Week 4 REST API end to end and prints clean, explained output:
+  Exercises the Stage 4 REST API end to end and prints clean, explained output:
   listing, fetching one, creating, updating (PUT + PATCH), deleting, plus
   filtering, sorting, searching, and pagination. It is the "everything works"
-  companion to week4_api_validation.py (which shows the ERROR paths).
+  companion to api_validation.py (which shows the ERROR paths).
 
   It is NON-DESTRUCTIVE: the create/update/delete demo uses a clearly-marked
   test row (CUST-WEEK4-DEMO) and deletes it at the end, so running this script
@@ -29,11 +29,11 @@ HOW THE REQUESTS ARE MADE (no separate server needed)
 
 PREREQUISITES
 -------------
-  The Week 3 database must exist and be loaded:
+  The Stage 3 database must exist and be loaded:
         python database/init_db.py
-        python notebooks/week3_load_database.py
+        python notebooks/load_database.py
   Then run:
-        python notebooks/week4_api_demo.py
+        python notebooks/api_demo.py
 ============================================================================
 """
 
@@ -100,7 +100,7 @@ def show(response):
 
 
 def main():
-    banner("WEEK 4 - API DEMO (happy paths)")
+    banner("STAGE 4 - API DEMO (happy paths)")
     client = get_client()
 
     # ---- META -------------------------------------------------------------
@@ -149,7 +149,7 @@ def main():
     show(client.get("/inventory", params={"inventory_status": "low_stock", "page_size": 3}))
 
     # ---- CONVENIENCE ENDPOINT --------------------------------------------
-    step("GET /disruptions/active  (reuses the Week 3 'active' query)")
+    step("GET /disruptions/active  (reuses the Stage 3 'active' query)")
     r = client.get("/disruptions/active")
     print(f"  -> HTTP {r.status_code}; active disruptions returned: {len(r.json())}")
 

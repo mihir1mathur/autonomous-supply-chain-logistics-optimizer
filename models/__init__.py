@@ -1,5 +1,5 @@
 """
-models/ package  (Week 3)
+models/ package  (Stage 3)
 Project: Supply Chain & Logistics Optimizer
 
 This file imports EVERY model class so that simply doing `import models`
@@ -18,12 +18,12 @@ Tables (and their source data):
     delivery_routes  <- simulation/delivery_routes.csv   (REAL ids + COMPUTED)
     disruptions      <- simulation/disruptions.csv       (SIM)
 
-WEEK 6 TABLE (added by the optimization execution layer):
+STAGE 6 TABLE (added by the optimization execution layer):
     optimization_runs -- one row per stored optimization / scenario run, with
     its KPIs. Brand-new and additive: init_db.py's create_all() creates it
-    without touching any Week 3 table. See models/optimization_run.py.
+    without touching any Stage 3 table. See models/optimization_run.py.
 
-FUTURE TABLE (not created yet, planned for a later week):
+FUTURE TABLE (not created yet, planned for a later stage):
     agent_decisions  -- an audit log of what the CrewAI agents decide and why.
     See docs/database_schema.md for its planned design.
 """

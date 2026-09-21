@@ -1,12 +1,12 @@
 """
 ============================================================================
-WEEK 6 - BENCHMARK REPRODUCIBILITY CHECK
+STAGE 6 - BENCHMARK REPRODUCIBILITY CHECK
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  Proves the Week 6 benchmark is REPRODUCIBLE: it runs the complete
+  Proves the Stage 6 benchmark is REPRODUCIBLE: it runs the complete
   five-scenario sweep TWICE and confirms that every stable business metric is
   identical between the two runs, while deliberately IGNORING the fields that
   are allowed to differ (runtime, run_id, created_at).
@@ -21,15 +21,15 @@ WHAT THIS SCRIPT DOES
 
 HOW THE REQUESTS ARE MADE
 -------------------------
-  Same as the Week 4/5/6 scripts: the in-process TestClient by default, or a
+  Same as the Stage 4/5/6 scripts: the in-process TestClient by default, or a
   real running server if API_BASE_URL is set.
 
 PREREQUISITES
 -------------
         pip install -r requirements.txt
         python database/init_db.py                 # creates optimization_runs
-        python notebooks/week3_load_database.py
-        python notebooks/week6_reproducibility_check.py
+        python notebooks/load_database.py
+        python notebooks/benchmark_reproducibility_check.py
 ============================================================================
 """
 
@@ -49,7 +49,7 @@ warnings.filterwarnings("ignore", message=".*starlette.testclient.*")
 # solvers (and the runner, which would default it on anyway) are imported.
 os.environ["BENCHMARK_DETERMINISTIC"] = "true"
 
-from notebooks.week6_benchmark_runner import (  # noqa: E402
+from notebooks.benchmark_runner import (  # noqa: E402
     IGNORED_FIELDS,
     MAX_SHIPMENTS,
     compute_input_fingerprint,
@@ -87,7 +87,7 @@ def _diff_stable(run_a: dict, run_b: dict) -> list[str]:
 
 
 def main():
-    banner("WEEK 6 - BENCHMARK REPRODUCIBILITY CHECK")
+    banner("STAGE 6 - BENCHMARK REPRODUCIBILITY CHECK")
     warehouse_id = resolve_benchmark_warehouse()
 
     # The fingerprint is a pure function of the inputs, so computing it twice

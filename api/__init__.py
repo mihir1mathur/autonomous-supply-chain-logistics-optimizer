@@ -1,8 +1,8 @@
 """
-api/ package  (Week 4)
+api/ package  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 
-This package is the BACKEND: it turns the Week 3 database into a REST API that
+This package is the BACKEND: it turns the Stage 3 database into a REST API that
 other programs (a dashboard, agents, another service) can call over HTTP.
 
 WHAT IS AN API? (zero-knowledge version)
@@ -17,7 +17,7 @@ WHAT IS AN API? (zero-knowledge version)
 HOW THIS PACKAGE IS ORGANISED (each file explained where it lives)
   main.py         - creates the FastAPI app, wires everything together, runs it.
   config.py       - reads API settings (title, version, page sizes) from .env.
-  database.py     - REUSES the Week 3 database connection; gives FastAPI a
+  database.py     - REUSES the Stage 3 database connection; gives FastAPI a
                     per-request database session.
   dependencies.py - small reusable pieces FastAPI injects into endpoints
                     (the DB session, the pagination query parameters).
@@ -31,9 +31,9 @@ HOW THIS PACKAGE IS ORGANISED (each file explained where it lives)
 THE ONE RULE THAT KEEPS THIS CLEAN (layered architecture)
       Client -> Router -> Service -> SQLAlchemy -> PostgreSQL -> JSON response
   Each layer only talks to the next one down. That separation is what lets
-  later weeks (OR-Tools, Redis, CrewAI, a dashboard, AWS) plug in without a
+  later stages (OR-Tools, Redis, CrewAI, a dashboard, AWS) plug in without a
   rewrite. See docs/api_architecture.md for the full explanation.
 
 NOTHING here connects to the database at import time - importing api/ is always
-safe even if PostgreSQL is not running (the Week 3 engine is lazy).
+safe even if PostgreSQL is not running (the Stage 3 engine is lazy).
 """

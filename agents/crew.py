@@ -1,6 +1,6 @@
 """
 ============================================================================
-CREWAI CREW  (Week 7)   -- the real CrewAI assembly (optional LLM layer)
+CREWAI CREW  (Stage 7)   -- the real CrewAI assembly (optional LLM layer)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -27,7 +27,7 @@ WHY EVERY IMPORT OF CREWAI IS LAZY
 HOW IT RELATES TO THE DETERMINISTIC RESULT
 ------------------------------------------
   The coordinator has ALREADY produced the authoritative, deterministic decision
-  (the real numbers, from the Week 6 execution service) before this crew runs.
+  (the real numbers, from the Stage 6 execution service) before this crew runs.
   The crew's job here is to add the LLM REASONING/NARRATION layer: it receives
   that decision as context, can call the same tools to run additional what-if
   checks if it wishes, and returns a natural-language narrative. The crew never
@@ -52,7 +52,7 @@ _logger = get_logger("agents.crew")
 
 
 # ===========================================================================
-# LLM WIRING  (provider/model from the Week 7 settings)
+# LLM WIRING  (provider/model from the Stage 7 settings)
 # ===========================================================================
 def _make_llm(settings: AgentSettings):
     """
@@ -166,7 +166,7 @@ def build_tasks(agents: dict, request: dict, decision: dict) -> list:
 def build_full_crew(ctx: ToolContext, request: dict, decision: dict, settings: AgentSettings):
     """
     Assemble the genuine five-agent CrewAI Crew (sequential process). This is the
-    "CrewAI Agent Orchestrator" of the Week 7 architecture, expressed in CrewAI's
+    "CrewAI Agent Orchestrator" of the Stage 7 architecture, expressed in CrewAI's
     own objects. Returns a Crew ready to kickoff().
     """
     from crewai import Crew, Process  # noqa: PLC0415

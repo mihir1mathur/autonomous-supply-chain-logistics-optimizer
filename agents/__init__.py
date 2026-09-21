@@ -1,21 +1,21 @@
 """
 ============================================================================
-agents/ package  (Week 7)   -- the AI MULTI-AGENT ORCHESTRATION LAYER
+agents/ package  (Stage 7)   -- the AI MULTI-AGENT ORCHESTRATION LAYER
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT LIVES HERE
 ---------------
-  The Week 7 layer that turns the platform into an AUTONOMOUS SUPPLY CHAIN
+  The Stage 7 layer that turns the platform into an AUTONOMOUS SUPPLY CHAIN
   DECISION SYSTEM. Five specialised agents cooperate - orchestrated by a
   coordinator - to take a plain user request and produce a complete, recorded
-  decision, entirely by driving the EXISTING Week 6 execution service (never
+  decision, entirely by driving the EXISTING Stage 6 execution service (never
   OR-Tools directly):
 
       base_agent.py        the shared shell every agent inherits (logging,
                            timing, error handling, validation, tracing).
       planner_agent.py     decides WHAT to run (ExecutionPlan). Plans only.
-      scenario_agent.py    chooses one EXISTING Week 6 scenario (ScenarioDecision).
+      scenario_agent.py    chooses one EXISTING Stage 6 scenario (ScenarioDecision).
       optimization_agent.py drives the execution service (OptimizationOutcome).
       evaluation_agent.py  judges the KPIs + evaluation (EvaluationSummary).
       reporting_agent.py   writes the report (AgentReport: markdown/json/text).
@@ -26,14 +26,14 @@ WHAT LIVES HERE
       config.py            settings + which orchestration mode to use.
       utils.py             logging/timing/tracing + the structured contracts.
 
-HOW IT FITS THE ARCHITECTURE (Week 7 goals)
+HOW IT FITS THE ARCHITECTURE (Stage 7 goals)
 -------------------------------------------
       User -> FastAPI (/agents) -> Execution Service (agent_service)
            -> Coordinator -> Planner -> Scenario -> Optimization -> Evaluation
            -> Reporting -> Execution Service -> Optimization Engine -> Database
 
-  Everything is ADDITIVE: no Week 0-6 file is rewritten. The agents REUSE the
-  Week 6 execution service, scenario engine, metrics and evaluation framework.
+  Everything is ADDITIVE: no Stage 0-6 file is rewritten. The agents REUSE the
+  Stage 6 execution service, scenario engine, metrics and evaluation framework.
 
 TWO ORCHESTRATION MODES
 -----------------------

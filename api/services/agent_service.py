@@ -1,18 +1,18 @@
 """
 ============================================================================
-AGENT ORCHESTRATION SERVICE  (Week 7)   -- FastAPI's bridge to the crew
+AGENT ORCHESTRATION SERVICE  (Stage 7)   -- FastAPI's bridge to the crew
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SERVICE IS
 --------------------
-  The thin layer that sits between the FastAPI router and the Week 7 agent
-  COORDINATOR. In the Week 7 architecture -
+  The thin layer that sits between the FastAPI router and the Stage 7 agent
+  COORDINATOR. In the Stage 7 architecture -
 
       User -> FastAPI -> Execution Service -> Coordinator -> agents -> ...
 
   - this is the "Execution Service" seam for the agent layer: the router stays
-  HTTP-only (the Week 4 golden rule), and this service turns the validated
+  HTTP-only (the Stage 4 golden rule), and this service turns the validated
   request into a coordinator call, passing the request's database session
   straight through so every optimization the agents drive runs on the same
   session as the rest of the request.
@@ -20,7 +20,7 @@ WHAT THIS SERVICE IS
 WHY IT IS SO SMALL
 ------------------
   All the real work already lives in the agents package (planning, scenario
-  choice, driving the execution service, evaluating, reporting) and in the Week
+  choice, driving the execution service, evaluating, reporting) and in the Stage
   6 execution service the agents call. This service just marshals the HTTP
   request into the coordinator's `request` dict, chooses persist vs simulate,
   and returns the coordinator's result as a plain dict. No business logic and no
@@ -56,7 +56,7 @@ class AgentOrchestrationService:
     """Bridges the /agents endpoints to the agent coordinator."""
 
     def __init__(self):
-        # Reuse the coordinator singleton (mirrors the Week 4/5/6 service pattern).
+        # Reuse the coordinator singleton (mirrors the Stage 4/5/6 service pattern).
         self.coordinator = coordinator
         self.settings = get_agent_settings()
 
@@ -97,5 +97,5 @@ class AgentOrchestrationService:
         }
 
 
-# A ready-to-use singleton, mirroring the Week 4 / 5 / 6 services.
+# A ready-to-use singleton, mirroring the Stage 4 / 5 / 6 services.
 agent_service = AgentOrchestrationService()

@@ -1,4 +1,4 @@
-# Optimization Flow (Week 5)
+# Optimization Flow (Stage 5)
 
 This document walks through **what actually happens at runtime** for each of the
 five optimization endpoints: the request, the database reads, the mapping into
@@ -32,7 +32,7 @@ zero setup and can then be narrowed with explicit parameters.
 
 ## Common response fields
 
-As the Week 5 goals require, every optimizer response reports, where relevant:
+As the Stage 5 goals require, every optimizer response reports, where relevant:
 **success**, **cost**, **distance**, **vehicle utilization**, **unassigned
 shipments**, and **execution time** (`execution_time_ms`, measured around the
 solve). A human-readable `message` summarises the outcome, and `status` carries
@@ -50,7 +50,7 @@ Router: optimize_assignment(payload)
        1. resolve the warehouse (given, or the one with the most available
           vehicles that also has routes)
        2. load its delivery routes as ShipmentInput (with a simulated package
-          size and the Week 2 estimated_distance_km as the leg distance)
+          size and the Stage 2 estimated_distance_km as the leg distance)
        3. load its AVAILABLE vehicles as VehicleInput (capacity_packages, rate)
        4. assignment_solver.solve(shipments, vehicles)   # CP-SAT
   -> AssignmentSolution -> AssignmentResponse (JSON)
@@ -140,7 +140,7 @@ the **naive** distance (stops in arrival order), and the **reduction**
 (`distance_reduction_km`, `distance_reduction_percent`). Each `RouteStop`
 carries its `sequence`, `leg_distance_km`, and running `cumulative_distance_km`.
 
-Requesting `strategy: "vrp"` returns a clean `400` (reserved for a future week);
+Requesting `strategy: "vrp"` returns a clean `400` (reserved for a later stage);
 an unknown strategy also returns `400`.
 
 ---
@@ -150,13 +150,13 @@ an unknown strategy also returns `400`.
 No body. Returns the engine name, the installed OR-Tools version, the list of
 solvers, the available route strategies, and the live settings. It does **not**
 touch the database, so it stays a fast capability/liveness check (the optimizer
-counterpart to Week 4's `/health`).
+counterpart to Stage 4's `/health`).
 
 ---
 
 ## Errors
 
-Optimization errors flow through the **same** Week 4 exception handlers, so the
+Optimization errors flow through the **same** Stage 4 exception handlers, so the
 caller always sees the one JSON envelope `{ "error": { "code", "message" } }`:
 
 | Situation | Status |
@@ -181,6 +181,6 @@ curl -X POST http://127.0.0.1:8000/optimize/warehouse  -d '{"sample_size": 15}' 
 curl -X POST http://127.0.0.1:8000/optimize/routes     -d '{"max_stops": 25}'     -H "Content-Type: application/json"
 
 # or run the scripts (no server needed - they use the in-process TestClient):
-python notebooks/week5_optimization_demo.py
-python notebooks/week5_validation.py
+python notebooks/optimization_demo.py
+python notebooks/optimization_validation.py
 ```

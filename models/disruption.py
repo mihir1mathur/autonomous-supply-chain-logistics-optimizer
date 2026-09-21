@@ -1,16 +1,16 @@
 """
 DISRUPTION MODEL  (table: disruptions)  -- events that delay deliveries.
 
-Source: simulation/disruptions.csv (Week 2). Entirely SIMULATED - Olist is
+Source: simulation/disruptions.csv (Stage 2). Entirely SIMULATED - Olist is
 historical and has no live traffic/weather.
 
 A disruption is placed in a real city/state. Warehouse-specific disruptions
 (warehouse_overload / inventory_shortage) point at a warehouse; area-wide
 ones (traffic / weather / road_closure) leave affected_warehouse_id NULL.
 
-It can ALSO point at a specific delivery route (affected_route_id). The Week 2
+It can ALSO point at a specific delivery route (affected_route_id). The Stage 2
 simulation does not link disruptions to individual routes, so this stays NULL
-for now; it is reserved so that later weeks (OR-Tools re-optimization, Week 7
+for now; it is reserved so that later stages (OR-Tools re-optimization, Stage 7
 disruption-driven replanning) can attach a disruption to the exact route it
 delays without any schema change.
 """
@@ -44,7 +44,7 @@ class Disruption(Base):
     )
 
     # OPTIONAL FOREIGN KEY -> delivery_routes. Reserved for future
-    # disruption-driven replanning (Week 7); NULL for now.
+    # disruption-driven replanning (Stage 7); NULL for now.
     affected_route_id = Column(
         String, ForeignKey("delivery_routes.route_id"), nullable=True, index=True
     )

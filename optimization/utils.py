@@ -1,6 +1,6 @@
 """
 ============================================================================
-OPTIMIZATION UTILITIES  (Week 5)
+OPTIMIZATION UTILITIES  (Stage 5)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -18,13 +18,13 @@ WHY A SEPARATE UTILS FILE (and why it imports almost nothing)
   OR-Tools. That makes them trivial to test on their own and safe for every
   other optimization module to import without creating circular dependencies.
 
-THE HAVERSINE DISTANCE (reused from Week 2)
+THE HAVERSINE DISTANCE (reused from Stage 2)
 -------------------------------------------
-  The Week 2 route generator estimated distances with the haversine formula
+  The Stage 2 route generator estimated distances with the haversine formula
   (great-circle distance between two latitude/longitude points) multiplied by
   a "winding factor" so a straight-line distance better reflects real roads.
   We reuse the SAME formula and the SAME default winding factor here so the
-  optimizer and the stored Week 2 estimates speak the same language.
+  optimizer and the stored Stage 2 estimates speak the same language.
 ============================================================================
 """
 
@@ -39,7 +39,7 @@ from dataclasses import dataclass
 EARTH_RADIUS_KM = 6371.0088
 
 # ---------------------------------------------------------------------------
-# REPRODUCIBLE-BENCHMARK MODE (Week 6 reproducibility fix)
+# REPRODUCIBLE-BENCHMARK MODE (Stage 6 reproducibility fix)
 # ---------------------------------------------------------------------------
 # CP-SAT is only fully deterministic when it searches with a SINGLE worker and a
 # FIXED random seed. With several parallel workers (the production default) the
@@ -76,7 +76,7 @@ def benchmark_deterministic_enabled() -> bool:
     )
 
 # Default "winding factor": real roads are longer than a straight line, so we
-# scale the great-circle distance up. 1.30 is the SAME value Week 2 used when
+# scale the great-circle distance up. 1.30 is the SAME value Stage 2 used when
 # it generated delivery_routes.estimated_distance_km, so estimates line up.
 DEFAULT_WINDING_FACTOR = 1.30
 
@@ -123,7 +123,7 @@ def straight_line_to_road_km(
 ) -> float:
     """
     Turn a straight-line (haversine) distance into an estimated ROAD distance
-    by multiplying by the winding factor. Identical idea to Week 2.
+    by multiplying by the winding factor. Identical idea to Stage 2.
     """
     return straight_km * winding_factor
 
@@ -172,7 +172,7 @@ def simulated_package_demand(
       The real Olist dataset records an order but NOT how many packages each
       delivery is (there is no per-shipment package count in our tables). The
       vehicle-capacity constraints only become meaningful if each shipment has
-      a size, so - exactly like the Week 2 simulation filled real gaps with
+      a size, so - exactly like the Stage 2 simulation filled real gaps with
       documented assumptions - we derive a small, deterministic demand from the
       shipment id.
 

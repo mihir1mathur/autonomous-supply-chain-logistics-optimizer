@@ -1,18 +1,18 @@
 """
 ============================================================================
-WEEK 3 - DATABASE LOADER  (CSV -> PostgreSQL)
+STAGE 3 - DATABASE LOADER  (CSV -> PostgreSQL)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  Loads the CLEANED Week 1 data and the SIMULATED Week 2 data from CSV files
+  Loads the CLEANED Stage 1 data and the SIMULATED Stage 2 data from CSV files
   into the PostgreSQL tables created by database/init_db.py.
 
 WHERE THE DATA COMES FROM
 -------------------------
-  processed/ (Week 1, REAL):  customers_clean, products_clean, orders_clean
-  simulation/ (Week 2):       warehouses, inventory, vehicles,
+  processed/ (Stage 1, REAL):  customers_clean, products_clean, orders_clean
+  simulation/ (Stage 2):       warehouses, inventory, vehicles,
                               delivery_routes, disruptions
 
   We NEVER load raw files from data/ - only cleaned/simulated files.
@@ -38,7 +38,7 @@ KEY SAFEGUARDS
 HOW TO RUN (from the project root)
 ----------------------------------
     python database/init_db.py          # create the tables first
-    python notebooks/week3_load_database.py
+    python notebooks/load_database.py
 ============================================================================
 """
 
@@ -48,7 +48,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-# Make the project root importable when run as `python notebooks/week3_load_database.py`.
+# Make the project root importable when run as `python notebooks/load_database.py`.
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -102,7 +102,7 @@ def prepare_dataframe(df, int_cols=(), float_cols=(), datetime_cols=(), date_col
     for col in date_cols:
         if col in df.columns:
             # date columns (e.g. last_restock_date) are written DD-MM-YYYY by
-            # the Week 2 scripts, so dayfirst=True makes that explicit.
+            # the Stage 2 scripts, so dayfirst=True makes that explicit.
             df[col] = pd.to_datetime(
                 df[col], errors="coerce", dayfirst=True
             ).dt.date
@@ -176,7 +176,7 @@ def load_table(db, label, file_path, model, pk_col, prepare_kwargs=None,
 
     if not os.path.exists(file_path):
         print(f"  MISSING FILE: {file_path}")
-        print("  Skipping this table. Re-run the Week 1/Week 2 scripts to create it.")
+        print("  Skipping this table. Re-run the Stage 1/Stage 2 scripts to create it.")
         return
 
     df = pd.read_csv(file_path)
@@ -217,7 +217,7 @@ def load_table(db, label, file_path, model, pk_col, prepare_kwargs=None,
 
 
 def main():
-    banner("WEEK 3 - LOAD CLEANED + SIMULATED CSVs INTO POSTGRESQL")
+    banner("STAGE 3 - LOAD CLEANED + SIMULATED CSVs INTO POSTGRESQL")
 
     # 1) Must be able to connect before doing anything.
     if not test_connection():
@@ -233,17 +233,17 @@ def main():
     try:
         # --- Parents first -------------------------------------------------
         load_table(
-            db, "customers (Week 1)", os.path.join(PROCESSED_DIR, "customers_clean.csv"),
+            db, "customers (Stage 1)", os.path.join(PROCESSED_DIR, "customers_clean.csv"),
             Customer, "customer_id",
             prepare_kwargs={"int_cols": ["customer_zip_code_prefix"]},
         )
         load_table(
-            db, "sellers (Week 1)", os.path.join(PROCESSED_DIR, "sellers_clean.csv"),
+            db, "sellers (Stage 1)", os.path.join(PROCESSED_DIR, "sellers_clean.csv"),
             Seller, "seller_id",
             prepare_kwargs={"int_cols": ["seller_zip_code_prefix"]},
         )
         load_table(
-            db, "products (Week 1)", os.path.join(PROCESSED_DIR, "products_clean.csv"),
+            db, "products (Stage 1)", os.path.join(PROCESSED_DIR, "products_clean.csv"),
             Product, "product_id",
             prepare_kwargs={
                 "int_cols": ["product_name_length", "product_description_length",
@@ -258,7 +258,7 @@ def main():
         seller_keys = set(db.scalars(select(Seller.seller_id)).all())
 
         load_table(
-            db, "orders (Week 1)", os.path.join(PROCESSED_DIR, "orders_clean.csv"),
+            db, "orders (Stage 1)", os.path.join(PROCESSED_DIR, "orders_clean.csv"),
             Order, "order_id",
             prepare_kwargs={"datetime_cols": [
                 "order_purchase_timestamp", "order_approved_at",
@@ -267,7 +267,7 @@ def main():
             fk_checks=[("customer_id", customer_keys)],
         )
         load_table(
-            db, "warehouses (Week 2)", os.path.join(SIM_DIR, "warehouses.csv"),
+            db, "warehouses (Stage 2)", os.path.join(SIM_DIR, "warehouses.csv"),
             Warehouse, "warehouse_id",
             prepare_kwargs={
                 "int_cols": ["warehouse_zip_code_prefix", "capacity"],
@@ -282,7 +282,7 @@ def main():
         order_keys = set(db.scalars(select(Order.order_id)).all())
 
         load_table(
-            db, "inventory (Week 2)", os.path.join(SIM_DIR, "inventory.csv"),
+            db, "inventory (Stage 2)", os.path.join(SIM_DIR, "inventory.csv"),
             Inventory, "inventory_id",
             prepare_kwargs={
                 "int_cols": ["stock_level", "reorder_threshold", "reorder_quantity"],
@@ -291,7 +291,7 @@ def main():
             fk_checks=[("warehouse_id", warehouse_keys), ("product_id", product_keys)],
         )
         load_table(
-            db, "vehicles (Week 2)", os.path.join(SIM_DIR, "vehicles.csv"),
+            db, "vehicles (Stage 2)", os.path.join(SIM_DIR, "vehicles.csv"),
             Vehicle, "vehicle_id",
             prepare_kwargs={
                 "int_cols": ["capacity_kg", "capacity_packages", "average_speed_kmph"],
@@ -303,7 +303,7 @@ def main():
         vehicle_keys = set(db.scalars(select(Vehicle.vehicle_id)).all())
 
         load_table(
-            db, "delivery_routes (Week 2)", os.path.join(SIM_DIR, "delivery_routes.csv"),
+            db, "delivery_routes (Stage 2)", os.path.join(SIM_DIR, "delivery_routes.csv"),
             DeliveryRoute, "route_id",
             prepare_kwargs={
                 "float_cols": ["source_latitude", "source_longitude",
@@ -315,7 +315,7 @@ def main():
                        ("customer_id", customer_keys), ("vehicle_id", vehicle_keys)],
         )
         load_table(
-            db, "disruptions (Week 2)", os.path.join(SIM_DIR, "disruptions.csv"),
+            db, "disruptions (Stage 2)", os.path.join(SIM_DIR, "disruptions.csv"),
             Disruption, "disruption_id",
             prepare_kwargs={
                 "int_cols": ["estimated_delay_minutes"],
@@ -328,7 +328,7 @@ def main():
         for model in (Customer, Seller, Product, Order, Warehouse, Inventory,
                       Vehicle, DeliveryRoute, Disruption):
             print(f"  {model.__tablename__:16}: {db_count(db, model):,} rows")
-        print("\nDone. Next: python notebooks/week3_test_crud.py")
+        print("\nDone. Next: python notebooks/database_crud_demo.py")
     finally:
         db.close()
 

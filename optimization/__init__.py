@@ -1,17 +1,17 @@
 """
 ============================================================================
-optimization/ package  (Week 5)   -- the OPTIMIZATION ENGINE
+optimization/ package  (Stage 5)   -- the OPTIMIZATION ENGINE
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT LIVES HERE
 ---------------
-  The Week 5 optimization engine: a small, self-contained, database-free
+  The Stage 5 optimization engine: a small, self-contained, database-free
   toolkit that turns supply-chain questions into decisions using Google
   OR-Tools (CP-SAT) and simple heuristics. It is DELIBERATELY independent of
   FastAPI and SQLAlchemy - the API service layer feeds it plain data objects
   and shapes its results into JSON. That separation (SOLID dependency
-  inversion) is what lets Week 7's CrewAI agents call the SAME engine directly.
+  inversion) is what lets Stage 7's CrewAI agents call the SAME engine directly.
 
 THE FOUR OPTIMIZATION PROBLEMS (one solver each)
 ------------------------------------------------
@@ -40,7 +40,7 @@ HOW A CALLER USES IT (the shape every solver shares)
       print(result.success, result.average_vehicle_utilization)
 
   Each solver exposes a class (AssignmentSolver, ...) AND a ready-made default
-  instance (assignment_solver, ...) for the common case, mirroring how the Week
+  instance (assignment_solver, ...) for the common case, mirroring how the Stage
   4 services expose both a class and a singleton.
 ============================================================================
 """

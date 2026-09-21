@@ -1,6 +1,6 @@
 """
 ============================================================================
-API ERRORS & EXCEPTION HANDLERS  (Week 4)
+API ERRORS & EXCEPTION HANDLERS  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -24,7 +24,7 @@ WHAT ARE HTTP STATUS CODES? (zero-knowledge version)
     5xx = the SERVER hit a problem (our fault)
   The codes this project uses:
     400 Bad Request        - the request itself is malformed / makes no sense.
-    401 Unauthorized       - not logged in.       (future-ready: auth is Week 5+)
+    401 Unauthorized       - not logged in.       (future-ready: auth is Stage 5+)
     403 Forbidden          - logged in but not allowed. (future-ready)
     404 Not Found          - the thing you asked for does not exist.
     409 Conflict           - clashes with current state (e.g. duplicate id).

@@ -1,12 +1,12 @@
 """
 ============================================================================
-DISRUPTIONS ROUTER  (Week 4)   URL prefix: /disruptions
+DISRUPTIONS ROUTER  (Stage 4)   URL prefix: /disruptions
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 REST endpoints for disruptions (events that delay deliveries). Thin: calls
 disruption_service. It also exposes a small convenience endpoint,
-GET /disruptions/active, that reuses the Week 3 "active disruptions" query.
+GET /disruptions/active, that reuses the Stage 3 "active disruptions" query.
 ============================================================================
 """
 
@@ -59,7 +59,7 @@ def list_disruptions(
 @router.get(
     "/active",
     response_model=list[DisruptionResponse],
-    summary="List all currently-active disruptions (reuses the Week 3 query)",
+    summary="List all currently-active disruptions (reuses the Stage 3 query)",
 )
 def list_active_disruptions(db: Session = Depends(get_db)):
     """Return every disruption whose status is 'active' (not paginated)."""

@@ -2,7 +2,7 @@
 INVENTORY MODEL  (table: inventory)  -- STOCK that connects a product to a
 warehouse with a quantity.
 
-Source: simulation/inventory.csv (Week 2).
+Source: simulation/inventory.csv (Stage 2).
   - REAL signal: which warehouse stocks which product (from real sales).
   - SIMULATED: stock_level, reorder thresholds, last_restock_date, status.
 

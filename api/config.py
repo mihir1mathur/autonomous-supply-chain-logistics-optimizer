@@ -1,6 +1,6 @@
 """
 ============================================================================
-API CONFIG  (Week 4)
+API CONFIG  (Stage 4)
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -14,7 +14,7 @@ WHAT THIS FILE DOES
 
 WHY A SEPARATE CONFIG FILE (and why not hard-code these)?
 ---------------------------------------------------------
-  The same reasoning as the Week 3 database config: values that might change
+  The same reasoning as the Stage 3 database config: values that might change
   between environments (your laptop vs. a cloud server) do not belong buried
   inside the code. Keeping them in one settings object means one place to look
   and one place to change - and secrets can come from the environment, never
@@ -25,10 +25,10 @@ HOW IT WORKS (pydantic-settings)
   We use pydantic-settings' BaseSettings. It reads each field from an
   environment variable of the same name (prefixed with API_), falling back to
   the default written here. python-dotenv already loaded the .env file back in
-  the Week 3 database config, so those variables are available here too.
+  the Stage 3 database config, so those variables are available here too.
 
 NOTE: this file is ONLY about API behaviour. The DATABASE connection settings
-still live in database/config.py (Week 3) and are reused unchanged - we do not
+still live in database/config.py (Stage 3) and are reused unchanged - we do not
 duplicate them here.
 ============================================================================
 """
@@ -59,12 +59,12 @@ class APISettings(BaseSettings):
 
     # ---- Documentation identity (shown at the top of Swagger UI) ----------
     title: str = "Supply Chain & Logistics Optimizer API"
-    version: str = "0.4.0"  # 0.4 = Week 4; bumped as the project grows.
+    version: str = "0.4.0"  # 0.4 = Stage 4; bumped as the project grows.
     description: str = (
-        "REST API over the Week 3 PostgreSQL database. It exposes the supply "
+        "REST API over the Stage 3 PostgreSQL database. It exposes the supply "
         "chain entities (customers, warehouses, inventory, vehicles, routes, "
         "orders, disruptions) with full CRUD, filtering, sorting, searching, "
-        "and pagination. Built on the reused Week 3 SQLAlchemy models and CRUD "
+        "and pagination. Built on the reused Stage 3 SQLAlchemy models and CRUD "
         "layer."
     )
 
@@ -76,8 +76,8 @@ class APISettings(BaseSettings):
 
     # ---- CORS (which browser origins may call this API) ------------------
     # A single string like "*" or "http://localhost:3000,http://localhost:5173".
-    # We keep it as a raw string and split it in main.py, which keeps parsing
-    # simple and beginner-obvious.
+    # Kept as a raw string and split in main.py, which keeps parsing
+    # simple and explicit.
     cors_origins: str = "*"
 
     def cors_origin_list(self) -> list[str]:

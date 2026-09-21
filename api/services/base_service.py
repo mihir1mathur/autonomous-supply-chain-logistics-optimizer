@@ -1,6 +1,6 @@
 """
 ============================================================================
-BASE SERVICE  (Week 4)   -- shared CRUD logic every service reuses
+BASE SERVICE  (Stage 4)   -- shared CRUD logic every service reuses
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 

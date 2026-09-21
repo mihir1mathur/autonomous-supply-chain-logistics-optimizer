@@ -1,30 +1,30 @@
 """
 ============================================================================
-AGENT CONFIG  (Week 7)   -- tunable settings for the AI ORCHESTRATION layer
+AGENT CONFIG  (Stage 7)   -- tunable settings for the AI ORCHESTRATION layer
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS FILE DOES
 -------------------
-  Week 6 gave the project a full optimization EXECUTION LAYER (run a scenario,
-  measure twelve KPIs, evaluate before-vs-after, store the run). Week 7 puts an
+  Stage 6 gave the project a full optimization EXECUTION LAYER (run a scenario,
+  measure twelve KPIs, evaluate before-vs-after, store the run). Stage 7 puts an
   AI MULTI-AGENT ORCHESTRATION LAYER on TOP of it: five specialised agents
   (Planner, Scenario, Optimization, Evaluation, Reporting) that decide WHAT
-  should happen and drive the existing Week 6 execution service to make it
+  should happen and drive the existing Stage 6 execution service to make it
   happen. This file holds that layer's own handful of tunable settings.
 
-  The settings live HERE, in one typed object, exactly like the Week 4 API
-  config (api/config.py), the Week 5 optimization config (optimization/
-  config.py) and the Week 6 execution config (optimization/execution_config.py).
-  Keeping Week 7's knobs in their OWN file means none of the earlier configs is
+  The settings live HERE, in one typed object, exactly like the Stage 4 API
+  config (api/config.py), the Stage 5 optimization config (optimization/
+  config.py) and the Stage 6 execution config (optimization/execution_config.py).
+  Keeping Stage 7's knobs in their OWN file means none of the earlier configs is
   touched - this file is purely additive.
 
-TWO WAYS THE ORCHESTRATOR CAN RUN (the key design decision of Week 7)
+TWO WAYS THE ORCHESTRATOR CAN RUN (the key design decision of Stage 7)
 ---------------------------------------------------------------------
-  Every earlier week runs OFFLINE and DETERMINISTICALLY - the API starts with no
+  Every earlier stage runs OFFLINE and DETERMINISTICALLY - the API starts with no
   .env, the solvers are pure, and the validation scripts pass with no external
   service. CrewAI, by contrast, needs a Large Language Model (an API key + a
-  network call), which is neither offline nor deterministic. So Week 7 supports
+  network call), which is neither offline nor deterministic. So Stage 7 supports
   TWO orchestration modes and picks between them automatically:
 
     * "deterministic"  - the DEFAULT and always-available mode. The five agents
@@ -37,7 +37,7 @@ TWO WAYS THE ORCHESTRATOR CAN RUN (the key design decision of Week 7)
                          CrewAI crew that reasons in natural language over the
                          SAME execution-service-backed tools.
 
-  Crucially, BOTH modes drive the platform through the identical Week 6 tools
+  Crucially, BOTH modes drive the platform through the identical Stage 6 tools
   (see tools.py), so the numeric optimization work is always deterministic and
   correct - the LLM only adds reasoning and narration, it never touches OR-Tools.
 
@@ -70,7 +70,7 @@ _PROVIDER_KEY_ENV = {
 
 class AgentSettings(BaseSettings):
     """
-    Week 7 orchestration-layer settings (LLM provider/model + behaviour switches).
+    Stage 7 orchestration-layer settings (LLM provider/model + behaviour switches).
 
     Pydantic reads each field from an environment variable with the AGENT_
     prefix (e.g. AGENT_LLM_PROVIDER, AGENT_LLM_MODEL). If a variable is absent,
@@ -133,8 +133,8 @@ def get_agent_settings() -> AgentSettings:
     Return the ONE shared orchestration-layer settings object.
 
     @lru_cache means the environment is read once and reused, mirroring
-    get_settings() (Week 4), get_optimization_settings() (Week 5) and
-    get_execution_settings() (Week 6).
+    get_settings() (Stage 4), get_optimization_settings() (Stage 5) and
+    get_execution_settings() (Stage 6).
     """
     return AgentSettings()
 

@@ -1,6 +1,6 @@
 """
 ============================================================================
-REPORTING AGENT  (Week 7)   -- turns the whole decision into a readable report
+REPORTING AGENT  (Stage 7)   -- turns the whole decision into a readable report
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
@@ -26,7 +26,7 @@ WHY A DEDICATED REPORTING STEP
   keeps each job simple and means the report format can change without touching
   any decision logic. The three renderings share ONE underlying JSON structure,
   so they can never drift apart, and the markdown/json split is exactly what a
-  future dashboard (Week 8) will consume.
+  future dashboard (Stage 8) will consume.
 ============================================================================
 """
 
@@ -44,7 +44,7 @@ from agents.utils import (
     to_jsonable,
 )
 
-# The KPIs we surface in the report, in the order the Week 7 goals list them,
+# The KPIs we surface in the report, in the order the Stage 7 goals list them,
 # paired with a human label and a unit/suffix.
 _KPI_ROWS = [
     ("total_cost", "Total cost", ""),
@@ -172,7 +172,7 @@ class ReportingAgent(BaseAgent):
     def _future_improvements(mode: str) -> list[str]:
         items = [
             "Feed the stored optimization_runs into a monitoring dashboard "
-            "(planned Week 8) to chart KPIs and evaluations over time.",
+            "(planned Stage 8) to chart KPIs and evaluations over time.",
             "Implement the reserved OR-Tools VRP routing strategy so the 'routes' "
             "optimizer can plan multiple vehicles, not just order one vehicle's stops.",
             "Let the crew trial several optimizers/scenarios and recommend the best, "
@@ -301,5 +301,5 @@ class ReportingAgent(BaseAgent):
         return "\n".join(lines)
 
 
-# A ready-to-use singleton, mirroring the Week 4/5/6 service singletons.
+# A ready-to-use singleton, mirroring the Stage 4/5/6 service singletons.
 reporting_agent = ReportingAgent()

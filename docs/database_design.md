@@ -1,6 +1,6 @@
-# Database Design (Week 3)
+# Database Design (Stage 3)
 
-This document explains the **database layer** introduced in Week 3: why it
+This document explains the **database layer** introduced in Stage 3: why it
 exists, the technology choices behind it, how the schema is organised, and how
 it is designed so the later parts of the project (optimization, agents, API,
 caching, cloud) can plug in with minimal changes.
@@ -12,11 +12,11 @@ For the exact tables, columns, keys, and indexes, see the companion reference
 
 ## Why introduce a database now?
 
-Weeks 0–2 produced data as CSV files:
+Stages 0–2 produced data as CSV files:
 
-- `processed/` — cleaned, joined real Olist data (Week 1).
+- `processed/` — cleaned, joined real Olist data (Stage 1).
 - `simulation/` — the simulated logistics layer: warehouses, inventory,
-  vehicles, disruptions, and estimated routes (Week 2).
+  vehicles, disruptions, and estimated routes (Stage 2).
 
 CSV files are perfect for building and inspecting that data, but they are a
 weak foundation for an actual platform:
@@ -30,7 +30,7 @@ weak foundation for an actual platform:
 - **No transactions.** A multi-step update (reduce stock, then assign a
   vehicle) cannot be made all-or-nothing.
 
-A database solves all four. Week 3 moves the CSV data into **PostgreSQL** and
+A database solves all four. Stage 3 moves the CSV data into **PostgreSQL** and
 puts a clean Python layer in front of it, without changing any of the source
 CSVs (they remain the reproducible inputs).
 
@@ -69,7 +69,7 @@ Supporting choices: **psycopg (v3)** is the PostgreSQL driver SQLAlchemy talks
 through, and **python-dotenv** loads the database credentials from a local
 `.env` file so no password is ever committed. **Alembic** is installed as a
 dependency for future schema migrations but is intentionally **not** initialised
-yet — this week the schema is created once.
+yet — at this stage the schema is created once.
 
 ---
 
@@ -96,18 +96,18 @@ models/
 └── disruption.py   # disruptions      (simulated)
 
 notebooks/
-├── week3_load_database.py   # loads processed/ + simulation/ CSVs into the DB
-└── week3_test_crud.py       # exercises every CRUD function end-to-end
+├── load_database.py   # loads processed/ + simulation/ CSVs into the DB
+└── database_crud_demo.py       # exercises every CRUD function end-to-end
 ```
 
 **Data flow:**
 
 ```
- processed/*.csv  (Week 1, real)          models/*.py define the schema
- simulation/*.csv (Week 2, simulated)             │
+ processed/*.csv  (Stage 1, real)          models/*.py define the schema
+ simulation/*.csv (Stage 2, simulated)             │
              │                                    ▼
              │                       database/init_db.py -> CREATE TABLE ...
-             └──> week3_load_database.py ─────────────────┐
+             └──> load_database.py ─────────────────┐
                   (read-only import, never edits CSVs)    ▼
                                                     PostgreSQL tables
                                                           │
@@ -151,7 +151,7 @@ inventory vehicles delivery_routes disruptions             │
 In words:
 
 - **sellers → warehouses** — one seller backs zero or one warehouse. The busiest
-  150 Olist sellers were promoted to warehouses in Week 2; every warehouse's
+  150 Olist sellers were promoted to warehouses in Stage 2; every warehouse's
   location comes from its seller.
 - **customers → orders** — one customer places many orders (in Olist a
   `customer_id` is one record per order; `customer_unique_id` links a real
@@ -238,7 +238,7 @@ cleanly.
   already reserved.
 - **CrewAI (autonomous planning).** Reads live state (low stock, active
   disruptions, available vehicles) through the same CRUD functions and records
-  what it decides. A planned `agent_decisions` audit table (Week 5) will hang
+  what it decides. A planned `agent_decisions` audit table (Stage 5) will hang
   off orders/routes/inventory; the design leaves room for it.
 - **Redis (caching / queues).** Sits in front of the database to cache hot
   read-only queries (e.g. active disruptions, available vehicles) and to queue
@@ -255,7 +255,7 @@ cleanly.
 
 ## Summary
 
-Week 3 turns the Week 1 + Week 2 CSV data into a real, relational PostgreSQL
+Stage 3 turns the Stage 1 + Stage 2 CSV data into a real, relational PostgreSQL
 database with enforced relationships, useful indexes, a clean model layer, and a
 reusable CRUD API — designed from the start so optimization, agents, an API,
 caching, and cloud deployment can be added later with minimal schema change.

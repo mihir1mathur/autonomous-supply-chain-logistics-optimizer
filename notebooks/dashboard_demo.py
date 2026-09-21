@@ -1,12 +1,12 @@
 """
 ============================================================================
-WEEK 8 - ANALYTICS DASHBOARD DEMO
+STAGE 8 - ANALYTICS DASHBOARD DEMO
 Project: Supply Chain & Logistics Optimizer
 ============================================================================
 
 WHAT THIS SCRIPT DOES
 ---------------------
-  A friendly, printed walk-through of the Week 8 dashboard. It is meant to be
+  A friendly, printed walk-through of the Stage 8 dashboard. It is meant to be
   READ as much as run. It:
 
     * prints exactly how to start the backend and the dashboard,
@@ -23,7 +23,7 @@ HOW TO RUN
         pip install -r requirements.txt            # adds streamlit, plotly
         # (optional but recommended) start the backend so the checks pass:
         uvicorn api.main:app --reload
-        python notebooks/week8_dashboard_demo.py   # this walkthrough
+        python notebooks/dashboard_demo.py   # this walkthrough
         streamlit run dashboard/app.py             # the actual dashboard
 
   Point the dashboard/demo at a different backend by setting
@@ -54,10 +54,10 @@ def banner(title):
 def print_startup():
     settings = get_settings()
     banner("HOW TO START THE SYSTEM")
-    print("  1. Start the backend (Weeks 4-7):")
+    print("  1. Start the backend (Stages 4-7):")
     print("       uvicorn api.main:app --reload")
     print()
-    print("  2. Start the dashboard (Week 8):")
+    print("  2. Start the dashboard (Stage 8):")
     print("       streamlit run dashboard/app.py")
     print()
     print(f"  The dashboard reads the backend at: {settings.api_base_url}")
@@ -180,7 +180,7 @@ def main():
     print("  Now launch the dashboard and follow the flow above:")
     print("       streamlit run dashboard/app.py")
     print("  The dashboard is a presentation layer: it consumes the existing")
-    print("  Week 6 /optimization and Week 7 /agents APIs and never bypasses them.")
+    print("  Stage 6 /optimization and Stage 7 /agents APIs and never bypasses them.")
 
 
 if __name__ == "__main__":

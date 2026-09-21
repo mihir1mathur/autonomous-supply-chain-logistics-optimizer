@@ -1,6 +1,6 @@
 """
 ============================================================================
-WEEK 2 - VEHICLE GENERATION SCRIPT
+STAGE 2 - VEHICLE GENERATION SCRIPT
 Project: Supply Chain & Logistics Optimizer
 Dataset: Brazilian E-Commerce Public Dataset by Olist
 ============================================================================
@@ -15,7 +15,7 @@ WHY DO VEHICLES HAVE CAPACITY, AND WHY DOES IT MATTER?
 ------------------------------------------------------
   A vehicle can only hold so much weight and so many packages. A small van
   cannot carry a truck's load. CAPACITY is the limit. It matters because route
-  planning (later, Week 3) must NOT overload a vehicle: if 200 packages need
+  planning (later, Stage 3) must NOT overload a vehicle: if 200 packages need
   delivering but each van holds 60, you need at least 4 vans. Capacity turns
   "deliver everything" into a concrete, solvable plan.
 
@@ -42,8 +42,8 @@ GOLDEN RULE: READ simulation/warehouses.csv; WRITE only to simulation/.
 
 HOW TO RUN
 ----------
-    python notebooks/week2_generate_warehouses.py   # must run first
-    python notebooks/week2_vehicle_generation.py
+    python notebooks/warehouse_generation.py   # must run first
+    python notebooks/vehicle_generation.py
 ============================================================================
 """
 
@@ -111,7 +111,7 @@ def fleet_size_for(capacity):
 
 
 def main():
-    banner("WEEK 2 - VEHICLE GENERATION")
+    banner("STAGE 2 - VEHICLE GENERATION")
     print("Reading simulated warehouses; inventing a delivery fleet for each.")
     print(f"Writing simulated vehicles to: {SIM_DIR}")
 
@@ -180,7 +180,7 @@ def main():
 
     banner("DONE - vehicles generated")
     print("  Each row = one delivery vehicle based at a warehouse.")
-    print("  Next: notebooks/week2_disruption_generation.py")
+    print("  Next: notebooks/disruption_generation.py")
     print("  Reminder: data/ and processed/ were NOT modified.")
 
 

@@ -1,25 +1,25 @@
-# Dashboard Architecture (Week 8)
+# Dashboard Architecture (Stage 8)
 
 _Supply Chain & Logistics Optimizer — the analytics & visualization layer._
 
-## Why Week 8 exists
+## Why Stage 8 exists
 
-Weeks 4–7 built a capable backend: a REST API (Week 4) over a PostgreSQL
-database (Week 3), an OR-Tools optimization engine (Week 5), an execution layer
+Stages 4–7 built a capable backend: a REST API (Stage 4) over a PostgreSQL
+database (Stage 3), an OR-Tools optimization engine (Stage 5), an execution layer
 that runs optimizations, measures twelve KPIs, evaluates before-vs-after and
-stores every run (Week 6), and an AI multi-agent orchestration layer that turns
-a plain-English request into a recorded, explained decision (Week 7).
+stores every run (Stage 6), and an AI multi-agent orchestration layer that turns
+a plain-English request into a recorded, explained decision (Stage 7).
 
 All of that spoke **JSON**. It was correct and complete, but it was only
-demonstrable through Swagger, `curl`, or the test scripts. Week 8 adds a
+demonstrable through Swagger, `curl`, or the test scripts. Stage 8 adds a
 **Streamlit dashboard** that makes the existing system *visible*: it charts the
 optimization history and KPIs, lets a user drive the agents from plain English,
 draws the auditable five-agent execution trace, and renders the agent reports —
 turning "backend + optimization + agents" into an **end-to-end, visible
 operations platform**.
 
-Week 8 is **100% additive**: it adds a new `dashboard/` package and three docs;
-it rewrites nothing in Weeks 0–7 and changes no backend behavior.
+Stage 8 is **100% additive**: it adds a new `dashboard/` package and three docs;
+it rewrites nothing in Stages 0–7 and changes no backend behavior.
 
 ## The one architectural rule
 
@@ -41,8 +41,8 @@ Every number it shows is produced by the backend and merely **formatted** and
 ```
 Streamlit Dashboard
     -> FastAPI APIs
-    -> Week 6 Execution Service / Week 7 Agent Service
-    -> Week 5 Optimizers
+    -> Stage 6 Execution Service / Stage 7 Agent Service
+    -> Stage 5 Optimizers
     -> PostgreSQL
 ```
 
@@ -58,7 +58,7 @@ Streamlit Dashboard
 
 There is exactly **one seam** between the UI and the backend:
 `dashboard/api_client.py`. Every page and component goes through it; none of
-them build URLs or make HTTP calls themselves. This mirrors the Week 7 "one tool
+them build URLs or make HTTP calls themselves. This mirrors the Stage 7 "one tool
 seam" idea — a single door to the platform makes the rule *"the dashboard never
 bypasses the backend"* easy to see and impossible to break by accident.
 
@@ -79,7 +79,7 @@ The client:
 Three reasons, all about keeping the system trustworthy and maintainable:
 
 1. **Single source of truth for the numbers.** The twelve KPIs and the
-   before/after evaluation are computed once, by the Week 6 `metrics.py` /
+   before/after evaluation are computed once, by the Stage 6 `metrics.py` /
    `evaluation.py` code. If the dashboard recomputed them, the two could drift
    and a viewer would not know which to believe. The dashboard shows exactly the
    stored/served numbers.
@@ -137,8 +137,8 @@ directly and never computes a KPI.
 | `POST /agents/simulate`           | 7    | Agent Decisions, Reports (what-if)                |
 | `GET /agents/status`              | 7    | System Health, Overview                           |
 
-The dashboard adds **no new endpoints** — it consumes the existing Week 6 and
-Week 7 APIs.
+The dashboard adds **no new endpoints** — it consumes the existing Stage 6 and
+Stage 7 APIs.
 
 ## Error handling
 
@@ -167,7 +167,7 @@ the backend is one URL from an environment variable:
 - **Cloud (AWS sketch):** the API on ECS/Fargate behind a load balancer against
   an RDS PostgreSQL; the Streamlit dashboard on ECS/Fargate (or App Runner) with
   `DASHBOARD_API_BASE_URL` pointed at the API's URL. No dashboard code changes —
-  only configuration. Secrets (any LLM key for the Week 7 crewai mode) stay on
+  only configuration. Secrets (any LLM key for the Stage 7 crewai mode) stay on
   the **backend**, never in the dashboard.
 
 This is described honestly as a **professional project dashboard / analytics

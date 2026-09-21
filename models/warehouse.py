@@ -1,7 +1,7 @@
 """
 WAREHOUSE MODEL  (table: warehouses)  -- the fulfillment ORIGINS.
 
-Source: simulation/warehouses.csv (Week 2).
+Source: simulation/warehouses.csv (Stage 2).
   - REAL: location (from Olist sellers) - seller_id, city, state, zip, lat/lng.
   - SIMULATED: capacity, current_utilization, operating_status.
 
@@ -32,7 +32,7 @@ class Warehouse(Base):
     latitude = Column(Float)
     longitude = Column(Float)
 
-    # Operational fields (SIMULATED in Week 2).
+    # Operational fields (SIMULATED in Stage 2).
     capacity = Column(Integer)               # package-slot capacity
     current_utilization = Column(Float)      # 0..1 fraction in use
     operating_status = Column(String, index=True)  # active / overloaded / inactive
